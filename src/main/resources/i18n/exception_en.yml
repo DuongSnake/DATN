@@ -1,0 +1,56 @@
+UsernameOrPasswordNotFoundException:
+  code: "fail"
+  msg: "ID or password does not match."
+ForbiddenException:
+  code: "fail"
+  msg: "You do not have permission for this request."
+UNAUTHORIZEDException:
+  code: "fail"
+  msg: "Access Denied."
+ExpiredJwtException:
+  code: "fail"
+  msg: "Your existing token has expired. Please take the token and go to the extend link."
+UnknownException:
+  code: "fail"
+  msg: "Unknown exception."
+MethodNotAllowed:
+  code: "fail"
+  msg: "Method Not Allowed."
+DuplicateUserAccount:
+  code: "fail"
+  msg: "Username is already taken!"
+FAIL:
+  code: "fail"
+  msg: "ERROR."
+MalformedJwtException:
+  code: "fail"
+  msg: "Token is not the valid."
+EmailSendFail:
+  code : "fail"
+  msg : "Failed to send email."
+OldPasswordMatched:
+  code : "fail"
+  msg : "New password is the same as old password."
+CurrentPasswordNotMatch:
+  code : "fail"
+  msg : "Current password does not match."
+InvalidDataRequest:
+  code : "error"
+  msg : "Invalid data request."
+NotFoundDataUser:
+  code: "fail"
+  msg : "Not found data user with request input."
+ExistDataInDb:
+  code : "EXIST_DATA_IN_DB"
+  msg : "Exist data in database"
+NotFoundDataInDb:
+  code : "NOT_FOUND_DATA_IN_DB"
+  msg : "Not found data in database"
+NotNullValueInput:
+  code : "NOT_NULL_VALUE_INPUT"
+  msg : "Not null value input"
+NotFoundHospitalInDb:
+  code : "NOT_FOUND_DATA_HOSPITAL"
+  msg : "Not found data hospital in database"
+
+
