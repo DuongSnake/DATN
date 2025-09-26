@@ -1,0 +1,54 @@
+UsernameOrPasswordNotFoundException:
+  code: "fail"
+  msg: "ID hoặc mật khẩu không khớp."
+ForbiddenException:
+  code: "fail"
+  msg: "Bạn không có quyền cho yêu cầu này."
+UNAUTHORIZEDException:
+  code: "fail"
+  msg: "Truy cập bị từ chối."
+ExpiredJwtException:
+  code: "fail"
+  msg: "Thẻ nhớ hiện có của bạn đã hết hạn. Xin hãy cầm lấy vật lưu niệm và đi đến đường link mở rộng."
+UnknownException:
+  code: "fail"
+  msg: "Ngoại lệ không xác định."
+MethodNotAllowed:
+  code: "fail"
+  msg: "Phương thức không hợp lệ."
+DuplicateUserAccount:
+  code: "fail"
+  msg: "Tên người dùng đã được sử dụng!"
+FAIL:
+  code: "fail"
+  msg: "sự sai lầm."
+MalformedJwtException:
+  code: "fail"
+  msg: "mã token không hợp lệ."
+EmailSendFail:
+  code : "fail"
+  msg : "Gửi email không thành công."
+OldPasswordMatched:
+  code : "fail"
+  msg : "Mật khẩu mới giống với mật khẩu cũ."
+CurrentPasswordNotMatch:
+  code : "fail"
+  msg : "Mật khẩu hiện tại không chính xác."
+InvalidDataRequest:
+  code : "error"
+  msg : "Dữ liệu đầu vào không hợp lệ."
+NotFoundDataUser:
+  code: "fail"
+  msg : "Không tìm thấy dữ liệu người dùng với thông tin truyền vào."
+ExistDataInDb:
+  code : "EXIST_DATA_IN_DB"
+  msg : "Dữ liệu đã tồn tại trong cw sở dữ liệu"
+NotFoundDataInDb:
+  code : "NOT_FOUND_DATA_IN_DB"
+  msg : "Không tìm thấy dữ liệu trong cơ sở dữ liệu"
+NotNullValueInput:
+  code : "NOT_NULL_VALUE_INPUT"
+  msg : "Không để trống dữ liệu đầu vào"
+NotFoundHospitalInDb:
+  code : "NOT_FOUND_DATA_HOSPITAL"
+  msg : "Không tìm thấy dữ liệu cơ sở y tế trong cơ sở dữ liệu"

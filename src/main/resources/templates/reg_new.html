@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div style="font-family:Quattrocento;font-size:18px;font-weight:400;line-height:24px;text-align:left;color:#000000;">Tên đăng nhập của bạn là: </span><i th:text="' '+${userNm}"></i></div>
+<div style="font-family:Quattrocento;font-size:18px;font-weight:400;line-height:24px;text-align:left;color:#000000;">Mật khẩu của bạn là: </span><i th:text="' '+${password}"></i></div>
+<div style="font-family:Quattrocento;font-size:18px;font-weight:400;line-height:24px;text-align:left;color:#000000;">Link đăng nhập: <a th:href="${urlLogin}" target="_blank" ><span th:text="${urlLogin}"></span></a></div>
+</body>
+</html>
