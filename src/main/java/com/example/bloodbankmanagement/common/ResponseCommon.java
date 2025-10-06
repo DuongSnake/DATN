@@ -47,6 +47,17 @@ public class ResponseCommon {
         return result;
     }
 
+    public <T> SingleResponseDto<T> getSingleResponseHandleMessage(T data, String responseCode, String nameMessage) {
+        SingleResponseDto<T> result = new SingleResponseDto<>();
+        result.setResult(data);
+        result.setResponseCd(responseCode);
+        result.setResponseMsg(nameMessage);
+        result.setResponseTs(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtil.DATETIME_FORMAT_NORMAL_SSS)));
+        result.setResponseTraceId(TRACE_ID);
+        result.setRequesterTrId(getRequesterTrId());
+        return result;
+    }
+
 
     public <T> SingleResponseDto<T> getFailSingleResponse(T data, String code) {
         SingleResponseDto<T> result = new SingleResponseDto<>();
