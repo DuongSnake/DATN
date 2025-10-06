@@ -2,12 +2,18 @@ package com.example.bloodbankmanagement.common.untils;
 
 import com.example.bloodbankmanagement.common.exception.AuthenticationException;
 import com.example.bloodbankmanagement.service.authorization.UserDetailsImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.MDC;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class CommonUtil {
@@ -36,8 +42,7 @@ public class CommonUtil {
     public static final String EMAIL = "email";
     public static final String NOT_FOUND_DATA_USER = "NotFoundDataInDb";
     public static final String EXIST_DATA_IN_DB = "ExistDataInDb";
-    public static final String NOT_NULL_VALUE = "NotNullValueInput";
-    public static final String NOT_FOUND_DATA_HOSPITAL = "NotFoundHospitalInDb";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     private CommonUtil() {
     }
@@ -84,5 +89,19 @@ public class CommonUtil {
     public static String getUsernameByToken(){
         UserDetailsImpl user = CommonUtil.getThisUser();
         return user.getUsername();
+    }
+
+    public static String getJsonStringFromObject(Object obj) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+
+        try {
+            String jsonString = mapper.writeValueAsString(obj);
+            return jsonString;
+        } catch (JsonProcessingException var4) {
+            Logger.getLogger(CommonUtil.class.getName()).log(Level.SEVERE, (String)null, var4);
+            return "";
+        }
     }
 }
