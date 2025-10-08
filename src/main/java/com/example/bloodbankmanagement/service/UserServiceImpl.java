@@ -83,7 +83,7 @@ public class UserServiceImpl {
             return responseCommon.getSingleFailResult("EmailSendFail", lang);
         }
         //convert object response
-        result = responseService.getSuccessResult();
+        result = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.insertSuccess);
         return result;
     }
 
@@ -97,7 +97,7 @@ public class UserServiceImpl {
         objectUpdate.setUpdateAt(DateUtil.strNowDate());
         objectUpdate.setUpdateTm(DateUtil.strNowTime());
         userRepository.updateUser(objectUpdate);
-        messageResponse = responseService.getSuccessResult();
+        messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
         return messageResponse;
     }
 
@@ -129,7 +129,7 @@ public class UserServiceImpl {
         objectEnity.setUpdateTm(DateUtil.strNowTime());
         objectEnity.setUpdateUser(CommonUtil.getUsernameByToken());
         userRepository.updateStatusById(objectEnity);
-        objectResponse = responseCommon.getSuccessResult();
+        objectResponse = responseCommon.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }
 

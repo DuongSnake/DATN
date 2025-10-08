@@ -22,7 +22,7 @@ public class FileUploadController {
     private final FileMetadataService fileMetadataService;
 
     @PostMapping("/upload")
-    public ResponseEntity<List<FileMetadata>> uploadFile(@RequestPart("files")MultipartFile files[]) throws Exception {
+    public ResponseEntity<BasicResponseDto> uploadFile(@RequestPart("files")MultipartFile files[]) throws Exception {
         return new ResponseEntity<>(
                 fileMetadataService.uploadFiles(files),
                 HttpStatus.OK
@@ -64,5 +64,10 @@ public class FileUploadController {
                 fileMetadataService.deleteFileUpload(listFileId),
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("/download2")
+    public void downloadFile2(@RequestParam("id") Long fileId, HttpServletResponse response) throws Exception {
+        fileMetadataService.downloadFile2(fileId, response);
     }
 }

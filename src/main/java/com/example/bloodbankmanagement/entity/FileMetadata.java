@@ -84,12 +84,12 @@ public class FileMetadata  extends AbstractEntity {
         this.status = status;
     }
 
-    public static UploadFileDto.UploadFileSelectInfoResponse convertObjectToDto(FileMetadata request){
+    public static UploadFileDto.UploadFileSelectInfoResponse convertObjectToDto(FileMetadataDto request){
         if(null == request){
             return null;
         }
         UploadFileDto.UploadFileSelectInfoResponse objectData = new UploadFileDto.UploadFileSelectInfoResponse();
-        objectData.setFileId(request.getId());
+        objectData.setFileId(request.getFileId());
         objectData.setFileName(request.getFileName());
         objectData.setFileSize(request.getFileSize());
         objectData.setFileType(request.getFileType());

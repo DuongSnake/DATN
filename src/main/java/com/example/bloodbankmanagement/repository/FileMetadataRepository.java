@@ -14,7 +14,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface FileMetadataRepository extends JpaRepository<FileMetadata, Long> {
@@ -30,8 +29,12 @@ public interface FileMetadataRepository extends JpaRepository<FileMetadata, Long
             nativeQuery = true)
     Page<FileMetadataDto> findListFileUpload(UploadFileDto.UploadFileSelectListInfo request, Pageable pageable);
 
+    @Query(value = "select id as fileId,file_name as fileName,file_type as fileType from file_meta_data where id = ?1",nativeQuery = true)
+    FileMetadataDto findByFileId(Long id);
+
+
     @Query("select u from FileMetadata u where u.id = ?1")
-    FileMetadata findByFileId(Long id);
+    FileMetadata findByFileIdToDownload(Long id);
 
     @Modifying
     @Transactional
