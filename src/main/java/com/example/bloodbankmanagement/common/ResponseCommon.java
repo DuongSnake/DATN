@@ -73,6 +73,13 @@ public class ResponseCommon {
         return result;
     }
 
+
+    public BasicResponseDto getSuccessResultHaveValueMessage(String responseCode, String responseMessage) {
+        BasicResponseDto result = new BasicResponseDto();
+        setSuccessResultWithResponseCdAndMsg(result, responseCode, responseMessage);
+        return result;
+    }
+
     public BasicResponseDto getFailResult(String code){
         BasicResponseDto result = new BasicResponseDto();
         setFailResult(result, code);
@@ -88,6 +95,14 @@ public class ResponseCommon {
     private void setSuccessResult(BasicResponseDto result) {
         result.setResponseCd("000000");
         result.setResponseMsg("OK.");
+        result.setResponseTs(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtil.DATETIME_FORMAT_NORMAL_SSS)));
+        result.setResponseTraceId(TRACE_ID);
+        result.setRequesterTrId(getRequesterTrId());
+    }
+
+    private void setSuccessResultWithResponseCdAndMsg(BasicResponseDto result, String responseCd, String responseMsg) {
+        result.setResponseCd(responseCd);
+        result.setResponseMsg(responseMsg);
         result.setResponseTs(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtil.DATETIME_FORMAT_NORMAL_SSS)));
         result.setResponseTraceId(TRACE_ID);
         result.setRequesterTrId(getRequesterTrId());

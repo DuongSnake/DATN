@@ -12,7 +12,6 @@ import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.objectRepository.FileMetadataDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.UploadFileDto;
-import com.example.bloodbankmanagement.dto.service.UserDto;
 import com.example.bloodbankmanagement.entity.FileMetadata;
 import com.example.bloodbankmanagement.entity.Role;
 import com.example.bloodbankmanagement.entity.User;
@@ -21,9 +20,7 @@ import com.example.bloodbankmanagement.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,13 +32,12 @@ import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,9 +50,9 @@ public class FileMetadataService {
     private final ResponseCommon responseService;
 
     @Transactional
-    public List<FileMetadata> uploadFiles(MultipartFile files[]) throws Exception {
+    public BasicResponseDto uploadFiles(MultipartFile files[]) throws Exception {
+        BasicResponseDto result;
         String userIdUpload = CommonUtil.getUsernameByToken();
-        List<FileMetadata> savedFiles = new ArrayList<>();
         Path uploadPath = Paths.get("upload").toAbsolutePath().normalize();
         Files.createDirectories(uploadPath);
         String userIdRegister = checkExistUser(userIdUpload);
@@ -72,14 +68,12 @@ public class FileMetadataService {
                 objectSave.setFileSize(file.getSize());
                 objectSave.setCreateUser(userIdRegister);
                 objectSave.setStatus(CommonUtil.STATUS_USE);
-                savedFiles.add(fileMetadataRepository.save(objectSave));
             }catch (Exception e){
                 throw new Exception("Could not save file:" +fileName);
             }
         }
-        Blob blobEmpty = null;
-        savedFiles.forEach(e -> e.setData(blobEmpty));
-        return savedFiles;
+        result = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.insertSuccess);
+        return result;
     }
 
     public SingleResponseDto<PageAmtListResponseDto<UploadFileDto.UploadFileListInfo>> selectListFileUpload(UploadFileDto.UploadFileSelectListInfo request){
@@ -97,12 +91,14 @@ public class FileMetadataService {
     }
 
     public void downloadFile(UploadFileDto.UploadFileSelectInfo fileId, HttpServletResponse response) {
-        FileMetadata fileObject =  fileMetadataRepository.findByFileId(fileId.getFileId());
+        FileMetadata fileObject =  fileMetadataRepository.findByFileIdToDownload(fileId.getFileId());
         if(null ==fileObject){
             throw new CustomException("Not found object by fileId", "en");
         }
         // Prepare the Headers.
-        response.setContentType(determineContentType(fileObject.getFileType()));
+        String contentType = URLConnection.guessContentTypeFromName(fileObject.getFileName());
+        logger.info("Type file upload: "+contentType);
+        response.setContentType(contentType != null ? contentType : "application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; filename=" + fileObject.getFileName());
 
         try (InputStream in = fileObject.getData().getBinaryStream();
@@ -123,7 +119,7 @@ public class FileMetadataService {
             throw new CustomException("Not found value request param ", "en");
         }
         SingleResponseDto<UploadFileDto.UploadFileSelectInfoResponse> selectObject = new SingleResponseDto<>();
-        FileMetadata dataFileMetadata = fileMetadataRepository.findByFileId(request.getFileId());
+        FileMetadataDto dataFileMetadata = fileMetadataRepository.findByFileId(request.getFileId());
         UploadFileDto.UploadFileSelectInfoResponse objectResponse= new UploadFileDto.UploadFileSelectInfoResponse();
         if(null ==dataFileMetadata){
             objectResponse = null;
@@ -161,7 +157,7 @@ public class FileMetadataService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        messageResponse = responseService.getSuccessResult();
+        messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
         return messageResponse;
     }
 
@@ -174,26 +170,8 @@ public class FileMetadataService {
         objectDelete.setUpdateTm(DateUtil.strNowTime());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
         fileMetadataRepository.deleteFileUpload(objectDelete, listFileId.getListFileId());
-        objectResponse = responseCommon.getSuccessResult();
+        objectResponse = responseCommon.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
-    }
-
-    private String determineContentType(String fileName) {
-        String extension = FilenameUtils.getExtension(fileName).toLowerCase();
-        return switch (extension) {
-            case "text" -> "text/html";
-            case "doc" -> "application/msword";
-            case "pdf"  -> "application/pdf";
-            case "jpg" -> "image/jpeg";
-            case "png" -> "image/png";
-            case "jpeg"  -> "image/jpeg";
-            case "zip" -> "application/zip";
-            case "rar" -> "application/x-rar-compressed";
-            case "7z"  -> "application/x-7z-compressed";
-            case "tar" -> "application/x-tar";
-            case "gz"  -> "application/gzip";
-            default    -> "application/octet-stream";
-        };
     }
 
     public String isUserHaveRoleAdmin(String userName){
@@ -223,6 +201,30 @@ public class FileMetadataService {
             throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
         }
         return userInfo.get().getUsername();
+    }
+
+    public void downloadFile2(Long fileId, HttpServletResponse response) {
+        FileMetadata fileObject =  fileMetadataRepository.findByFileIdToDownload(fileId);
+        if(null ==fileObject){
+            throw new CustomException("Not found object by fileId", "en");
+        }
+        // Prepare the Headers.
+        String contentType = URLConnection.guessContentTypeFromName(fileObject.getFileName());
+        logger.info("Type file upload: "+contentType);
+        response.setContentType(contentType != null ? contentType : "application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileObject.getFileName());
+
+        try (InputStream in = fileObject.getData().getBinaryStream();
+             OutputStream out = response.getOutputStream()) {
+            in.transferTo(out);
+        }
+        catch (SQLException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("Error accessing file stream", e);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            throw new RuntimeException("File not found or download failed", e);
+        }
     }
 
 }
