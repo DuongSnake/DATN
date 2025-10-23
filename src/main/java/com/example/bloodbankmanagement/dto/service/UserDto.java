@@ -4,6 +4,8 @@ import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.entity.Role;
 import com.example.bloodbankmanagement.entity.User;
 import lombok.*;
+
+import java.time.LocalDate;
 import java.util.Set;
 
 public class UserDto {
@@ -31,8 +33,8 @@ public class UserDto {
         private String address;
         private String status;
         private String note;
-        private String createAt;
-        private String updateAt;
+        private LocalDate createAt;
+        private LocalDate updateAt;
         private Set<Role> roles;
     }
 
@@ -47,8 +49,8 @@ public class UserDto {
         private String address;
         private String status;
         private String note;
-        private String createAt;
-        private String updateAt;
+        private LocalDate createAt;
+        private LocalDate updateAt;
         private Set<Role> roles;
     }
 

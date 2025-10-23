@@ -3,6 +3,7 @@ package com.example.bloodbankmanagement.entity;
 
 
 import com.example.bloodbankmanagement.common.untils.AbstractEntity;
+import com.example.bloodbankmanagement.common.untils.EntityCommon;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.service.UserDto;
 import jakarta.persistence.*;
@@ -24,7 +25,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users" , uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 @AllArgsConstructor
-public class User extends AbstractEntity {
+public class User extends EntityCommon {
     @Size(max = 120)
     @NotBlank
     private String username;

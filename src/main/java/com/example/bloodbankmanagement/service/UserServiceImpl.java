@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -65,8 +67,7 @@ public class UserServiceImpl {
         String defaultPassword = "ktx2024";
         objectInsert.setPassword(encoder.encode(defaultPassword));
         objectInsert.setStatus(CommonUtil.STATUS_USE);
-        objectInsert.setCreateAt(DateUtil.strNowDate());
-        objectInsert.setCreateTm(DateUtil.strNowTime());
+        objectInsert.setCreateAt(LocalDate.now());
         objectInsert.setCreateUser(CommonUtil.getUsernameByToken());
         //Set role
         Set<Role> roles = roleService.getRole(request.getRoles());
@@ -94,8 +95,7 @@ public class UserServiceImpl {
         //Check exist before update
         checkExistUser(request.getId(), lang);
         User objectUpdate = UserDto.UserUpdateInfo.convertToEntity(request,userId);
-        objectUpdate.setUpdateAt(DateUtil.strNowDate());
-        objectUpdate.setUpdateTm(DateUtil.strNowTime());
+        objectUpdate.setUpdateAt(LocalDate.now());
         userRepository.updateUser(objectUpdate);
         messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
         return messageResponse;
@@ -125,8 +125,7 @@ public class UserServiceImpl {
         //update data date time and userId
         objectEnity.setId(request.getId());
         objectEnity.setStatus(CommonUtil.STATUS_EXPIRE);
-        objectEnity.setUpdateAt(DateUtil.strNowDate());
-        objectEnity.setUpdateTm(DateUtil.strNowTime());
+        objectEnity.setUpdateAt(LocalDate.now());
         objectEnity.setUpdateUser(CommonUtil.getUsernameByToken());
         userRepository.updateStatusById(objectEnity);
         objectResponse = responseCommon.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
@@ -164,8 +163,7 @@ public class UserServiceImpl {
         //Update data password
         updateUser.setPassword(newPasswordEncoded);
         updateUser.setUpdateUser(userId);
-        updateUser.setUpdateAt(DateUtil.strNowDate());
-        updateUser.setUpdateTm(DateUtil.strNowTime());
+        updateUser.setUpdateAt(LocalDate.now());
         userRepository.changePassword(updateUser);
         objectResponse = responseCommon.getSingleResponse(changePasswordInfoRequest, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.updateSuccess);
         return objectResponse;
@@ -183,8 +181,7 @@ public class UserServiceImpl {
         //Update data password
         updateUser.setPassword(newPasswordEncoded);
         updateUser.setUpdateUser(CommonUtil.getUsernameByToken());
-        updateUser.setUpdateAt(DateUtil.strNowDate());
-        updateUser.setUpdateTm(DateUtil.strNowTime());
+        updateUser.setUpdateAt(LocalDate.now());
         userRepository.changePassword(updateUser);
         objectResponse = responseCommon.getSingleResponse(changePasswordInfoRequest, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.updateSuccess);
         return objectResponse;

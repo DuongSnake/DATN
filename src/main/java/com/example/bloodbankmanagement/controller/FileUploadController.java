@@ -4,22 +4,20 @@ import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.service.UploadFileDto;
-import com.example.bloodbankmanagement.entity.FileMetadata;
-import com.example.bloodbankmanagement.service.FileMetadataService;
+import com.example.bloodbankmanagement.service.FileMetadataServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/file")
 @RequiredArgsConstructor
 public class FileUploadController {
 
-    private final FileMetadataService fileMetadataService;
+    private final FileMetadataServiceImpl fileMetadataService;
 
     @PostMapping("/upload")
     public ResponseEntity<BasicResponseDto> uploadFile(@RequestPart("files")MultipartFile files[]) throws Exception {

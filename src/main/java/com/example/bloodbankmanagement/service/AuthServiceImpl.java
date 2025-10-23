@@ -33,6 +33,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,8 +101,7 @@ public class AuthServiceImpl {
         Set<Role> roles = roleService.getRole(strRoles);
         user.setRoles(roles);
         user.setStatus(CommonUtil.STATUS_USE);
-        user.setCreateAt(DateUtil.strNowDate());
-        user.setCreateTm(DateUtil.strNowTime());
+        user.setCreateAt(LocalDate.now());
         user.setCreateUser(user.getUsername());
         userRepository.save(user);
         dataResponse = responseCommon.getSingleResponse(signupRequestDto, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.insertSuccess);
