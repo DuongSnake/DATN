@@ -34,7 +34,7 @@ public class UserController {
         );
     }
 
-    @GetMapping("/selectList")
+    @PostMapping("/selectList")
     public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<UserDto.UserSelectListInfo>>> selectListUser(@RequestBody UserDto.UserSelectListRequest request) {
         return new ResponseEntity<>(
                 userService.selectListUser(request),

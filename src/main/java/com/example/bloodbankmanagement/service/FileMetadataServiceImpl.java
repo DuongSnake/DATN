@@ -42,11 +42,10 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class FileMetadataService {
+public class FileMetadataServiceImpl {
     private static final Logger logger = (Logger) LoggerFactory.getLogger(AuthTokenFilter.class);
     private final FileMetadataRepository fileMetadataRepository;
     private final UserRepository userRepository;
-    private final ResponseCommon responseCommon;
     private final ResponseCommon responseService;
 
     @Transactional
@@ -86,7 +85,7 @@ public class FileMetadataService {
         //Select list file upload
         Page<FileMetadataDto> listDataFileMetadata = fileMetadataRepository.findListFileUpload(request, pageable);
         pageAmtObject = FileMetadata.convertListObjectToDto(listDataFileMetadata);
-        objectResponse = responseCommon.getSingleResponse(pageAmtObject, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }
 
@@ -170,7 +169,7 @@ public class FileMetadataService {
         objectDelete.setUpdateTm(DateUtil.strNowTime());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
         fileMetadataRepository.deleteFileUpload(objectDelete, listFileId.getListFileId());
-        objectResponse = responseCommon.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
+        objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }
 
