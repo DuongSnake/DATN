@@ -38,6 +38,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -148,8 +149,7 @@ public class FileMetadataServiceImpl {
             objectUpdate.setFileName(fileName);
             objectUpdate.setFileSize(file.getSize());
             objectUpdate.setUpdateUser(userIdUpdate);
-            objectUpdate.setUpdateAt(DateUtil.strNowDate());
-            objectUpdate.setUpdateTm(DateUtil.strNowTime());
+            objectUpdate.setUpdateAt(LocalDate.now());
             fileMetadataRepository.updateFileUpload(objectUpdate);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -165,8 +165,7 @@ public class FileMetadataServiceImpl {
         BasicResponseDto objectResponse;
         FileMetadata objectDelete = new FileMetadata();
         objectDelete.setStatus(CommonUtil.STATUS_EXPIRE);
-        objectDelete.setUpdateAt(DateUtil.strNowDate());
-        objectDelete.setUpdateTm(DateUtil.strNowTime());
+        objectDelete.setUpdateAt(LocalDate.now());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
         fileMetadataRepository.deleteFileUpload(objectDelete, listFileId.getListFileId());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
