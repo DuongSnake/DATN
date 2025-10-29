@@ -1,14 +1,12 @@
 package com.example.bloodbankmanagement.entity;
 
-import com.example.bloodbankmanagement.common.untils.AbstractEntity;
+import com.example.bloodbankmanagement.common.untils.EntityCommon;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
-import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.objectRepository.FileMetadataDto;
 import com.example.bloodbankmanagement.dto.service.UploadFileDto;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
-
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "file_meta_data")
-public class FileMetadata  extends AbstractEntity {
+public class FileMetadata  extends EntityCommon {
     private String fileName;
     private String fileType;
     private long fileSize;
@@ -26,15 +24,6 @@ public class FileMetadata  extends AbstractEntity {
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "data")
     private Blob data;
-
-    public FileMetadata(Long id, String createAt, String updateAt, String createTm, String updateTm, String createUser, String updateUser, String fileName, String fileType, long fileSize, String status, Blob data) {
-        super(id, createAt, updateAt, createTm, updateTm, createUser, updateUser);
-        this.fileName = fileName;
-        this.fileType = fileType;
-        this.fileSize = fileSize;
-        this.status = status;
-        this.data = data;
-    }
 
     public FileMetadata(String fileName, String fileType, long fileSize, String status, Blob data) {
         this.fileName = fileName;
