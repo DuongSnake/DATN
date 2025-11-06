@@ -20,11 +20,11 @@ public class TeamWork extends EntityCommon {
     private String teamWorkName;
     private Integer categoryTeam;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)//Sua lai thanh many to one
     @JoinColumn(name = "instructor_id")
     private User instructorInfo;//teacher coaching for student
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)//Sua lai thanh many to one
     @JoinColumn(name = "class_id")
     private ClassRoom classRoom;
 

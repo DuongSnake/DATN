@@ -75,4 +75,10 @@ public class TeamWorkDto {
     public static class TeamWorkDeleteInfo {
         private List<Long> listTeamWorkId;
     }
+
+    @Data
+    public static class TeamWorkAssignInstructorInfo {
+        private List<Long> listTeamWorkId;
+        private Long instructorId;
+    }
 }

@@ -98,6 +98,7 @@ public class AuthServiceImpl {
         //Crate new user's account
         User user = new User(signupRequestDto.getUsername(), encoder.encode(defaultPassword), signupRequestDto.getEmail(), signupRequestDto.getPhone(), signupRequestDto.getFullName());
         Set<String> strRoles = signupRequestDto.getRole();
+        //The line config name role to assign type account(likeL: admin,mod,user)
         Set<Role> roles = roleService.getRole(strRoles);
         user.setRoles(roles);
         user.setStatus(CommonUtil.STATUS_USE);
