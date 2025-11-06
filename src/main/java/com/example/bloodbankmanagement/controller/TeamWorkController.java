@@ -58,4 +58,12 @@ public class TeamWorkController {
         );
     }
 
+    @PostMapping("/assignInstructor")
+    public ResponseEntity<BasicResponseDto> deleteTeamWork(@RequestBody @Valid TeamWorkDto.TeamWorkAssignInstructorInfo request, @RequestHeader("lang") String lang) {
+        return new ResponseEntity<>(
+                teamWorkService.assignInstructor(request, lang),
+                HttpStatus.OK
+        );
+    }
+
 }

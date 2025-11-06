@@ -41,4 +41,9 @@ public interface TeamWorkRepository extends JpaRepository<TeamWork, Long> {
     @Transactional
     @Query(value = "update team_work set status =:#{#request.status},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id in :ids",nativeQuery = true)
     void deleteTeamWork(@Param("request") TeamWork request, @Param("ids") List<Long> ids);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update team_work set instructor_id =:instructorId WHERE id in :ids",nativeQuery = true)
+    void assignInstructor(@Param("instructorId") Long instructorId, @Param("ids") List<Long> ids);
 }

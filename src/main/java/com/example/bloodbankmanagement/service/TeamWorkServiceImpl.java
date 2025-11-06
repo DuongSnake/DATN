@@ -5,6 +5,7 @@ import com.example.bloodbankmanagement.common.ResponseCommon;
 import com.example.bloodbankmanagement.common.exception.CustomException;
 import com.example.bloodbankmanagement.common.security.AuthTokenFilter;
 import com.example.bloodbankmanagement.common.untils.CommonUtil;
+import com.example.bloodbankmanagement.common.untils.ERole;
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
@@ -46,17 +47,17 @@ public class TeamWorkServiceImpl {
         objectUpdate.setTeamWorkName(request.getTeamWorkName());
         //Find the instructor information
         User instructorInfo =  userRepository.getById(request.getInstructorId());
-        if(null != instructorInfo){
+        if(null != instructorInfo || CommonUtil.STATUS_USE.equals(instructorInfo.getStatus())){
             objectUpdate.setInstructorInfo(instructorInfo);
         }else if(null == instructorInfo && (null != request.getInstructorId())){
-            throw new CustomException("Not found information of instructor ", "en");
+            throw new CustomException("Not found information of instructor ", lang);
         }
         //Find the info classroom
         ClassRoom classRoomInfo = classRoomRepository.findByFileId(request.getClassRoomId());
-        if(null != classRoomInfo){
+        if(null != classRoomInfo || CommonUtil.STATUS_USE.equals(classRoomInfo.getStatus())){
             objectUpdate.setClassRoom(classRoomInfo);
         }else if(null == classRoomInfo && (null != request.getClassRoomId())){
-            throw new CustomException("Not found information of classroom ", "en");
+            throw new CustomException("Not found information of classroom ", lang);
         }
         objectUpdate.setCreateUser(userIdRegister);
         objectUpdate.setCategoryTeam(request.getCategoryTeam());
@@ -83,7 +84,7 @@ public class TeamWorkServiceImpl {
 
     public SingleResponseDto<TeamWorkDto.TeamWorkSelectInfoResponse> selectTeamWork(TeamWorkDto.TeamWorkSelectInfo request, String lang){
         if(null == request || request.getTeamWorkId().equals("") || null == request.getTeamWorkId()){
-            throw new CustomException("Not found value request param ", "en");
+            throw new CustomException("Not found value request param ", lang);
         }
         SingleResponseDto<TeamWorkDto.TeamWorkSelectInfoResponse> selectObject = new SingleResponseDto<>();
         TeamWork dataFileMetadata = teamWorkRepository.findByFileId(request.getTeamWorkId());
@@ -102,7 +103,7 @@ public class TeamWorkServiceImpl {
         String userIdUpdate = CommonUtil.getUsernameByToken();
         BasicResponseDto messageResponse;
         if(null == request){
-            throw new CustomException("the object send request not null ", "en");
+            throw new CustomException("the object send request not null ", lang);
         }
         TeamWork objectUpdate = new TeamWork();
         objectUpdate.setId(request.getTeamWorkId());
@@ -110,15 +111,15 @@ public class TeamWorkServiceImpl {
         objectUpdate.setCategoryTeam(request.getCategoryTeam());
         //Find the instructor information
         User instructorInfo =  userRepository.getById(request.getInstructorId());
-        if(null == instructorInfo){
-            throw new CustomException("Not found information of instructor ", "en");
+        if(null == instructorInfo || CommonUtil.STATUS_USE.equals(instructorInfo.getStatus())){
+            throw new CustomException("Not found information of instructor ", lang);
         }else{
             objectUpdate.setInstructorInfo(instructorInfo);
         }
         //Find the info classroom
         ClassRoom classRoomInfo = classRoomRepository.findByFileId(request.getClassRoomId());
-        if(null == classRoomInfo){
-            throw new CustomException("Not found information of classroom ", "en");
+        if(null == classRoomInfo || CommonUtil.STATUS_USE.equals(classRoomInfo.getStatus())){
+            throw new CustomException("Not found information of classroom ", lang);
         }else{
             objectUpdate.setClassRoom(classRoomInfo);
         }
@@ -130,14 +131,45 @@ public class TeamWorkServiceImpl {
     }
 
     @Transactional
-    public BasicResponseDto deleteTeamWork(TeamWorkDto.TeamWorkDeleteInfo listFileId, String lang){
+    public BasicResponseDto deleteTeamWork(TeamWorkDto.TeamWorkDeleteInfo request, String lang){
         BasicResponseDto objectResponse;
+        if(null == request || null == request.getListTeamWorkId()){
+            throw new CustomException("the object send request not null ", lang);
+        }
         TeamWork objectDelete = new TeamWork();
         objectDelete.setStatus(CommonUtil.STATUS_EXPIRE);
         objectDelete.setUpdateAt(LocalDate.now());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
-        teamWorkRepository.deleteTeamWork(objectDelete, listFileId.getListTeamWorkId());
+        teamWorkRepository.deleteTeamWork(objectDelete, request.getListTeamWorkId());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
+        return objectResponse;
+    }
+
+    public BasicResponseDto assignInstructor(TeamWorkDto.TeamWorkAssignInstructorInfo request, String lang){
+        //Check request is null
+        if(null == request || null == request.getListTeamWorkId()
+        || request.getListTeamWorkId().size() == 0 || null == request.getInstructorId()){
+            throw new CustomException("the object send request not null ", lang);
+        }
+        //Find the instructor information
+        User instructorInfo =  userRepository.getById(request.getInstructorId());
+        if(null == instructorInfo || null == instructorInfo.getStatus() || null == instructorInfo.getRoles()
+        || !CommonUtil.STATUS_USE.equals(instructorInfo.getStatus())){
+            throw new CustomException("Not found information of instructor ", lang);
+        }else if(null != instructorInfo.getRoles()){
+            //Check role account equal type instructor (like mentor for student)
+            for(Role objectRole: instructorInfo.getRoles()){
+                logger.info("Value role name: "+objectRole.getName() +" of userId: "+ instructorInfo.getUsername());
+                if(!ERole.ROLE_MODERATOR.equals(objectRole.getName())){
+                    throw new CustomException("User not have permission for this API." +
+                            "Please choose another account have role instructor", lang);
+                }
+            }
+        }
+        //run query update
+        teamWorkRepository.assignInstructor(request.getInstructorId(), request.getListTeamWorkId());
+        BasicResponseDto objectResponse;
+        objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
         return objectResponse;
     }
 
@@ -147,7 +179,7 @@ public class TeamWorkServiceImpl {
             return "";
         }
         Optional<User> userInfo = userRepository.findByUsername(userName);
-        if(ObjectUtils.isEmpty(userInfo.get())){
+        if(ObjectUtils.isEmpty(userInfo.get()) || CommonUtil.STATUS_USE.equals(userInfo.get().getStatus())){
             throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
         }
         for(Role objectRole: userInfo.get().getRoles()){
@@ -164,7 +196,7 @@ public class TeamWorkServiceImpl {
 
     public String checkExistUser(String userName){
         Optional<User> userInfo = userRepository.findByUsername(userName);
-        if(ObjectUtils.isEmpty(userInfo.get())){
+        if(ObjectUtils.isEmpty(userInfo.get()) || CommonUtil.STATUS_USE.equals(userInfo.get().getStatus())){
             throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
         }
         return userInfo.get().getUsername();
