@@ -37,6 +37,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.id = ?1")
     User getById(Long id);
 
+    @Query(value = "select u.*  from users u " +
+            "join user_roles ur  on u.id = ur.user_id " +
+            "join roles r on r.id = ur.role_id " +
+            "where u.id = ?1 and r.name = ?2", nativeQuery = true)
+    User getValueUserByIdAndRole(Long id, String valueRole);
+
+    @Query(value = "select u.*  from users u " +
+            "join user_roles ur  on u.id = ur.user_id " +
+            "join roles r on r.id = ur.role_id " +
+            "where r.name = ?1 and u.status ='1' ", nativeQuery = true)
+    List<User> getListUserByRoleName(String valueRole);
+
     @Query("select u from User u where u.email = ?1 order by u.createAt desc")
     List<User> getByEmail(String email);
 
@@ -58,4 +70,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void changePassword(@Param("request") User request);
 
     List<User> findAllByIdIn(ArrayList<Long> userId);
+
+    @Query(value = "select count(u.id)  from users u " +
+            "join user_roles ur  on u.id = ur.user_id " +
+            "join roles r on r.id = ur.role_id " +
+            "where u.id in ?1 and r.name = ?2", nativeQuery = true)
+    Integer countListUerInRangeAndByTypeRole(List<Long> userId, String typeRole);
 }

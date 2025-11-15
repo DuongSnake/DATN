@@ -6,6 +6,7 @@ import com.example.bloodbankmanagement.common.exception.CustomException;
 import com.example.bloodbankmanagement.common.security.AuthTokenFilter;
 import com.example.bloodbankmanagement.common.untils.CommonUtil;
 import com.example.bloodbankmanagement.common.untils.DateUtil;
+import com.example.bloodbankmanagement.common.untils.ERole;
 import com.example.bloodbankmanagement.common.untils.EmailTemplate;
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
@@ -205,6 +206,24 @@ public class UserServiceImpl {
             return responseCommon.getSingleFailResult("EmailSendFail", lang);
         }
         objectResponse = responseCommon.getSingleResponse(forgotPasswordInfoRequest, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.sendMAilSuccess);
+        return objectResponse;
+    }
+
+    public SingleResponseDto<List<UserDto.UserSelectListInfo>> selectListStudent() {
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        List<UserDto.UserSelectListInfo> pageAmtObject = new ArrayList<>();
+        List<User> listDataUser = userRepository.getListUserByRoleName(ERole.ROLE_USER.toString());
+        pageAmtObject = User.convertListObjectStudentOrInstructorToDto(listDataUser);
+        objectResponse = responseCommon.getSingleResponse(pageAmtObject, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
+    public SingleResponseDto<List<UserDto.UserSelectListInfo>> selectListInstructor() {
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        List<UserDto.UserSelectListInfo> pageAmtObject = new ArrayList<>();
+        List<User> listDataUser = userRepository.getListUserByRoleName(ERole.ROLE_MODERATOR.toString());
+        pageAmtObject = User.convertListObjectStudentOrInstructorToDto(listDataUser);
+        objectResponse = responseCommon.getSingleResponse(pageAmtObject, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }
 
