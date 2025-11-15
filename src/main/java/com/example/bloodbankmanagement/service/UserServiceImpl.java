@@ -13,8 +13,10 @@ import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.UserDto;
+import com.example.bloodbankmanagement.entity.AdmissionPeriod;
 import com.example.bloodbankmanagement.entity.User;
 import com.example.bloodbankmanagement.entity.Role;
+import com.example.bloodbankmanagement.repository.AdmissionPeriodRepository;
 import com.example.bloodbankmanagement.repository.UserRepository;
 import com.example.bloodbankmanagement.service.authorization.RoleServiceImpl;
 import com.example.bloodbankmanagement.service.email.MailServiceImpl;
@@ -56,6 +58,9 @@ public class UserServiceImpl {
     PasswordEncoder passwordEncoder;
     @Autowired
     ResponseCommon responseService;
+
+    @Autowired
+    AdmissionPeriodRepository admissionPeriodRepository;
 
 
     @Transactional
@@ -130,6 +135,41 @@ public class UserServiceImpl {
         objectEnity.setUpdateUser(CommonUtil.getUsernameByToken());
         userRepository.updateStatusById(objectEnity);
         objectResponse = responseCommon.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
+        return objectResponse;
+    }
+
+
+    @Transactional
+    public BasicResponseDto insertListStudent(@RequestBody UserDto.StudentInsertInfo request, @RequestHeader("lang") String lang) {
+        BasicResponseDto objectResponse;
+        //Check user have exist or not
+        User objectEnity = UserDto.StudentInsertInfo.convertToEntity(request);
+        //update data date time and userId
+        objectEnity.setStatus(CommonUtil.STATUS_USE);
+        //Set role
+        Set<Role> roles = roleService.getRole(Collections.singleton("user"));
+        objectEnity.setRoles(roles);
+        //Check period
+        AdmissionPeriod inforAdminPeriod = admissionPeriodRepository.findByFileId(request.getPeriodId());
+        if(null != inforAdminPeriod){
+            objectEnity.setPeriodTime(inforAdminPeriod);
+        }
+        objectEnity.setUpdateAt(LocalDate.now());
+        String defaultPassword = "ktx2024";
+        objectEnity.setPassword(encoder.encode(defaultPassword));
+        objectEnity.setUpdateUser(CommonUtil.getUsernameByToken());
+        userRepository.save(objectEnity);
+        //Send mail announcement register new user
+        Map<String, String> params = new HashMap<>();
+        params.put("userNm", request.getUsername());
+        params.put("email", request.getEmail());
+        params.put("password", defaultPassword);
+        params.put("urlLogin", urlLogin);
+        boolean sendSuccess = mailService.sendEmailByTemplate(params, EmailTemplate.REG_NEW.getName(), EmailTemplate.REG_NEW.getSubject());
+        if (!sendSuccess) {
+            return responseCommon.getSingleFailResult("EmailSendFail", lang);
+        }
+        objectResponse = responseCommon.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.insertSuccess);
         return objectResponse;
     }
 
@@ -243,8 +283,6 @@ public class UserServiceImpl {
             }
         }
     }
-
-
 
     public void checkBeforeInsertUser(String userName, String lang){
         Optional<User> countExist = userRepository.findByUsername(userName);

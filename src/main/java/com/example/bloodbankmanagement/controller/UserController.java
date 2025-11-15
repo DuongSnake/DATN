@@ -99,4 +99,12 @@ public class UserController {
                 HttpStatus.OK
         );
     }
+
+    @PostMapping("/insertStudent")
+    public ResponseEntity<BasicResponseDto> insertStudent(@RequestBody @Valid UserDto.StudentInsertInfo request, @RequestHeader("lang") String lang) {
+        return new ResponseEntity<>(
+                userService.insertListStudent(request, lang),
+                HttpStatus.OK
+        );
+    }
 }

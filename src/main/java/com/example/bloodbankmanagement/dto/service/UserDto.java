@@ -127,4 +127,25 @@ public class UserDto {
         private long id;
         private String newPassword;
     }
+
+    @Data
+    public static class StudentInsertInfo {
+        private String username;
+        private Long periodId;
+        private String email;
+        private String fullName;
+        private String identityCard;
+        private String note;
+        private Set<String> roles;
+
+        public static User convertToEntity(StudentInsertInfo userInsertInfo) {
+            User objectEntity = new User();
+            objectEntity.setUsername(userInsertInfo.getUsername());
+            objectEntity.setEmail(userInsertInfo.getEmail());
+            objectEntity.setFullName(userInsertInfo.getFullName());
+            objectEntity.setIdentityCard(userInsertInfo.getIdentityCard());
+            objectEntity.setNote(userInsertInfo.getNote());
+            return objectEntity;
+        }
+    }
 }

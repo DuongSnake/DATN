@@ -41,6 +41,9 @@ public class User extends EntityCommon {
     private String status;
     private String avatar;
     private String note;
+    @ManyToOne
+    @JoinColumn(name = "period_time_id")
+    private AdmissionPeriod periodTime;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
