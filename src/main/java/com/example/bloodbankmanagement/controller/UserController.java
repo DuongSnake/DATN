@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
@@ -78,6 +80,22 @@ public class UserController {
     public ResponseEntity<SingleResponseDto<UserDto.ForgotPasswordInfo>> resetPasswordUser(@RequestBody UserDto.ForgotPasswordInfo request, @RequestHeader("lang") String lang){
         return new ResponseEntity<>(
                 userService.resetPasswordUser(request, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/selectAllStudent")
+    public ResponseEntity<SingleResponseDto<List<UserDto.UserSelectListInfo>>> selectListStudent() {
+        return new ResponseEntity<>(
+                userService.selectListStudent(),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/selectAllInstructor")
+    public ResponseEntity<SingleResponseDto<List<UserDto.UserSelectListInfo>>> selectListInstructor() {
+        return new ResponseEntity<>(
+                userService.selectListInstructor(),
                 HttpStatus.OK
         );
     }

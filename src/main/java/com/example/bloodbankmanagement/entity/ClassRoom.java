@@ -23,9 +23,10 @@ public class ClassRoom  extends EntityCommon {
     public static ClassRoomDto.ClassRoomSelectInfoResponse convertToDto(ClassRoom request){
         ClassRoomDto.ClassRoomSelectInfoResponse objectDtoResponse = new ClassRoomDto.ClassRoomSelectInfoResponse();
         if(request != null){
+            Long majorId = null != request.getMajor() ? request.getMajor().getId() : null;
             objectDtoResponse.setClassId(request.getId());
             objectDtoResponse.setClassName(request.getClassName());
-            objectDtoResponse.setMajorId(request.getMajor().getId());
+            objectDtoResponse.setMajorId(majorId);
             objectDtoResponse.setStatus(request.getStatus());
             objectDtoResponse.setCreateAt(request.getCreateAt());
         }
@@ -37,10 +38,11 @@ public class ClassRoom  extends EntityCommon {
         List<ClassRoomDto.ClassRoomListInfo> listClassRoomDto = new ArrayList<ClassRoomDto.ClassRoomListInfo>();
         if(listRequestUser.size() >0 ){
             for (int i=0;i<listRequestUser.size();i++){
+                Long majorId = null != listRequestUser.get(i).getMajor() ? listRequestUser.get(i).getMajor().getId() : null;
                 ClassRoomDto.ClassRoomListInfo newObject = new ClassRoomDto.ClassRoomListInfo();
                 newObject.setClassId(listRequestUser.get(i).getId());
                 newObject.setClassName(listRequestUser.get(i).getClassName());
-                newObject.setMajorId(listRequestUser.get(i).getMajor().getId());
+                newObject.setMajorId(majorId);
                 newObject.setStatus(listRequestUser.get(i).getStatus());
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
                 listClassRoomDto.add(newObject);

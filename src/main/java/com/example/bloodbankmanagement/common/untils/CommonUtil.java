@@ -41,8 +41,12 @@ public class CommonUtil {
     public static final String SendToSingleMailYes =  "SendToSingleMailYes";
     public static final String EMAIL = "email";
     public static final String NOT_FOUND_DATA_USER = "NotFoundDataInDb";
+    public static final String EXIST_DATA_USER_NOT_FOUND_IN_LIST = "ExistDataUserNotFoundInList";
+    public static final String NOT_ACCEPT_EMPTY_VALUE = "ValueListEmptyValue";
     public static final String EXIST_DATA_IN_DB = "ExistDataInDb";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final Integer STATUS_NOT_ACCEPT = 0;
+    public static final Integer STATUS_RESERVE = 2;
 
     private CommonUtil() {
     }

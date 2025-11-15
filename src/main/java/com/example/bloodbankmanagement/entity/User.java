@@ -101,4 +101,26 @@ public class User extends EntityCommon {
         objectDtoResponse.setData(listUserDto);
         return objectDtoResponse;
     }
+
+    public static List<UserDto.UserSelectListInfo> convertListObjectStudentOrInstructorToDto(List<User> listRequestUser){
+        List<UserDto.UserSelectListInfo> listUserDto = new ArrayList<UserDto.UserSelectListInfo>();
+        if(listRequestUser.size() >0 ){
+            for (int i=0;i<listRequestUser.size();i++){
+                UserDto.UserSelectListInfo newObject = new UserDto.UserSelectListInfo();
+                newObject.setId(listRequestUser.get(i).getId());
+                newObject.setUsername(listRequestUser.get(i).getUsername());
+                newObject.setEmail(listRequestUser.get(i).getEmail());
+                newObject.setPhone(listRequestUser.get(i).getPhone());
+                newObject.setFullName(listRequestUser.get(i).getFullName());
+                newObject.setIdentityCard(listRequestUser.get(i).getIdentityCard());
+                newObject.setAddress(listRequestUser.get(i).getAddress());
+                newObject.setStatus(listRequestUser.get(i).getStatus());
+                newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
+                newObject.setUpdateAt(listRequestUser.get(i).getUpdateAt());
+                newObject.setNote(listRequestUser.get(i).getNote());
+                listUserDto.add(newObject);
+            }
+        }
+        return listUserDto;
+    }
 }
