@@ -6,6 +6,7 @@ import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.service.UploadFileDto;
 import com.example.bloodbankmanagement.service.FileMetadataServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,10 @@ public class FileUploadController {
 
     private final FileMetadataServiceImpl fileMetadataService;
 
-    @PostMapping("/upload")
-    public ResponseEntity<BasicResponseDto> uploadFile(@RequestPart("files")MultipartFile files[]) throws Exception {
+    @PostMapping("/insertListFile")
+    public ResponseEntity<BasicResponseDto> uploadFile(@ModelAttribute @Valid UploadFileDto.InserListFiletUploadFileInfo request, @RequestHeader("lang") String lang) throws Exception {
         return new ResponseEntity<>(
-                fileMetadataService.uploadFiles(files),
+                fileMetadataService.insertListFileToFolderUpload(request, lang),
                 HttpStatus.OK
         );
     }
@@ -44,14 +45,22 @@ public class FileUploadController {
     }
 
     @PostMapping("/download")
-    public void downloadFile(@RequestBody UploadFileDto.UploadFileSelectInfo fileId, HttpServletResponse response) throws Exception {
-        fileMetadataService.downloadFile(fileId, response);
+    public void downloadFile(@RequestBody UploadFileDto.UploadFileSelectInfo request, HttpServletResponse response) throws Exception {
+        fileMetadataService.downloadFile(request, response);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<BasicResponseDto> updateFileUpload(@RequestPart("fileId") String fileId, @RequestPart("files") MultipartFile file){
+    public ResponseEntity<BasicResponseDto> updateFileUpload(@ModelAttribute @Valid UploadFileDto.UpdateUploadFileInfo request, @RequestHeader("lang") String lang){
         return new ResponseEntity<>(
-                fileMetadataService.updateFileUpload(fileId, file),
+                fileMetadataService.updateFileUpload(request, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/insert")
+    public ResponseEntity<BasicResponseDto> insertFileUpload(@ModelAttribute @Valid UploadFileDto.InsertUploadFileInfo request, @RequestHeader("lang") String lang){
+        return new ResponseEntity<>(
+                fileMetadataService.insertFileUpload(request, lang),
                 HttpStatus.OK
         );
     }
