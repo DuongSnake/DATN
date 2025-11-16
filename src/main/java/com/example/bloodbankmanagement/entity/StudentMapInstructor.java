@@ -24,7 +24,7 @@ public class StudentMapInstructor extends EntityCommon {
     private User studentInfo;//student choose to map with teacher
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "critical_teacher_id")
     private User criticalTeacherInfo;//giao vien phan bien
 
     public static StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse convertToDto(StudentMapInstructor request){
