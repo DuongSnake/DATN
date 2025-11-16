@@ -31,8 +31,8 @@ public interface MajorRepository extends JpaRepository<Major, Long> {
     Major findByFileId(Long id);
 
 
-    @Query("select u from Major u where u.id = ?1")
-    Major findByFileIdToDownload(Long id);
+    @Query(value = "select * from major where id in :ids",nativeQuery = true)
+    List<Major> findMajorInListId( @Param("ids") List<Long> ids);
 
     @Modifying
     @Transactional

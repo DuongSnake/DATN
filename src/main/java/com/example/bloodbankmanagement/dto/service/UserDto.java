@@ -33,6 +33,8 @@ public class UserDto {
         private String address;
         private String status;
         private String note;
+        private Long majorId;
+        private String majorName;
         private LocalDate createAt;
         private LocalDate updateAt;
         private Set<Role> roles;
@@ -136,6 +138,7 @@ public class UserDto {
         private String fullName;
         private String identityCard;
         private String note;
+        private Long majorId;
         private Set<String> roles;
 
         public static User convertToEntity(StudentInsertInfo userInsertInfo) {

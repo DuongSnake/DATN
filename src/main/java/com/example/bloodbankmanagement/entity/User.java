@@ -39,11 +39,14 @@ public class User extends EntityCommon {
     private String identityCard;
     private String address;
     private String status;
-    private String avatar;
     private String note;
     @ManyToOne
     @JoinColumn(name = "period_time_id")
     private AdmissionPeriod periodTime;
+
+    @ManyToOne
+    @JoinColumn(name = "major_id")
+    private Major majorInfo;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -121,6 +124,10 @@ public class User extends EntityCommon {
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
                 newObject.setUpdateAt(listRequestUser.get(i).getUpdateAt());
                 newObject.setNote(listRequestUser.get(i).getNote());
+                if(null != listRequestUser.get(i).getMajorInfo()){
+                    newObject.setMajorId(listRequestUser.get(i).getMajorInfo().getId());
+                    newObject.setMajorName(listRequestUser.get(i).getMajorInfo().getMajorName());
+                }
                 listUserDto.add(newObject);
             }
         }

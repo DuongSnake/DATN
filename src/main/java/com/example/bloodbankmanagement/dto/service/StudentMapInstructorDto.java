@@ -23,8 +23,10 @@ public class StudentMapInstructorDto {
         private Long studentMapInstructorId;
         private Long instructorId;
         private Long studentId;
+        private Long criticalId;
         private String instructorName;
         private String studentName;
+        private String criticalName;
         private String status;
         private LocalDate createAt;
         private String createUser;
@@ -40,8 +42,10 @@ public class StudentMapInstructorDto {
         private Long studentMapInstructorId;
         private Long instructorId;
         private Long studentId;
+        private Long criticalId;
         private String instructorName;
         private String studentName;
+        private String criticalName;
         private String status;
         private LocalDate createAt;
         private String createUser;

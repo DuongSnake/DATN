@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "admission_period")
-public class AdmissionPeriod extends EntityCommon {
+public class AdmissionPeriod extends EntityCommon {//Nien khoa
     private String admissionPeriodName;
     private LocalDate startPeriod;
     private LocalDate endPeriod;
