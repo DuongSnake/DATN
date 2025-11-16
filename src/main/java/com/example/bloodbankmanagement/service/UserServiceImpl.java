@@ -14,9 +14,11 @@ import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.UserDto;
 import com.example.bloodbankmanagement.entity.AdmissionPeriod;
+import com.example.bloodbankmanagement.entity.Major;
 import com.example.bloodbankmanagement.entity.User;
 import com.example.bloodbankmanagement.entity.Role;
 import com.example.bloodbankmanagement.repository.AdmissionPeriodRepository;
+import com.example.bloodbankmanagement.repository.MajorRepository;
 import com.example.bloodbankmanagement.repository.UserRepository;
 import com.example.bloodbankmanagement.service.authorization.RoleServiceImpl;
 import com.example.bloodbankmanagement.service.email.MailServiceImpl;
@@ -61,6 +63,9 @@ public class UserServiceImpl {
 
     @Autowired
     AdmissionPeriodRepository admissionPeriodRepository;
+
+    @Autowired
+    MajorRepository majorRepository;
 
 
     @Transactional
@@ -153,6 +158,11 @@ public class UserServiceImpl {
         AdmissionPeriod inforAdminPeriod = admissionPeriodRepository.findByFileId(request.getPeriodId());
         if(null != inforAdminPeriod){
             objectEnity.setPeriodTime(inforAdminPeriod);
+        }
+        //Check major
+        Major majorInfo = majorRepository.findByFileId(request.getMajorId());
+        if(null != majorInfo){
+            objectEnity.setMajorInfo(majorInfo);
         }
         objectEnity.setUpdateAt(LocalDate.now());
         String defaultPassword = "ktx2024";

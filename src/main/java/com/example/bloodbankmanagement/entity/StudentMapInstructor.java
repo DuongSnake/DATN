@@ -23,6 +23,10 @@ public class StudentMapInstructor extends EntityCommon {
     @JoinColumn(name = "student_id")
     private User studentInfo;//student choose to map with teacher
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    private User criticalTeacherInfo;//giao vien phan bien
+
     public static StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse convertToDto(StudentMapInstructor request){
         StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse objectDtoResponse = new StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse();
         if(request != null){
@@ -30,6 +34,8 @@ public class StudentMapInstructor extends EntityCommon {
             Long studentId = null != request.getStudentInfo() ? request.getStudentInfo().getId() : null;
             String instructorName = null != request.getInstructorInfo() ? request.getInstructorInfo().getFullName() : null;
             String studentName = null != request.getStudentInfo() ? request.getStudentInfo().getFullName() : null;
+            String criticalName = null != request.getCriticalTeacherInfo() ? request.getCriticalTeacherInfo().getFullName() : null;
+            Long criticalId = null != request.getCriticalTeacherInfo() ? request.getCriticalTeacherInfo().getId() : null;
             objectDtoResponse.setStudentMapInstructorId(request.getId());
             objectDtoResponse.setInstructorId(instructorId);
             objectDtoResponse.setInstructorName(instructorName);
@@ -37,6 +43,8 @@ public class StudentMapInstructor extends EntityCommon {
             objectDtoResponse.setStudentName(studentName);
             objectDtoResponse.setStatus(request.getStatus());
             objectDtoResponse.setCreateAt(request.getCreateAt());
+            objectDtoResponse.setCriticalId(criticalId);
+            objectDtoResponse.setCriticalName(criticalName);
             objectDtoResponse.setCreateUser(request.getCreateUser());
         }
         return objectDtoResponse;
@@ -51,6 +59,8 @@ public class StudentMapInstructor extends EntityCommon {
                 Long studentId = null != listRequestUser.get(i).getStudentInfo() ? listRequestUser.get(i).getStudentInfo().getId() : null;
                 String instructorName = null != listRequestUser.get(i).getInstructorInfo() ? listRequestUser.get(i).getInstructorInfo().getFullName() : null;
                 String studentName = null != listRequestUser.get(i).getStudentInfo() ? listRequestUser.get(i).getStudentInfo().getFullName() : null;
+                String criticalName = null != listRequestUser.get(i).getCriticalTeacherInfo() ? listRequestUser.get(i).getCriticalTeacherInfo().getFullName() : null;
+                Long criticalId = null != listRequestUser.get(i).getCriticalTeacherInfo() ? listRequestUser.get(i).getCriticalTeacherInfo().getId() : null;
                 StudentMapInstructorDto.StudentMapInstructorListInfo newObject = new StudentMapInstructorDto.StudentMapInstructorListInfo();
                 newObject.setStudentMapInstructorId(listRequestUser.get(i).getId());
                 newObject.setInstructorId(instructorId);
@@ -60,6 +70,8 @@ public class StudentMapInstructor extends EntityCommon {
                 newObject.setStatus(listRequestUser.get(i).getStatus());
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
                 newObject.setCreateUser(listRequestUser.get(i).getCreateUser());
+                newObject.setCriticalId(criticalId);
+                newObject.setCriticalName(criticalName);
                 listStudentMapInstructorDto.add(newObject);
             }
         }
