@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "period_assignment")//Quan ly thoi gian lam do an
+@Table(name = "period_assignment")//The time doing assignment of major
 public class PeriodAssignment  extends EntityCommon {
     private LocalDate startPeriod;
     private LocalDate endPeriod;
