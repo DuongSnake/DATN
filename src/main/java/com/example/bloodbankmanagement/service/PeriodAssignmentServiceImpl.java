@@ -56,7 +56,7 @@ public class PeriodAssignmentServiceImpl {
             throw new CustomException("Not found value request param ", lang);
         }
         objectUpdate.setAdmissionPeriodInfo(objectAdmissionPeriod);
-
+        objectUpdate.setTotalFileRequest(3);//Default 3 file docs,source code,powerpoint
         objectUpdate.setNote(request.getNote());
         objectUpdate.setStartPeriod(request.getStartPeriod());
         objectUpdate.setEndPeriod(request.getEndPeriod());
@@ -156,6 +156,7 @@ public class PeriodAssignmentServiceImpl {
         }
         for (Major majorInfo: listMajor){
             PeriodAssignment objectInsert = new PeriodAssignment();
+            objectInsert.setTotalFileRequest(3);//Default 3 file docs,source code,powerpoint
             objectInsert.setStartPeriod(request.getStartPeriod());
             objectInsert.setEndPeriod(request.getEndPeriod());
             objectInsert.setStatus(CommonUtil.STATUS_USE);

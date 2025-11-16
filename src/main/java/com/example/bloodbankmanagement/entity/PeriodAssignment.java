@@ -17,6 +17,7 @@ import java.util.List;
 public class PeriodAssignment  extends EntityCommon {
     private LocalDate startPeriod;
     private LocalDate endPeriod;
+    private Integer totalFileRequest;//Tong so file nop
     private String note;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admission_period_id")
