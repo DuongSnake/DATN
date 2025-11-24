@@ -6,6 +6,7 @@ import com.example.bloodbankmanagement.entity.User;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 public class UserDto {
@@ -65,7 +66,6 @@ public class UserDto {
         private String fullName;
         private String identityCard;
         private String address;
-        private String status;
         private String note;
         public static User convertToEntity(UserUpdateInfo userUpdateInfo, String userId){
             User objectEntity = new User();
@@ -76,7 +76,6 @@ public class UserDto {
             objectEntity.setFullName(userUpdateInfo.getFullName());
             objectEntity.setIdentityCard(userUpdateInfo.getIdentityCard());
             objectEntity.setAddress(userUpdateInfo.getAddress());
-            objectEntity.setStatus(userUpdateInfo.getStatus());
             objectEntity.setNote(userUpdateInfo.getNote());
             objectEntity.setUpdateUser(userId);
             return objectEntity;
@@ -150,5 +149,18 @@ public class UserDto {
             objectEntity.setNote(userInsertInfo.getNote());
             return objectEntity;
         }
+    }
+
+    @Data
+    public static class AllRoleInfo {
+        private long id;
+        private String name;
+    }
+
+
+
+    @Data
+    public static class UserDeleteInfo {
+        private List<Long> listData;
     }
 }

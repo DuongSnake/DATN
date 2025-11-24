@@ -2,6 +2,7 @@ package com.example.bloodbankmanagement.repository;
 
 
 import com.example.bloodbankmanagement.dto.service.UserDto;
+import com.example.bloodbankmanagement.entity.StudentMapInstructor;
 import com.example.bloodbankmanagement.entity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -60,7 +61,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Transactional
     @Query(value = "update Users set  username =:#{#request.username}, email =:#{#request.email}, phone =:#{#request.phone},full_name =:#{#request.fullName},identity_card =:#{#request.identityCard},address =:#{#request.address}," +
-            "status =:#{#request.status},note =:#{#request.note},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt}" +
+            "note =:#{#request.note},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt}" +
             " where id =:#{#request.id}",nativeQuery = true)
     void updateUser(@Param("request") User request);
 
@@ -76,4 +77,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "join roles r on r.id = ur.role_id " +
             "where u.id in ?1 and r.name = ?2", nativeQuery = true)
     Integer countListUerInRangeAndByTypeRole(List<Long> userId, String typeRole);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update users set status =:#{#request.status},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id in :ids",nativeQuery = true)
+    void deleteUsers(@Param("request") User request, @Param("ids") List<Long> ids);
 }

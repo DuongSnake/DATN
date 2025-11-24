@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "major")
+@Table(name = "major")//Chuyen nganh
 public class Major extends EntityCommon {
     private String majorName;
     private Long departmentId;
