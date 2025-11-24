@@ -4,6 +4,7 @@ import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.service.UserDto;
+import com.example.bloodbankmanagement.entity.Role;
 import com.example.bloodbankmanagement.service.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,14 +46,14 @@ public class UserController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<BasicResponseDto> deleteUser(@RequestBody @Valid UserDto.UserSelectInfo request, @RequestHeader("lang") String lang) {
+    public ResponseEntity<BasicResponseDto> deleteUser(@RequestBody @Valid UserDto.UserDeleteInfo request, @RequestHeader("lang") String lang) {
         return new ResponseEntity<>(
                 userService.deleteUser(request, lang),
                 HttpStatus.OK
         );
     }
 
-    @GetMapping("/select")
+    @PostMapping("/select")
     public ResponseEntity<SingleResponseDto<UserDto.UserSelectInfoResponse>> selectUser(@RequestBody UserDto.UserSelectInfo request, @RequestHeader("lang") String lang){
         return new ResponseEntity<>(
                 userService.selectUser(request, lang),
@@ -104,6 +105,14 @@ public class UserController {
     public ResponseEntity<BasicResponseDto> insertStudent(@RequestBody @Valid UserDto.StudentInsertInfo request, @RequestHeader("lang") String lang) {
         return new ResponseEntity<>(
                 userService.insertListStudent(request, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/selectAllRole")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<Role>>> selectAllRole() {
+        return new ResponseEntity<>(
+                userService.selectListAllRole(),
                 HttpStatus.OK
         );
     }

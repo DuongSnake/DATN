@@ -18,7 +18,7 @@ public class AuthController {
     @Autowired
     AuthServiceImpl authService;
 
-    @PostMapping("/signin")
+    @PostMapping("/login")
     public ResponseEntity<SingleResponseDto<JwtResponseDto>> authenticationUser(@Valid @RequestBody LoginRequestDto.LoginDataRequest loginInfoRequest){
         return new ResponseEntity<>(
                 authService.authenticationUser(loginInfoRequest),

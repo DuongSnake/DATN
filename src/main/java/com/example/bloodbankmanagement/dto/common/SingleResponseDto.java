@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SingleResponseDto<T>  extends BasicResponseDto {
-    private T result;
+    private T data;
 }

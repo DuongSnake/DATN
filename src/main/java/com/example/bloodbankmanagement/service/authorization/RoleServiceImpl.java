@@ -25,15 +25,20 @@ public class RoleServiceImpl {
         }else {
             roleRequest.forEach(role ->{
                 switch (role){
-                    case "admin":
+                    case "3":
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(adminRole);
                         break;
-                    case "mod":
+                    case "2":
                         Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(modRole);
+                        break;
+                    case "4":
+                        Role criticalRole = roleRepository.findByName(ERole.ROLE_CRITICAL)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(criticalRole);
                         break;
                     default:
                         Role userRole = roleRepository.findByName(ERole.ROLE_USER)

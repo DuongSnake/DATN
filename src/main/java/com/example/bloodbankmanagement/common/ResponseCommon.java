@@ -30,14 +30,14 @@ public class ResponseCommon {
 
     public <T> SingleResponseDto<T> getSingleResponse(T data) {
         SingleResponseDto<T> result = new SingleResponseDto<>();
-        result.setResult(data);
+        result.setData(data);
         setSuccessResult(result);
         return result;
     }
 
     public <T> SingleResponseDto<T> getSingleResponse(T data, Object[] args, String nameMessage) {
         SingleResponseDto<T> result = new SingleResponseDto<>();
-        result.setResult(data);
+        result.setData(data);
         String msg = getConstI18n(nameMessage,args);
         result.setResponseCd(CommonUtil.successValue);
         result.setResponseMsg(msg);
@@ -49,7 +49,7 @@ public class ResponseCommon {
 
     public <T> SingleResponseDto<T> getSingleResponseHandleMessage(T data, String responseCode, String nameMessage) {
         SingleResponseDto<T> result = new SingleResponseDto<>();
-        result.setResult(data);
+        result.setData(data);
         result.setResponseCd(responseCode);
         result.setResponseMsg(nameMessage);
         result.setResponseTs(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtil.DATETIME_FORMAT_NORMAL_SSS)));
@@ -61,7 +61,7 @@ public class ResponseCommon {
 
     public <T> SingleResponseDto<T> getFailSingleResponse(T data, String code) {
         SingleResponseDto<T> result = new SingleResponseDto<>();
-        result.setResult(data);
+        result.setData(data);
         setFailResult(result, code);
         return result;
     }
@@ -131,7 +131,7 @@ public class ResponseCommon {
         result.setResponseTs(responseDto.getResponseTs());
         result.setResponseTraceId(TRACE_ID);
         result.setRequesterTrId(getRequesterTrId());
-        result.setResult(responseDto.getResult());
+        result.setData(responseDto.getData());
         return result;
     }
 
@@ -166,7 +166,7 @@ public class ResponseCommon {
 
     public <T> SingleResponseDto<T> getFailListResponse(T data, String code) throws Exception {
         SingleResponseDto<T> result = new SingleResponseDto<>();
-        result.setResult(data);
+        result.setData(data);
         setFailResult(result, code);
         return result;
     }

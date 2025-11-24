@@ -19,6 +19,7 @@ import com.example.bloodbankmanagement.entity.User;
 import com.example.bloodbankmanagement.entity.Role;
 import com.example.bloodbankmanagement.repository.AdmissionPeriodRepository;
 import com.example.bloodbankmanagement.repository.MajorRepository;
+import com.example.bloodbankmanagement.repository.RoleRepository;
 import com.example.bloodbankmanagement.repository.UserRepository;
 import com.example.bloodbankmanagement.service.authorization.RoleServiceImpl;
 import com.example.bloodbankmanagement.service.email.MailServiceImpl;
@@ -66,6 +67,9 @@ public class UserServiceImpl {
 
     @Autowired
     MajorRepository majorRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
 
 
     @Transactional
@@ -128,17 +132,15 @@ public class UserServiceImpl {
     }
 
     @Transactional
-    public BasicResponseDto deleteUser(@RequestBody UserDto.UserSelectInfo request, @RequestHeader("lang") String lang) {
+    public BasicResponseDto deleteUser(@RequestBody UserDto.UserDeleteInfo request, @RequestHeader("lang") String lang) {
         BasicResponseDto objectResponse;
         //Check user have exist or not
         User objectEnity = new User();
-        checkExistUser(request.getId(), lang);
         //update data date time and userId
-        objectEnity.setId(request.getId());
         objectEnity.setStatus(CommonUtil.STATUS_EXPIRE);
         objectEnity.setUpdateAt(LocalDate.now());
         objectEnity.setUpdateUser(CommonUtil.getUsernameByToken());
-        userRepository.updateStatusById(objectEnity);
+        userRepository.deleteUsers(objectEnity, request.getListData());
         objectResponse = responseCommon.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }
@@ -193,6 +195,20 @@ public class UserServiceImpl {
         UserDto.UserSelectInfoResponse objectResponse = User.convertToDto(selectUser);
         singleResponseDto = responseService.getSingleResponse(objectResponse);
         return singleResponseDto;
+    }
+
+    public SingleResponseDto<PageAmtListResponseDto<Role>> selectListAllRole(){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<Role> pageAmtObject = new PageAmtListResponseDto<>();
+        //Check user have exist or not
+        List<Role> selectAllRole = roleRepository.getAllRole();
+        if(ObjectUtils.isEmpty(selectAllRole)){
+            return responseCommon.getSingleFailResult(CommonUtil.NOT_FOUND_DATA_USER, "en");
+        }
+        pageAmtObject.setTotalRecord(selectAllRole.size());
+        pageAmtObject.setData(selectAllRole);
+        objectResponse = responseCommon.getSingleResponse(pageAmtObject, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
     }
 
     @Transactional
