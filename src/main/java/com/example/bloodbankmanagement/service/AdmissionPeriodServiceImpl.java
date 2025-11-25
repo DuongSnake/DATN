@@ -107,7 +107,7 @@ public class AdmissionPeriodServiceImpl {
         objectDelete.setStatus(CommonUtil.STATUS_EXPIRE);
         objectDelete.setUpdateAt(LocalDate.now());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
-        majorRepository.deleteAdmissionPeriod(objectDelete, listFileId.getListAdmissionPeriodId());
+        majorRepository.deleteAdmissionPeriod(objectDelete, listFileId.getListData());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }

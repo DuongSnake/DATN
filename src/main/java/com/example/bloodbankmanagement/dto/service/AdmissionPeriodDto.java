@@ -63,6 +63,6 @@ public class AdmissionPeriodDto {
 
     @Data
     public static class AdmissionPeriodDeleteInfo {
-        private List<Long> listAdmissionPeriodId;
+        private List<Long> listData;
     }
 }

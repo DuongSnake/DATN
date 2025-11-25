@@ -40,7 +40,6 @@ public class MajorServiceImpl {
         String userIdRegister = checkExistUser(userIdCreate);
         Major objectUpdate = new Major();
         objectUpdate.setMajorName(request.getMajorName());
-        objectUpdate.setDepartmentId(null);//Set default value departmentId is null
         objectUpdate.setCreateUser(userIdRegister);
         objectUpdate.setStatus(CommonUtil.STATUS_USE);
         objectUpdate.setCreateAt(LocalDate.now());
@@ -103,7 +102,7 @@ public class MajorServiceImpl {
         objectDelete.setStatus(CommonUtil.STATUS_EXPIRE);
         objectDelete.setUpdateAt(LocalDate.now());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
-        majorRepository.deleteMajor(objectDelete, listFileId.getListMajorId());
+        majorRepository.deleteMajor(objectDelete, listFileId.getListData());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }

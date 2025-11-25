@@ -17,7 +17,6 @@ import java.util.List;
 @Table(name = "major")//Chuyen nganh
 public class Major extends EntityCommon {
     private String majorName;
-    private Long departmentId;
 
     public Major(Long id, LocalDate createAt, LocalDate updateAt, String status, String createUser, String updateUser) {
         super(id, createAt, updateAt, status, createUser, updateUser);
@@ -28,7 +27,6 @@ public class Major extends EntityCommon {
         if(request != null){
             objectDtoResponse.setMajorId(request.getId());
             objectDtoResponse.setMajorName(request.getMajorName());
-            objectDtoResponse.setDepartmentId(request.getDepartmentId());
             objectDtoResponse.setStatus(request.getStatus());
             objectDtoResponse.setCreateAt(request.getCreateAt());
         }
@@ -43,7 +41,6 @@ public class Major extends EntityCommon {
                 MajorDto.MajorListInfo newObject = new MajorDto.MajorListInfo();
                 newObject.setMajorId(listRequestUser.get(i).getId());
                 newObject.setMajorName(listRequestUser.get(i).getMajorName());
-                newObject.setDepartmentId(listRequestUser.get(i).getDepartmentId());
                 newObject.setStatus(listRequestUser.get(i).getStatus());
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
                 listMajorDto.add(newObject);

@@ -118,7 +118,7 @@ public class ScoreAssignmentServiceImpl {
         objectDelete.setStatus(CommonUtil.STATUS_EXPIRE);
         objectDelete.setUpdateAt(LocalDate.now());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
-        scoreAssignmentRepository.deleteScoreAssignment(objectDelete, listFileId.getListScoreAssignmentId());
+        scoreAssignmentRepository.deleteScoreAssignment(objectDelete, listFileId.getListData());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }

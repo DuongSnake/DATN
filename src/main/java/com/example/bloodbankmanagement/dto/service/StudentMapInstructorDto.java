@@ -66,7 +66,7 @@ public class StudentMapInstructorDto {
 
     @Data
     public static class StudentMapInstructorDeleteInfo {
-        private List<Long> listStudentMapInstructorId;
+        private List<Long> listData;
     }
 
     @Data

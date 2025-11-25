@@ -73,7 +73,7 @@ public class PeriodAssignmentDto {
 
     @Data
     public static class PeriodAssignmentDeleteInfo {
-        private List<Long> listPeriodAssignmentId;
+        private List<Long> listData;
     }
 
     @Data
