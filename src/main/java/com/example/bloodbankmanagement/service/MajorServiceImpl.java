@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,9 +51,6 @@ public class MajorServiceImpl {
 
     public SingleResponseDto<PageAmtListResponseDto<MajorDto.MajorListInfo>> selectListMajor(MajorDto.MajorSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
-        //Set value userId
-        String userId = isUserHaveRoleAdmin(request.getCreateUser());
-        request.setCreateUser(userId);
         PageAmtListResponseDto<MajorDto.MajorListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
@@ -134,6 +132,16 @@ public class MajorServiceImpl {
             throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
         }
         return userInfo.get().getUsername();
+    }
+
+    public SingleResponseDto<PageAmtListResponseDto<MajorDto.MajorListInfo>> selectListMajorAllActive(){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<MajorDto.MajorListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        //Select list file upload
+        List<Major> listDataFileMetadata = majorRepository.getAllMajorActive();
+        pageAmtObject = Major.convertListObjectToDto(listDataFileMetadata);
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
     }
 
 }

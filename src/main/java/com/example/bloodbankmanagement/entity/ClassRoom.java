@@ -49,6 +49,7 @@ public class ClassRoom  extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listClassRoomDto);
+        objectDtoResponse.setTotalRecord(listRequestUser.size());
         return objectDtoResponse;
     }
 }

@@ -87,6 +87,7 @@ public class AssignmentStudentRegister extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listAssignmentStudentRegisterDto);
+        objectDtoResponse.setTotalRecord(listRequestUser.size());
         return objectDtoResponse;
     }
 

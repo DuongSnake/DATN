@@ -64,6 +64,7 @@ public class InstructorMapPeriodAssignment extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listInstructorMapPeriodAssignmentDto);
+        objectDtoResponse.setTotalRecord(listRequestUser.size());
         return objectDtoResponse;
     }
 

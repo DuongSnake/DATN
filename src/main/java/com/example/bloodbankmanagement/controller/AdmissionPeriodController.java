@@ -58,4 +58,12 @@ public class AdmissionPeriodController {
         );
     }
 
+    @PostMapping("/selectListAllActive")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo>>> selectListAdmissionPeriodActive() {
+        return new ResponseEntity<>(
+                admissionPeriodService.selectListAdmissionPeriodActive(),
+                HttpStatus.OK
+        );
+    }
+
 }

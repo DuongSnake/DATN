@@ -88,6 +88,7 @@ public class PeriodAssignment  extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listPeriodAssignmentDto);
+        objectDtoResponse.setTotalRecord(listRequestUser.size());
         return objectDtoResponse;
     }
 

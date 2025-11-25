@@ -58,4 +58,12 @@ public class MajorController {
         );
     }
 
+    @PostMapping("/selectListAllActive")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<MajorDto.MajorListInfo>>> selectListMajorAllActive() {
+        return new ResponseEntity<>(
+                majorService.selectListMajorAllActive(),
+                HttpStatus.OK
+        );
+    }
+
 }

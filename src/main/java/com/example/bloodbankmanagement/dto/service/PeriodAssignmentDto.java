@@ -15,7 +15,6 @@ public class PeriodAssignmentDto {
         private String status;
         private LocalDate fromDate;
         private LocalDate toDate;
-        private String createUser;
         private PageRequestDto pageRequestDto;
     }
 

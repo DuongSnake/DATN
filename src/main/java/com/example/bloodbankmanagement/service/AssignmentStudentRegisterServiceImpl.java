@@ -74,9 +74,6 @@ public class AssignmentStudentRegisterServiceImpl {
 
     public SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>> selectListAssignmentStudentRegister(AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
-        //Set value userId
-        String userId = isUserHaveRoleAdmin(request.getCreateUser());
-        request.setCreateUser(userId);
         PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload

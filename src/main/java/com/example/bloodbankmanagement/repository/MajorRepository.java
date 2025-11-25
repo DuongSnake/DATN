@@ -19,7 +19,6 @@ public interface MajorRepository extends JpaRepository<Major, Long> {
     @Query(value = "select *  from major " +
             "where (:#{#request.majorId} is null or ''  = :#{#request.majorId} or id like :#{#request.majorId})" +
             "and (:#{#request.majorName} is null or ''  = :#{#request.majorName} or major_name like '%'+:#{#request.majorName}+'%')" +
-            "and (:#{#request.createUser} is null or ''  = :#{#request.createUser} or create_user like '%'+:#{#request.createUser}+'%')" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
             " order by create_at DESC,update_at DESC ",
@@ -28,6 +27,11 @@ public interface MajorRepository extends JpaRepository<Major, Long> {
 
     @Query(value = "select * from major where id = ?1",nativeQuery = true)
     Major findByFileId(Long id);
+
+
+
+    @Query(value = "select * from major where status = '1'",nativeQuery = true)
+    List<Major> getAllMajorActive();
 
 
     @Query(value = "select * from major where id in :ids",nativeQuery = true)

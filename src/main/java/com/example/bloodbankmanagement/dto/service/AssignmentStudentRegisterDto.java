@@ -15,7 +15,6 @@ public class AssignmentStudentRegisterDto {
         private Date fromDate;
         private Date toDate;
         private String status;
-        private String createUser;
         private PageRequestDto pageRequestDto;
     }
 

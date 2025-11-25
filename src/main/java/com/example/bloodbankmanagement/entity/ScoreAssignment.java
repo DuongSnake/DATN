@@ -54,6 +54,7 @@ public class ScoreAssignment extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listScoreAssignmentDto);
+        objectDtoResponse.setTotalRecord(listRequestUser.size());
         return objectDtoResponse;
     }
 }

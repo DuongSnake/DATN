@@ -18,7 +18,6 @@ public interface StudentMapInstructorRepository extends JpaRepository<StudentMap
             "where (:#{#request.studentMapInstructorId} is null or ''  = :#{#request.studentMapInstructorId} or id like :#{#request.studentMapInstructorId})" +
             "and (:#{#request.instructorId} is null or ''  = :#{#request.instructorId} or instructor_id = :#{#request.instructorId})" +
             "and (:#{#request.studentId} is null or ''  = :#{#request.studentId} or student_id = :#{#request.studentId})" +
-            "and (:#{#request.createUser} is null or ''  = :#{#request.createUser} or create_user like '%'+:#{#request.createUser}+'%')" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
             " order by create_at DESC,update_at DESC ",

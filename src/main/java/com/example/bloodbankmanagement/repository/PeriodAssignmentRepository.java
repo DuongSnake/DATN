@@ -20,7 +20,6 @@ public interface PeriodAssignmentRepository extends JpaRepository<PeriodAssignme
             "where (:#{#request.periodAssignmentId} is null or ''  = :#{#request.periodAssignmentId} or id like :#{#request.periodAssignmentId})" +
             "and (:#{#request.admissionPeriodId} is null or ''  = :#{#request.admissionPeriodId} or admission_period_id like :#{#request.admissionPeriodId})" +
             "and (:#{#request.majorId} is null or ''  = :#{#request.majorId} or major_id like :#{#request.majorId})" +
-            "and (:#{#request.createUser} is null or ''  = :#{#request.createUser} or create_user like '%'+:#{#request.createUser}+'%')" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
             " order by create_at DESC,update_at DESC ",
@@ -31,8 +30,8 @@ public interface PeriodAssignmentRepository extends JpaRepository<PeriodAssignme
     PeriodAssignment findByFileId(Long id);
 
 
-    @Query("select u from PeriodAssignment u where u.id = ?1")
-    PeriodAssignment findByFileIdToDownload(Long id);
+    @Query("select u from PeriodAssignment u where u.status = '1' ")
+    List<PeriodAssignment> getListPeriodAssignmentAllActive();
 
     @Modifying
     @Transactional

@@ -60,8 +60,6 @@ public class InstructorMapPeriodAssignmentServiceImpl {
 
     public SingleResponseDto<PageAmtListResponseDto<InstructorMapPeriodAssignmentDto.InstructorMapPeriodAssignmentListInfo>> selectListInstructorMapPeriodAssignment(InstructorMapPeriodAssignmentDto.InstructorMapPeriodAssignmentSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
-        String userId = isUserHaveRoleAdmin(request.getCreateUser());
-        request.setCreateUser(userId);
         PageAmtListResponseDto<InstructorMapPeriodAssignmentDto.InstructorMapPeriodAssignmentListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload

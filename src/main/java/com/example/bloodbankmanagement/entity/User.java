@@ -105,6 +105,7 @@ public class User extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listUserDto);
+        objectDtoResponse.setTotalRecord(listRequestUser.size());
         return objectDtoResponse;
     }
 

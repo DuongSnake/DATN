@@ -53,6 +53,7 @@ public class AdmissionPeriod extends EntityCommon {//Nien khoa
             }
         }
         objectDtoResponse.setData(listAdmissionPeriodDto);
+        objectDtoResponse.setTotalRecord(listRequestUser.size());
         return objectDtoResponse;
     }
 }

@@ -70,9 +70,6 @@ public class PeriodAssignmentServiceImpl {
 
     public SingleResponseDto<PageAmtListResponseDto<PeriodAssignmentDto.PeriodAssignmentListInfo>> selectListPeriodAssignment(PeriodAssignmentDto.PeriodAssignmentSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
-        //Set value userId
-        String userId = isUserHaveRoleAdmin(request.getCreateUser());
-        request.setCreateUser(userId);
         PageAmtListResponseDto<PeriodAssignmentDto.PeriodAssignmentListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
@@ -172,6 +169,16 @@ public class PeriodAssignmentServiceImpl {
         return objectResponse;
     }
 
+
+    public SingleResponseDto<PageAmtListResponseDto<PeriodAssignmentDto.PeriodAssignmentListInfo>> selectListPeriodAssignmentAllActive(){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<PeriodAssignmentDto.PeriodAssignmentListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        //Select list file upload
+        List<PeriodAssignment> listDataFileMetadata = periodAssignmentRepository.getListPeriodAssignmentAllActive();
+        pageAmtObject = PeriodAssignment.convertListObjectToDto(listDataFileMetadata);
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
     public String isUserHaveRoleAdmin(String userName){
         boolean isTypeAdmin = false;
         if(ObjectUtils.isEmpty(userName)){
