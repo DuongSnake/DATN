@@ -63,7 +63,7 @@ public class InstructorMapPeriodAssignmentDto {
 
     @Data
     public static class InstructorMapPeriodAssignmentDeleteInfo {
-        private List<Long> listInstructorMapPeriodAssignmentId;
+        private List<Long> listData;
     }
 
     @Data

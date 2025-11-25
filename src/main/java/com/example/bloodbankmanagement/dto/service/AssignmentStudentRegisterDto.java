@@ -67,6 +67,6 @@ public class AssignmentStudentRegisterDto {
 
     @Data
     public static class AssignmentStudentRegisterDeleteInfo {
-        private List<Long> listAssignmentStudentRegisterId;
+        private List<Long> listData;
     }
 }

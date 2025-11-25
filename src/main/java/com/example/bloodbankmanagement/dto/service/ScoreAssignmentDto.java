@@ -58,6 +58,6 @@ public class ScoreAssignmentDto {
 
     @Data
     public static class ScoreAssignmentDeleteInfo {
-        private List<Long> listScoreAssignmentId;
+        private List<Long> listData;
     }
 }

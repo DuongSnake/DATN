@@ -264,7 +264,7 @@ public class FileMetadataServiceImpl {
         objectDelete.setStatus(CommonUtil.STATUS_EXPIRE);
         objectDelete.setUpdateAt(LocalDate.now());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
-        fileMetadataRepository.deleteFileUpload(objectDelete, listFileId.getListFileId());
+        fileMetadataRepository.deleteFileUpload(objectDelete, listFileId.getListData());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }

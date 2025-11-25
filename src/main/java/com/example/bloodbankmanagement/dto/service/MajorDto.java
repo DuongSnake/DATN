@@ -11,7 +11,6 @@ public class MajorDto {
     public static class MajorSelectListInfo {
         private long majorId;
         private String majorName;
-        private Long departmentId;
         private LocalDate fromDate;
         private LocalDate toDate;
         private String status;
@@ -23,7 +22,6 @@ public class MajorDto {
     public static class MajorListInfo {
         private long majorId;
         private String majorName;
-        private Long departmentId;
         private String status;
         private LocalDate createAt;
     }
@@ -37,7 +35,6 @@ public class MajorDto {
     public static class MajorSelectInfoResponse {
         private Long majorId;
         private String majorName;
-        private Long departmentId;
         private String status;
         private LocalDate createAt;
     }
@@ -45,7 +42,6 @@ public class MajorDto {
     @Data
     public static class MajorInsertInfo {
         private String majorName;
-        private Long departmentId;
     }
 
     @Data
@@ -56,6 +52,6 @@ public class MajorDto {
 
     @Data
     public static class MajorDeleteInfo {
-        private List<Long> listMajorId;
+        private List<Long> listData;
     }
 }

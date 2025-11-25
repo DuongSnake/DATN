@@ -148,7 +148,7 @@ public class AssignmentStudentRegisterServiceImpl {
         objectDelete.setStatus(CommonUtil.STATUS_EXPIRE);
         objectDelete.setUpdateAt(LocalDate.now());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
-        assignmentStudentRegisterRepository.deleteAssignmentStudentRegister(objectDelete, listFileId.getListAssignmentStudentRegisterId());
+        assignmentStudentRegisterRepository.deleteAssignmentStudentRegister(objectDelete, listFileId.getListData());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }
@@ -161,7 +161,7 @@ public class AssignmentStudentRegisterServiceImpl {
         objectDelete.setIsApproved(CommonUtil.STATUS_RESERVE);
         objectDelete.setUpdateAt(LocalDate.now());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
-        assignmentStudentRegisterRepository.reserveAssignmentStudentRegister(objectDelete, listFileId.getListAssignmentStudentRegisterId());
+        assignmentStudentRegisterRepository.reserveAssignmentStudentRegister(objectDelete, listFileId.getListData());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }

@@ -116,7 +116,7 @@ public class InstructorMapPeriodAssignmentServiceImpl {
         objectDelete.setStatus(CommonUtil.STATUS_EXPIRE);
         objectDelete.setUpdateAt(LocalDate.now());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
-        studentMapInstructorRepository.deleteInstructorMapPeriodAssignment(objectDelete, listFileId.getListInstructorMapPeriodAssignmentId());
+        studentMapInstructorRepository.deleteInstructorMapPeriodAssignment(objectDelete, listFileId.getListData());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }

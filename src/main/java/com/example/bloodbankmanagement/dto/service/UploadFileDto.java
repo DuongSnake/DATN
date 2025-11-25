@@ -74,7 +74,7 @@ public class UploadFileDto {
 
     @Data
     public static class UploadFileDeleteInfo {
-        private List<Long> listFileId;
+        private List<Long> listData;
     }
     @Data
     public static class InserListFiletUploadFileInfo {

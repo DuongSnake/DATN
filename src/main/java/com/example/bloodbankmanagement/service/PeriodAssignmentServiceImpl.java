@@ -136,7 +136,7 @@ public class PeriodAssignmentServiceImpl {
         objectDelete.setStatus(CommonUtil.STATUS_EXPIRE);
         objectDelete.setUpdateAt(LocalDate.now());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
-        periodAssignmentRepository.deletePeriodAssignment(objectDelete, listFileId.getListPeriodAssignmentId());
+        periodAssignmentRepository.deletePeriodAssignment(objectDelete, listFileId.getListData());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }
