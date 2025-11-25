@@ -47,6 +47,7 @@ public class Major extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listMajorDto);
+        objectDtoResponse.setTotalRecord(listRequestUser.size());
         return objectDtoResponse;
     }
 }

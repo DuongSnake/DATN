@@ -76,6 +76,7 @@ public class StudentMapInstructor extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listStudentMapInstructorDto);
+        objectDtoResponse.setTotalRecord(listRequestUser.size());
         return objectDtoResponse;
     }
 }

@@ -17,7 +17,6 @@ public interface AdmissionPeriodRepository extends JpaRepository<AdmissionPeriod
     @Query(value = "select *  from admission_period " +
             "where (:#{#request.admissionPeriodId} is null or ''  = :#{#request.admissionPeriodId} or id like :#{#request.admissionPeriodId})" +
             "and (:#{#request.admissionPeriodName} is null or ''  = :#{#request.admissionPeriodName} or admission_period_name like '%'+:#{#request.admissionPeriodName}+'%')" +
-            "and (:#{#request.createUser} is null or ''  = :#{#request.createUser} or create_user like '%'+:#{#request.createUser}+'%')" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
             " order by create_at DESC,update_at DESC ",
@@ -28,8 +27,8 @@ public interface AdmissionPeriodRepository extends JpaRepository<AdmissionPeriod
     AdmissionPeriod findByFileId(Long id);
 
 
-    @Query("select u from AdmissionPeriod u where u.id = ?1")
-    AdmissionPeriod findByFileIdToDownload(Long id);
+    @Query("select u from AdmissionPeriod u where u.status = '1'")
+    List<AdmissionPeriod> selectListAdmissionPeriodActiveInNowYear();//Query tat ca cac ky han trong nam
 
     @Modifying
     @Transactional

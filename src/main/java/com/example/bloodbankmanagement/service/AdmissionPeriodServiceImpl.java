@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -53,9 +54,6 @@ public class AdmissionPeriodServiceImpl {
 
     public SingleResponseDto<PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo>> selectListAdmissionPeriod(AdmissionPeriodDto.AdmissionPeriodSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
-        //Set value userId
-        String userId = isUserHaveRoleAdmin(request.getCreateUser());
-        request.setCreateUser(userId);
         PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
@@ -111,6 +109,17 @@ public class AdmissionPeriodServiceImpl {
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }
+
+    public SingleResponseDto<PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo>> selectListAdmissionPeriodActive(){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        //Select list file upload
+        List<AdmissionPeriod> listDataFileMetadata = majorRepository.selectListAdmissionPeriodActiveInNowYear();
+        pageAmtObject = AdmissionPeriod.convertListObjectToDto(listDataFileMetadata);
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
 
     public String isUserHaveRoleAdmin(String userName){
         boolean isTypeAdmin = false;

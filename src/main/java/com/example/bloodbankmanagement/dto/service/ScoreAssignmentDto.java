@@ -14,7 +14,6 @@ public class ScoreAssignmentDto {
         private LocalDate fromDate;
         private LocalDate toDate;
         private String status;
-        private String createUser;
         private PageRequestDto pageRequestDto;
     }
 

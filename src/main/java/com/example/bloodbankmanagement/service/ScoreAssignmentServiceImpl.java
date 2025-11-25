@@ -60,9 +60,6 @@ public class ScoreAssignmentServiceImpl {
 
     public SingleResponseDto<PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListInfo>> selectListScoreAssignment(ScoreAssignmentDto.ScoreAssignmentSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
-        //Set value userId
-        String userId = isUserHaveRoleAdmin(request.getCreateUser());
-        request.setCreateUser(userId);
         PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload

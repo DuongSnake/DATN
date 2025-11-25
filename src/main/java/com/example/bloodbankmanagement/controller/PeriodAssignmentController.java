@@ -66,4 +66,12 @@ public class PeriodAssignmentController {
         );
     }
 
+    @PostMapping("/selectListAllActive")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<PeriodAssignmentDto.PeriodAssignmentListInfo>>> selectListPeriodAssignmentAllActive() {
+        return new ResponseEntity<>(
+                periodAssignmentService.selectListPeriodAssignmentAllActive(),
+                HttpStatus.OK
+        );
+    }
+
 }

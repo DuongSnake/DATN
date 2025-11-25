@@ -57,8 +57,6 @@ public class StudentMapInstructorServiceImpl {
 
     public SingleResponseDto<PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo>> selectListStudentMapInstructor(StudentMapInstructorDto.StudentMapInstructorSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
-        String userId = isUserHaveRoleAdmin(request.getCreateUser());
-        request.setCreateUser(userId);
         PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
