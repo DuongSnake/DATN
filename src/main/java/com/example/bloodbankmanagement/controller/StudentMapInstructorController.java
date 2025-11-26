@@ -73,4 +73,12 @@ public class StudentMapInstructorController {
         );
     }
 
+    @PostMapping("/selectListAllActive")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo>>> selectListStudentMapInstructor() {
+        return new ResponseEntity<>(
+                studentMapInstructorService.selectListStudentMapInstructorAll(),
+                HttpStatus.OK
+        );
+    }
+
 }

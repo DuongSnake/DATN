@@ -176,6 +176,16 @@ public class StudentMapInstructorServiceImpl {
         return objectResponse;
     }
 
+    public SingleResponseDto<PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo>> selectListStudentMapInstructorAll(){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        //Select list file upload
+        List<StudentMapInstructor> listDataFileMetadata = studentMapInstructorRepository.getStudentMapInstructorIdActive();
+        pageAmtObject = StudentMapInstructor.convertListObjectToDto(listDataFileMetadata, Long.valueOf(listDataFileMetadata.size()));
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
     public String isUserHaveRoleAdmin(String userName){
         boolean isTypeAdmin = false;
         if(ObjectUtils.isEmpty(userName)){
