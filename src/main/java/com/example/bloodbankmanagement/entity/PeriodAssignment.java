@@ -56,7 +56,7 @@ public class PeriodAssignment  extends EntityCommon {
         return objectDtoResponse;
     }
 
-    public static PageAmtListResponseDto<PeriodAssignmentDto.PeriodAssignmentListInfo> convertListObjectToDto(List<PeriodAssignment> listRequestUser){
+    public static PageAmtListResponseDto<PeriodAssignmentDto.PeriodAssignmentListInfo> convertListObjectToDto(List<PeriodAssignment> listRequestUser, Long totalRecord){
         PageAmtListResponseDto<PeriodAssignmentDto.PeriodAssignmentListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
         List<PeriodAssignmentDto.PeriodAssignmentListInfo> listPeriodAssignmentDto = new ArrayList<PeriodAssignmentDto.PeriodAssignmentListInfo>();
         if(listRequestUser.size() >0 ){
@@ -88,7 +88,7 @@ public class PeriodAssignment  extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listPeriodAssignmentDto);
-        objectDtoResponse.setTotalRecord(listRequestUser.size());
+        objectDtoResponse.setTotalRecord(Math.toIntExact(totalRecord));
         return objectDtoResponse;
     }
 

@@ -33,7 +33,7 @@ public class Major extends EntityCommon {
         return objectDtoResponse;
     }
 
-    public static PageAmtListResponseDto<MajorDto.MajorListInfo> convertListObjectToDto(List<Major> listRequestUser){
+    public static PageAmtListResponseDto<MajorDto.MajorListInfo> convertListObjectToDto(List<Major> listRequestUser, Long totalRecord){
         PageAmtListResponseDto<MajorDto.MajorListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
         List<MajorDto.MajorListInfo> listMajorDto = new ArrayList<MajorDto.MajorListInfo>();
         if(listRequestUser.size() >0 ){
@@ -47,7 +47,7 @@ public class Major extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listMajorDto);
-        objectDtoResponse.setTotalRecord(listRequestUser.size());
+        objectDtoResponse.setTotalRecord(Math.toIntExact(totalRecord));
         return objectDtoResponse;
     }
 }

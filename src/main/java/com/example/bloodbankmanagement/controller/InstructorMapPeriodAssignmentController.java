@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/InstructorMapPeriodAssignment")
+@RequestMapping("/api/v1/instructorMapPeriodAssignment")
 @RequiredArgsConstructor
 public class InstructorMapPeriodAssignmentController {
 

@@ -58,10 +58,11 @@ public class StudentMapInstructorServiceImpl {
     public SingleResponseDto<PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo>> selectListStudentMapInstructor(StudentMapInstructorDto.StudentMapInstructorSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
         Page<StudentMapInstructor> listDataFileMetadata = studentMapInstructorRepository.findListStudentMapInstructor(request, pageable);
-        pageAmtObject = StudentMapInstructor.convertListObjectToDto(listDataFileMetadata.getContent());
+        pageAmtObject = StudentMapInstructor.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }

@@ -55,10 +55,11 @@ public class AdmissionPeriodServiceImpl {
     public SingleResponseDto<PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo>> selectListAdmissionPeriod(AdmissionPeriodDto.AdmissionPeriodSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
         Page<AdmissionPeriod> listDataFileMetadata = majorRepository.findListAdmissionPeriod(request, pageable);
-        pageAmtObject = AdmissionPeriod.convertListObjectToDto(listDataFileMetadata.getContent());
+        pageAmtObject = AdmissionPeriod.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }
@@ -115,7 +116,7 @@ public class AdmissionPeriodServiceImpl {
         PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         //Select list file upload
         List<AdmissionPeriod> listDataFileMetadata = majorRepository.selectListAdmissionPeriodActiveInNowYear();
-        pageAmtObject = AdmissionPeriod.convertListObjectToDto(listDataFileMetadata);
+        pageAmtObject = AdmissionPeriod.convertListObjectToDto(listDataFileMetadata, Long.valueOf(listDataFileMetadata.size()));
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }

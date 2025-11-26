@@ -23,6 +23,7 @@ public interface FileMetadataRepository extends JpaRepository<FileUpload, Long> 
             "and (:#{#request.assignmentRegisterId} is null or ''  = :#{#request.assignmentRegisterId} or assignment_register_info_id like :#{#request.assignmentRegisterId})" +
             "and (:#{#request.fileName} is null or ''  = :#{#request.fileName} or file_name like '%'+:#{#request.fileName}+'%')" +
             "and (:#{#request.fileType} is null or ''  = :#{#request.fileType} or file_type like '%'+:#{#request.fileType}+'%')" +
+            "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status})" +
             "and (:#{#request.userUpload} is null or ''  = :#{#request.userUpload} or create_user like '%'+:#{#request.userUpload}+'%')" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +

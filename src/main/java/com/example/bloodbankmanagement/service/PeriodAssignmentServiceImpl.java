@@ -71,10 +71,11 @@ public class PeriodAssignmentServiceImpl {
     public SingleResponseDto<PageAmtListResponseDto<PeriodAssignmentDto.PeriodAssignmentListInfo>> selectListPeriodAssignment(PeriodAssignmentDto.PeriodAssignmentSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         PageAmtListResponseDto<PeriodAssignmentDto.PeriodAssignmentListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
         Page<PeriodAssignment> listDataFileMetadata = periodAssignmentRepository.findListPeriodAssignment(request, pageable);
-        pageAmtObject = PeriodAssignment.convertListObjectToDto(listDataFileMetadata.getContent());
+        pageAmtObject = PeriodAssignment.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }
@@ -175,7 +176,7 @@ public class PeriodAssignmentServiceImpl {
         PageAmtListResponseDto<PeriodAssignmentDto.PeriodAssignmentListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         //Select list file upload
         List<PeriodAssignment> listDataFileMetadata = periodAssignmentRepository.getListPeriodAssignmentAllActive();
-        pageAmtObject = PeriodAssignment.convertListObjectToDto(listDataFileMetadata);
+        pageAmtObject = PeriodAssignment.convertListObjectToDto(listDataFileMetadata, Long.valueOf(listDataFileMetadata.size()));
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }

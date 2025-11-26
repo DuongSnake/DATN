@@ -57,7 +57,7 @@ public class AssignmentStudentRegister extends EntityCommon {
         return objectDtoResponse;
     }
 
-    public static PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> convertListObjectToDto(List<AssignmentStudentRegister> listRequestUser){
+    public static PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> convertListObjectToDto(List<AssignmentStudentRegister> listRequestUser, Long totalRecord){
         PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
         List<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> listAssignmentStudentRegisterDto = new ArrayList<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>();
         if(listRequestUser.size() >0 ){
@@ -87,7 +87,7 @@ public class AssignmentStudentRegister extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listAssignmentStudentRegisterDto);
-        objectDtoResponse.setTotalRecord(listRequestUser.size());
+        objectDtoResponse.setTotalRecord(Math.toIntExact(totalRecord));
         return objectDtoResponse;
     }
 

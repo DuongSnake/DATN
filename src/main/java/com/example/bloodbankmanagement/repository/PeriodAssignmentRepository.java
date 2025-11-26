@@ -18,6 +18,7 @@ import java.util.List;
 public interface PeriodAssignmentRepository extends JpaRepository<PeriodAssignment, Long> {
     @Query(value = "select *  from period_assignment " +
             "where (:#{#request.periodAssignmentId} is null or ''  = :#{#request.periodAssignmentId} or id like :#{#request.periodAssignmentId})" +
+            "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status})" +
             "and (:#{#request.admissionPeriodId} is null or ''  = :#{#request.admissionPeriodId} or admission_period_id like :#{#request.admissionPeriodId})" +
             "and (:#{#request.majorId} is null or ''  = :#{#request.majorId} or major_id like :#{#request.majorId})" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +

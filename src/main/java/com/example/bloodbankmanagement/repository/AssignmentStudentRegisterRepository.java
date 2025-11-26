@@ -18,6 +18,7 @@ public interface AssignmentStudentRegisterRepository extends JpaRepository<Assig
     @Query(value = "select *  from assignment_student_register " +
             "where (:#{#request.assignmentStudentRegisterId} is null or ''  = :#{#request.assignmentStudentRegisterId} or id like :#{#request.assignmentStudentRegisterId})" +
             "and (:#{#request.assignmentStudentRegisterName} is null or ''  = :#{#request.assignmentStudentRegisterName} or assignment_name like '%'+:#{#request.assignmentStudentRegisterName}+'%')" +
+            "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status})" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
             " order by create_at DESC,update_at DESC ",

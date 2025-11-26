@@ -17,6 +17,7 @@ public interface InstructorMapPeriodAssignmentRepository  extends JpaRepository<
             "where (:#{#request.instructorMapPeriodAssignmentId} is null or ''  = :#{#request.instructorMapPeriodAssignmentId} or id like :#{#request.instructorMapPeriodAssignmentId})" +
             "and (:#{#request.instructorId} is null or ''  = :#{#request.instructorId} or instructor_id = :#{#request.instructorId})" +
             "and (:#{#request.periodAssignmentId} is null or ''  = :#{#request.periodAssignmentId} or period_assignment_id = :#{#request.periodAssignmentId})" +
+            "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status})" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
             " order by create_at DESC,update_at DESC ",

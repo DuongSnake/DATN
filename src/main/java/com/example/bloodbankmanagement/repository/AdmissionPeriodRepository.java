@@ -16,6 +16,7 @@ import java.util.List;
 public interface AdmissionPeriodRepository extends JpaRepository<AdmissionPeriod, Long> {
     @Query(value = "select *  from admission_period " +
             "where (:#{#request.admissionPeriodId} is null or ''  = :#{#request.admissionPeriodId} or id like :#{#request.admissionPeriodId})" +
+            "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status})" +
             "and (:#{#request.admissionPeriodName} is null or ''  = :#{#request.admissionPeriodName} or admission_period_name like '%'+:#{#request.admissionPeriodName}+'%')" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +

@@ -61,10 +61,11 @@ public class ScoreAssignmentServiceImpl {
     public SingleResponseDto<PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListInfo>> selectListScoreAssignment(ScoreAssignmentDto.ScoreAssignmentSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
         Page<ScoreAssignment> listDataFileMetadata = scoreAssignmentRepository.findListScoreAssignment(request, pageable);
-        pageAmtObject = ScoreAssignment.convertListObjectToDto(listDataFileMetadata.getContent());
+        pageAmtObject = ScoreAssignment.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }

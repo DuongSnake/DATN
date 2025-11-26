@@ -19,6 +19,7 @@ public interface MajorRepository extends JpaRepository<Major, Long> {
     @Query(value = "select *  from major " +
             "where (:#{#request.majorId} is null or ''  = :#{#request.majorId} or id like :#{#request.majorId})" +
             "and (:#{#request.majorName} is null or ''  = :#{#request.majorName} or major_name like '%'+:#{#request.majorName}+'%')" +
+            "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status})" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
             " order by create_at DESC,update_at DESC ",

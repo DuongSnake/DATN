@@ -61,10 +61,11 @@ public class InstructorMapPeriodAssignmentServiceImpl {
     public SingleResponseDto<PageAmtListResponseDto<InstructorMapPeriodAssignmentDto.InstructorMapPeriodAssignmentListInfo>> selectListInstructorMapPeriodAssignment(InstructorMapPeriodAssignmentDto.InstructorMapPeriodAssignmentSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         PageAmtListResponseDto<InstructorMapPeriodAssignmentDto.InstructorMapPeriodAssignmentListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
         Page<InstructorMapPeriodAssignment> listDataFileMetadata = studentMapInstructorRepository.findListInstructorMapPeriodAssignment(request, pageable);
-        pageAmtObject = InstructorMapPeriodAssignment.convertListObjectToDto(listDataFileMetadata.getContent());
+        pageAmtObject = InstructorMapPeriodAssignment.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }
