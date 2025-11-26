@@ -52,10 +52,11 @@ public class MajorServiceImpl {
     public SingleResponseDto<PageAmtListResponseDto<MajorDto.MajorListInfo>> selectListMajor(MajorDto.MajorSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         PageAmtListResponseDto<MajorDto.MajorListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
         Page<Major> listDataFileMetadata = majorRepository.findListMajor(request, pageable);
-        pageAmtObject = Major.convertListObjectToDto(listDataFileMetadata.getContent());
+        pageAmtObject = Major.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }
@@ -139,7 +140,7 @@ public class MajorServiceImpl {
         PageAmtListResponseDto<MajorDto.MajorListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         //Select list file upload
         List<Major> listDataFileMetadata = majorRepository.getAllMajorActive();
-        pageAmtObject = Major.convertListObjectToDto(listDataFileMetadata);
+        pageAmtObject = Major.convertListObjectToDto(listDataFileMetadata, Long.valueOf(listDataFileMetadata.size()));
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }

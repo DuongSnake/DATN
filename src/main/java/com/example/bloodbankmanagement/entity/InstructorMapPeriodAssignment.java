@@ -42,7 +42,7 @@ public class InstructorMapPeriodAssignment extends EntityCommon {
         return objectDtoResponse;
     }
 
-    public static PageAmtListResponseDto<InstructorMapPeriodAssignmentDto.InstructorMapPeriodAssignmentListInfo> convertListObjectToDto(List<InstructorMapPeriodAssignment> listRequestUser){
+    public static PageAmtListResponseDto<InstructorMapPeriodAssignmentDto.InstructorMapPeriodAssignmentListInfo> convertListObjectToDto(List<InstructorMapPeriodAssignment> listRequestUser, Long totalRecord){
         PageAmtListResponseDto<InstructorMapPeriodAssignmentDto.InstructorMapPeriodAssignmentListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
         List<InstructorMapPeriodAssignmentDto.InstructorMapPeriodAssignmentListInfo> listInstructorMapPeriodAssignmentDto = new ArrayList<InstructorMapPeriodAssignmentDto.InstructorMapPeriodAssignmentListInfo>();
         if(listRequestUser.size() >0 ){
@@ -64,7 +64,7 @@ public class InstructorMapPeriodAssignment extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listInstructorMapPeriodAssignmentDto);
-        objectDtoResponse.setTotalRecord(listRequestUser.size());
+        objectDtoResponse.setTotalRecord(Math.toIntExact(totalRecord));
         return objectDtoResponse;
     }
 

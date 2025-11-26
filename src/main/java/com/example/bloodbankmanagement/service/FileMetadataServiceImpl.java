@@ -83,6 +83,7 @@ public class FileMetadataServiceImpl {
 
     public SingleResponseDto<PageAmtListResponseDto<UploadFileDto.UploadFileListInfo>> selectListFileUpload(UploadFileDto.UploadFileSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         //Set value userId
         String userId = isUserHaveRoleAdmin(request.getUserUpload());
         request.setUserUpload(userId);

@@ -50,7 +50,7 @@ public class StudentMapInstructor extends EntityCommon {
         return objectDtoResponse;
     }
 
-    public static PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo> convertListObjectToDto(List<StudentMapInstructor> listRequestUser){
+    public static PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo> convertListObjectToDto(List<StudentMapInstructor> listRequestUser, Long totalRecord){
         PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
         List<StudentMapInstructorDto.StudentMapInstructorListInfo> listStudentMapInstructorDto = new ArrayList<StudentMapInstructorDto.StudentMapInstructorListInfo>();
         if(listRequestUser.size() >0 ){
@@ -76,7 +76,7 @@ public class StudentMapInstructor extends EntityCommon {
             }
         }
         objectDtoResponse.setData(listStudentMapInstructorDto);
-        objectDtoResponse.setTotalRecord(listRequestUser.size());
+        objectDtoResponse.setTotalRecord(Math.toIntExact(totalRecord));
         return objectDtoResponse;
     }
 }

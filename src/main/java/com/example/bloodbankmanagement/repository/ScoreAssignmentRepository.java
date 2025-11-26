@@ -18,6 +18,7 @@ public interface ScoreAssignmentRepository extends JpaRepository<ScoreAssignment
     @Query(value = "select *  from score_assignment " +
             "where (:#{#request.scoreAssignmentId} is null or ''  = :#{#request.scoreAssignmentId} or id like :#{#request.scoreAssignmentId})" +
             "and (:#{#request.scoreAverage} is null or ''  = :#{#request.scoreAverage} or score_average = :#{#request.scoreAverage})" +
+            "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status})" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
             " order by create_at DESC,update_at DESC ",

@@ -36,7 +36,7 @@ public class AdmissionPeriod extends EntityCommon {//Nien khoa
         return objectDtoResponse;
     }
 
-    public static PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo> convertListObjectToDto(List<AdmissionPeriod> listRequestUser){
+    public static PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo> convertListObjectToDto(List<AdmissionPeriod> listRequestUser, Long totalRecord){
         PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
         List<AdmissionPeriodDto.AdmissionPeriodListInfo> listAdmissionPeriodDto = new ArrayList<AdmissionPeriodDto.AdmissionPeriodListInfo>();
         if(listRequestUser.size() >0 ){
@@ -53,7 +53,7 @@ public class AdmissionPeriod extends EntityCommon {//Nien khoa
             }
         }
         objectDtoResponse.setData(listAdmissionPeriodDto);
-        objectDtoResponse.setTotalRecord(listRequestUser.size());
+        objectDtoResponse.setTotalRecord(Math.toIntExact(totalRecord));
         return objectDtoResponse;
     }
 }
