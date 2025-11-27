@@ -25,6 +25,9 @@ public class AssignmentStudentRegisterDto {
         private Long studentMapInstructorId;
         private String studentName;
         private String instructorName;
+        private String fileName;
+        private String fileType;
+        private Integer isApproved;
         private String status;
         private String createUser;
         private LocalDate createAt;
@@ -44,6 +47,7 @@ public class AssignmentStudentRegisterDto {
         private String instructorName;
         private String fileName;
         private String fileType;
+        private Integer isApproved;
         private String status;
         private String createUser;
         private LocalDate createAt;
