@@ -50,6 +50,7 @@ public class AssignmentStudentRegister extends EntityCommon {
             objectDtoResponse.setInstructorName(instructorName);
             objectDtoResponse.setFileName(request.getFileName());
             objectDtoResponse.setFileType(request.getFileType());
+            objectDtoResponse.setIsApproved(request.getIsApproved());
             objectDtoResponse.setStatus(request.getStatus());
             objectDtoResponse.setCreateAt(request.getCreateAt());
             objectDtoResponse.setCreateUser(request.getCreateUser());
@@ -80,6 +81,9 @@ public class AssignmentStudentRegister extends EntityCommon {
                 newObject.setStudentName(studentName);
                 newObject.setInstructorName(instructorName);
                 newObject.setStudentMapInstructorId(studentMapIntructorId);
+                newObject.setFileName(listRequestUser.get(i).getFileName());
+                newObject.setFileType(listRequestUser.get(i).getFileType());
+                newObject.setIsApproved(listRequestUser.get(i).getIsApproved());
                 newObject.setStatus(listRequestUser.get(i).getStatus());
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
                 newObject.setCreateUser(listRequestUser.get(i).getCreateUser());
