@@ -1,35 +1,18 @@
-package com.example.bloodbankmanagement.entity;
+package com.example.bloodbankmanagement.dto.service.student;
 
-import com.example.bloodbankmanagement.common.untils.EntityCommon;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
-import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
-import jakarta.persistence.*;
+import com.example.bloodbankmanagement.entity.AssignmentStudentRegister;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-@Entity
-@Table(name = "assignment_student_register")
-public class AssignmentStudentRegister extends EntityCommon {
-    private String assignmentName;
-    private String fileName;
-    private String fileType;
-    private Integer isApproved;//status approve 0: not accept 1:pending 2:accept 3:bao luu
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "content_assignment")
-    private Blob contentAssignment;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_map_instructor_id")
-    private StudentMapInstructor studentMapInstructor;
+public class AssignmentRegister {
 
-    public static AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse convertToDto(AssignmentStudentRegister request){
-        AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse objectDtoResponse = new AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse();
+    public static AssignmentRegisterDto.AssignmentRegisterSelectInfoResponse convertToDto(AssignmentStudentRegister request){
+        AssignmentRegisterDto.AssignmentRegisterSelectInfoResponse objectDtoResponse = new AssignmentRegisterDto.AssignmentRegisterSelectInfoResponse();
         if(request != null){
             Long studentMapIntructorId = null;
             String studentName = "";
@@ -43,8 +26,8 @@ public class AssignmentStudentRegister extends EntityCommon {
             if(null != request.getStudentMapInstructor() && null != request.getStudentMapInstructor().getInstructorInfo()){
                 instructorName = request.getStudentMapInstructor().getInstructorInfo().getFullName();
             }
-            objectDtoResponse.setAssignmentStudentRegisterId(request.getId());
-            objectDtoResponse.setAssignmentStudentRegisterName(request.getAssignmentName());
+            objectDtoResponse.setAssignmentRegisterId(request.getId());
+            objectDtoResponse.setAssignmentRegisterName(request.getAssignmentName());
             objectDtoResponse.setStudentName(studentName);
             objectDtoResponse.setStudentMapInstructorId(studentMapIntructorId);
             objectDtoResponse.setInstructorName(instructorName);
@@ -58,9 +41,9 @@ public class AssignmentStudentRegister extends EntityCommon {
         return objectDtoResponse;
     }
 
-    public static PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> convertListObjectToDto(List<AssignmentStudentRegister> listRequestUser, Long totalRecord){
-        PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
-        List<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> listAssignmentStudentRegisterDto = new ArrayList<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>();
+    public static PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> convertListObjectToDto(List<AssignmentStudentRegister> listRequestUser, Long totalRecord){
+        PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
+        List<AssignmentRegisterDto.AssignmentRegisterListInfo> listAssignmentRegisterDto = new ArrayList<AssignmentRegisterDto.AssignmentRegisterListInfo>();
         if(listRequestUser.size() >0 ){
             for (int i=0;i<listRequestUser.size();i++){
                 Long studentMapIntructorId = null;
@@ -75,9 +58,9 @@ public class AssignmentStudentRegister extends EntityCommon {
                 if(null != listRequestUser.get(i).getStudentMapInstructor() && null != listRequestUser.get(i).getStudentMapInstructor().getInstructorInfo()){
                     instructorName = listRequestUser.get(i).getStudentMapInstructor().getInstructorInfo().getFullName();
                 }
-                AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo newObject = new AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo();
-                newObject.setAssignmentStudentRegisterId(listRequestUser.get(i).getId());
-                newObject.setAssignmentStudentRegisterName(listRequestUser.get(i).getAssignmentName());
+                AssignmentRegisterDto.AssignmentRegisterListInfo newObject = new AssignmentRegisterDto.AssignmentRegisterListInfo();
+                newObject.setAssignmentRegisterId(listRequestUser.get(i).getId());
+                newObject.setAssignmentRegisterName(listRequestUser.get(i).getAssignmentName());
                 newObject.setStudentName(studentName);
                 newObject.setInstructorName(instructorName);
                 newObject.setStudentMapInstructorId(studentMapIntructorId);
@@ -87,10 +70,10 @@ public class AssignmentStudentRegister extends EntityCommon {
                 newObject.setStatus(listRequestUser.get(i).getStatus());
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
                 newObject.setCreateUser(listRequestUser.get(i).getCreateUser());
-                listAssignmentStudentRegisterDto.add(newObject);
+                listAssignmentRegisterDto.add(newObject);
             }
         }
-        objectDtoResponse.setData(listAssignmentStudentRegisterDto);
+        objectDtoResponse.setData(listAssignmentRegisterDto);
         objectDtoResponse.setTotalRecord(Math.toIntExact(totalRecord));
         return objectDtoResponse;
     }

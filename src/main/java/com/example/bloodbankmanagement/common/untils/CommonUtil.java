@@ -46,7 +46,8 @@ public class CommonUtil {
     public static final String EXIST_DATA_IN_DB = "ExistDataInDb";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
     public static final Integer STATUS_NOT_ACCEPT = 0;
-    public static final Integer STATUS_RESERVE = 2;
+    public static final Integer STATUS_SEND_REQUEST = 1;
+    public static final Integer STATUS_RESERVE = 3;
 
     private CommonUtil() {
     }
