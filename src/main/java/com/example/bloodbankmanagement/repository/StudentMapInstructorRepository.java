@@ -35,6 +35,9 @@ public interface StudentMapInstructorRepository extends JpaRepository<StudentMap
     @Query("select u from StudentMapInstructor u where u.status = '1'")
     List<StudentMapInstructor> getStudentMapInstructorIdActive();
 
+    @Query("select u from StudentMapInstructor u where u.studentInfo.id = ?1 and u.status = '1'")
+    List<StudentMapInstructor> getStudentMapInstructorIdActiveByStudentId(Long studentId);
+
     @Modifying
     @Transactional
     @Query(value = "update student_map_instructor set instructor_id =:#{#request.instructorInfo.id}, student_id =:#{#request.studentInfo.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
