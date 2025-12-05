@@ -11,14 +11,12 @@ public class UploadFileDto {
     @Data
     public static class InsertUploadFileInfo {
         private MultipartFile fileUploadContent;
-        private Long periodAssignmentId;
         private Long assignmentRegisterId;
     }
     @Data
     public static class UpdateUploadFileInfo {
         private Long fileId;
         private MultipartFile fileUploadContent;
-        private Long periodAssignmentId;
         private Long assignmentRegisterId;
     }
     @Data
@@ -28,8 +26,6 @@ public class UploadFileDto {
         private String fileType;
         private String fromDate;
         private String toDate;
-        private Long periodAssignmentId;
-        private Long assignmentRegisterId;
         private String status;
         private String userUpload;
         private PageRequestDto pageRequestDto;
@@ -41,8 +37,6 @@ public class UploadFileDto {
         private String fileName;
         private String fileType;
         private long fileSize;
-        private Long periodAssignmentId;
-        private LocalDate periodAssignmentExpireTime;
         private Long assignmentRegisterId;
         private String assignmentName;
         private String studentName;
@@ -62,8 +56,6 @@ public class UploadFileDto {
         private String fileName;
         private String fileType;
         private Long fileSize;
-        private Long periodAssignmentId;
-        private LocalDate periodAssignmentExpireTime;
         private Long assignmentRegisterId;
         private String assignmentName;
         private String studentName;
@@ -79,7 +71,6 @@ public class UploadFileDto {
     @Data
     public static class InserListFiletUploadFileInfo {
         private MultipartFile listFile[];
-        private Long periodAssignmentId;
         private Long assignmentRegisterId;
     }
 }

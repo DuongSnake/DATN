@@ -209,7 +209,7 @@ public class InstructorMapPeriodAssignmentServiceImpl {
     }
 
     public User getInfoInstructorById(Long userid){
-        User userInfo = userRepository.getValueUserByIdAndRole(userid, ERole.ROLE_MODERATOR.toString());
+        User userInfo = userRepository.getValueUserByIdAndRole(userid, ERole.ROLE_USER.toString());
         if(ObjectUtils.isEmpty(userInfo)){
             logger.info("Not found instructor info with userId: "+userid);
             throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");

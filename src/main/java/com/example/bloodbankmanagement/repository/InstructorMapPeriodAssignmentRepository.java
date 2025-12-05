@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface InstructorMapPeriodAssignmentRepository  extends JpaRepository<InstructorMapPeriodAssignment, Long> {
-    @Query(value = "select *  from instructor_map_instructor " +
+    @Query(value = "select *  from sudent_map_period " +
             "where (:#{#request.instructorMapPeriodAssignmentId} is null or ''  = :#{#request.instructorMapPeriodAssignmentId} or id like :#{#request.instructorMapPeriodAssignmentId})" +
             "and (:#{#request.instructorId} is null or ''  = :#{#request.instructorId} or instructor_id = :#{#request.instructorId})" +
             "and (:#{#request.periodAssignmentId} is null or ''  = :#{#request.periodAssignmentId} or period_assignment_id = :#{#request.periodAssignmentId})" +
@@ -24,7 +24,7 @@ public interface InstructorMapPeriodAssignmentRepository  extends JpaRepository<
             nativeQuery = true)
     Page<InstructorMapPeriodAssignment> findListInstructorMapPeriodAssignment(InstructorMapPeriodAssignmentDto.InstructorMapPeriodAssignmentSelectListInfo request, Pageable pageable);
 
-    @Query(value = "select * from instructor_map_instructor where id = ?1",nativeQuery = true)
+    @Query(value = "select * from sudent_map_period where id = ?1",nativeQuery = true)
     InstructorMapPeriodAssignment findByFileId(Long id);
 
 
@@ -33,16 +33,16 @@ public interface InstructorMapPeriodAssignmentRepository  extends JpaRepository<
 
     @Modifying
     @Transactional
-    @Query(value = "update instructor_map_instructor set instructor_id =:#{#request.instructorInfo.id}, period_assignment_id =:#{#request.periodAssignmentInfo.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
+    @Query(value = "update sudent_map_period set instructor_id =:#{#request.instructorInfo.id}, period_assignment_id =:#{#request.periodAssignmentInfo.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
     void updateInstructorMapPeriodAssignment(@Param("request") InstructorMapPeriodAssignment request);
 
     @Modifying
     @Transactional
-    @Query(value = "update instructor_map_instructor set status =:#{#request.status},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id in :ids",nativeQuery = true)
+    @Query(value = "update sudent_map_period set status =:#{#request.status},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id in :ids",nativeQuery = true)
     void deleteInstructorMapPeriodAssignment(@Param("request") InstructorMapPeriodAssignment request, @Param("ids") List<Long> ids);
 
     @Modifying
     @Transactional
-    @Query(value = "update instructor_map_instructor set instructor_id =:#{#request.periodAssignmentInfo.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE period_assignment_id in :ids",nativeQuery = true)
+    @Query(value = "update sudent_map_period set instructor_id =:#{#request.periodAssignmentInfo.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE period_assignment_id in :ids",nativeQuery = true)
     void updateListStudentWithInstructorId(@Param("request") InstructorMapPeriodAssignment request, @Param("ids") List<Long> ids);
 }

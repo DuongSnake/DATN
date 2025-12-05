@@ -13,11 +13,11 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "instructor_map_instructor")//thong tin thoi gian lam do an cua tung chuyen nganh map giao vien
+@Table(name = "sudent_map_period")//thong tin thoi gian lam do an cua tung chuyen nganh map sinh vien
 public class InstructorMapPeriodAssignment extends EntityCommon {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instructor_id")
-    private User instructorInfo;//teacher coaching for student
+    private User instructorInfo;//student
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "period_assignment_id")
