@@ -29,10 +29,6 @@ public class FileUpload extends EntityCommon {
     private Blob data;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "period_assignment_id")
-    private PeriodAssignment periodAssignmentInfo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignment_register_info_id")
     private AssignmentStudentRegister assignmentRegisterInfo;
 
@@ -40,8 +36,6 @@ public class FileUpload extends EntityCommon {
         if(null == request){
             return null;
         }
-        Long periodAssignmentId = null != request.getPeriodAssignmentInfo() ? request.getPeriodAssignmentInfo().getId(): null;
-        LocalDate periodAssignmentExpireTime = null != request.getPeriodAssignmentInfo() ? request.getPeriodAssignmentInfo().getEndPeriod(): null;
         Long assignmentRegisterId = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getId(): null;
         String assignmentName = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getAssignmentName(): null;
         String studentName = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo().getFullName(): null;
@@ -53,8 +47,6 @@ public class FileUpload extends EntityCommon {
         objectData.setFileType(request.getFileType());
         objectData.setCreateAt(request.getCreateAt());
         objectData.setStatus(request.getStatus());
-        objectData.setPeriodAssignmentId(periodAssignmentId);
-        objectData.setPeriodAssignmentExpireTime(periodAssignmentExpireTime);
         objectData.setAssignmentRegisterId(assignmentRegisterId);
         objectData.setAssignmentName(assignmentName);
         objectData.setStudentName(studentName);
@@ -69,8 +61,6 @@ public class FileUpload extends EntityCommon {
         PageAmtListResponseDto<UploadFileDto.UploadFileListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
         List<UploadFileDto.UploadFileListInfo> listObject = new ArrayList<>();
         for (FileUpload object: listData){
-            Long periodAssignmentId = null != object.getPeriodAssignmentInfo() ? object.getPeriodAssignmentInfo().getId(): null;
-            LocalDate periodAssignmentExpireTime = null != object.getPeriodAssignmentInfo() ? object.getPeriodAssignmentInfo().getEndPeriod(): null;
             Long assignmentRegisterId = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getId(): null;
             String assignmentName = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getAssignmentName(): null;
             String studentName = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo().getFullName(): null;
@@ -82,9 +72,6 @@ public class FileUpload extends EntityCommon {
             newObject.setFileType(object.getFileType());
             newObject.setStatus(object.getStatus());
             newObject.setCreateAt(object.getCreateAt());
-
-            newObject.setPeriodAssignmentId(periodAssignmentId);
-            newObject.setPeriodAssignmentExpireTime(periodAssignmentExpireTime);
             newObject.setAssignmentRegisterId(assignmentRegisterId);
             newObject.setAssignmentName(assignmentName);
             newObject.setStudentName(studentName);

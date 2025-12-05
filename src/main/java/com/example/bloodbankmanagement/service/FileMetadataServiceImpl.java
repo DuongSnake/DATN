@@ -156,21 +156,18 @@ public class FileMetadataServiceImpl {
             objectUpdate.setUpdateUser(userIdUpdate);
             objectUpdate.setUpdateAt(LocalDate.now());
             objectUpdate.setStatus(CommonUtil.STATUS_USE);
-            //Find the period assignment
-            PeriodAssignment objectPeriod = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
-            if(null == objectPeriod){
-                throw new CustomException("Value periodAssignmentId not exist in database ", "en");
-            }
-            //Check expire time upload
-            LocalDate currentDate = LocalDate.now();
-            if(null != objectPeriod.getEndPeriod() && objectPeriod.getEndPeriod().isBefore(currentDate)){
-                throw new CustomException("The time upload file is expire ", "en");
-            }
-            objectUpdate.setPeriodAssignmentInfo(objectPeriod);
             //Check assignment register
             AssignmentStudentRegister assignmentStudentRegister = assignmentStudentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
             if(null == assignmentStudentRegister){
                 throw new CustomException("Value assignmentRegisterId not exist in database ", "en");
+            }
+            if(null == assignmentStudentRegister.getPeriodAssignmentInfo()){
+                throw new CustomException("Value periodAssignmentId not exist in database ", "en");
+            }
+            //Check expire time upload
+            LocalDate currentDate = LocalDate.now();
+            if(null != assignmentStudentRegister.getPeriodAssignmentInfo().getEndPeriod() && assignmentStudentRegister.getPeriodAssignmentInfo().getEndPeriod().isBefore(currentDate)){
+                throw new CustomException("The time upload file is expire ", "en");
             }
             objectUpdate.setAssignmentRegisterInfo(assignmentStudentRegister);
             fileMetadataRepository.save(objectUpdate);
@@ -199,21 +196,20 @@ public class FileMetadataServiceImpl {
             objectUpdate.setFileType(tailFile);
             objectUpdate.setFileName(fileName);
             objectUpdate.setFileSize(request.getFileUploadContent().getSize());
-            //Find the period assignment
-            PeriodAssignment objectPeriod = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
-            if(null == objectPeriod){
-                throw new CustomException("Value periodAssignmentId not exist in database ", lang);
-            }
-            //Check expire time upload
-            LocalDate currentDate = LocalDate.now();
-            if(null != objectPeriod.getEndPeriod() && objectPeriod.getEndPeriod().isBefore(currentDate)){
-                throw new CustomException("The time upload file is expire ", lang);
-            }
-            objectUpdate.setPeriodAssignmentInfo(objectPeriod);
             //Check assignment register
             AssignmentStudentRegister assignmentStudentRegister = assignmentStudentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
             if(null == assignmentStudentRegister){
                 throw new CustomException("Value assignmentRegisterId not exist in database ", "en");
+            }
+            //Check expire time upload
+            if(null == assignmentStudentRegister.getPeriodAssignmentInfo()){
+                throw new CustomException("Value periodAssignmentId not exist in database ", lang);
+            }
+            //Check expire time upload
+            LocalDate currentDate = LocalDate.now();
+            //Check expire time upload
+            if(null != assignmentStudentRegister.getPeriodAssignmentInfo().getEndPeriod() && assignmentStudentRegister.getPeriodAssignmentInfo().getEndPeriod().isBefore(currentDate)){
+                throw new CustomException("The time upload file is expire ", "en");
             }
             objectUpdate.setAssignmentRegisterInfo(assignmentStudentRegister);
             objectUpdate.setUpdateUser(userIdUpdate);
@@ -276,20 +272,18 @@ public class FileMetadataServiceImpl {
         String userIdCreate = CommonUtil.getUsernameByToken();
         String userIdRegister = checkExistUser(userIdCreate);
         List<FileUpload> listFileUpload = new ArrayList<>();
-        //Find the period assignment
-        PeriodAssignment objectPeriod = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
-        if(null == objectPeriod){
-            throw new CustomException("Value periodAssignmentId not exist in database ", lang);
-        }
-        //Check expire time upload
-        LocalDate currentDate = LocalDate.now();
-        if(null != objectPeriod.getEndPeriod() && objectPeriod.getEndPeriod().isBefore(currentDate)){
-            throw new CustomException("The time upload file is expire ", lang);
-        }
         //Check assignment register
         AssignmentStudentRegister assignmentStudentRegister = assignmentStudentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
         if(null == assignmentStudentRegister){
             throw new CustomException("Value assignmentRegisterId not exist in database ", lang);
+        }
+        if(null == assignmentStudentRegister.getPeriodAssignmentInfo()){
+            throw new CustomException("Value periodAssignmentId not exist in database ", lang);
+        }
+        //Check expire time upload
+        LocalDate currentDate = LocalDate.now();
+        if(null != assignmentStudentRegister.getPeriodAssignmentInfo().getEndPeriod() && assignmentStudentRegister.getPeriodAssignmentInfo().getEndPeriod().isBefore(currentDate)){
+            throw new CustomException("The time upload file is expire ", lang);
         }
         //Check list file upload
         if(null != request.getListFile() && request.getListFile().length == 0){
@@ -308,7 +302,6 @@ public class FileMetadataServiceImpl {
                 objectSave.setCreateUser(userIdRegister);
                 objectSave.setStatus(CommonUtil.STATUS_USE);
                 objectSave.setAssignmentRegisterInfo(assignmentStudentRegister);
-                objectSave.setPeriodAssignmentInfo(objectPeriod);
                 listFileUpload.add(objectSave);
             }catch (Exception e){
                 throw new Exception("Could not save file:" +fileName);

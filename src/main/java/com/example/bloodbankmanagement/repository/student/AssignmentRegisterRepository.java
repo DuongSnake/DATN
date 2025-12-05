@@ -56,4 +56,16 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
     @Transactional
     @Query(value = "update assignment_student_register set is_approved =:#{#request.isApproved},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id =:#{#request.id}",nativeQuery = true)
     void sendRequestAssignmentRegister(@Param("request") AssignmentStudentRegister request);
+
+    @Query(value = "select *  from assignment_student_register " +
+            "where (:#{#request.assignmentRegisterId} is null or ''  = :#{#request.assignmentRegisterId} or id like :#{#request.assignmentRegisterId})" +
+            "and (:#{#request.assignmentRegisterName} is null or ''  = :#{#request.assignmentRegisterName} or assignment_name like '%'+:#{#request.assignmentRegisterName}+'%')" +
+            "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status})" +
+            "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
+            "and (:#{#request.regUser} is null or ''  = :#{#request.regUser} or create_user = :#{#request.regUser}) " +
+            "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
+            "and is_approved = 2 " +
+            " order by create_at DESC,update_at DESC ",
+            nativeQuery = true)
+    Page<AssignmentStudentRegister> findListAssignmentRegisterIsApprove(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request, Pageable pageable);
 }

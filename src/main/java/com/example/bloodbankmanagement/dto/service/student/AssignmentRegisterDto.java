@@ -25,6 +25,7 @@ public class AssignmentRegisterDto {
         private long assignmentRegisterId;
         private String assignmentRegisterName;
         private Long studentMapInstructorId;
+        private Long periodAssignmentId;
         private String studentName;
         private String instructorName;
         private String fileName;
@@ -58,12 +59,14 @@ public class AssignmentRegisterDto {
     @Data
     public static class AssignmentRegisterInsertInfo {
         private String assignmentRegisterName;
+        private Long periodAssignmentId;
         private MultipartFile fileUpload;
     }
 
     @Data
     public static class AssignmentRegisterUpdateInfo {
         private long assignmentRegisterId;
+        private Long periodAssignmentId;
         private MultipartFile fileUpload;
         private String assignmentRegisterName;
     }
@@ -76,5 +79,11 @@ public class AssignmentRegisterDto {
     @Data
     public static class SendRequestAssignmentInfo {
         private Long requestId;
+    }
+    @Data
+    public static class AssignmentInsertListFileUploadInsertInfo {
+        private Long assignmentRegisterId;
+        private Long periodAssignmentId;
+        private MultipartFile listFile[];
     }
 }

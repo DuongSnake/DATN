@@ -12,8 +12,10 @@ import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegister;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegisterDto;
 import com.example.bloodbankmanagement.entity.AssignmentStudentRegister;
+import com.example.bloodbankmanagement.entity.FileUpload;
 import com.example.bloodbankmanagement.entity.StudentMapInstructor;
 import com.example.bloodbankmanagement.entity.User;
+import com.example.bloodbankmanagement.repository.FileMetadataRepository;
 import com.example.bloodbankmanagement.repository.StudentMapInstructorRepository;
 import com.example.bloodbankmanagement.repository.UserRepository;
 import com.example.bloodbankmanagement.repository.student.AssignmentRegisterRepository;
@@ -25,10 +27,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.Blob;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +44,7 @@ public class AssignmentRegisterServiceImpl {
     private final StudentMapInstructorRepository studentMapInstructorRepository;
     private final UserRepository userRepository;
     private final ResponseCommon responseService;
+    private final FileMetadataRepository fileMetadataRepository;
 
     @Transactional
     public BasicResponseDto insertAssignmentRegister(AssignmentRegisterDto.AssignmentRegisterInsertInfo request, String lang) throws Exception {
@@ -186,5 +191,58 @@ public class AssignmentRegisterServiceImpl {
         }
         return userInfo.get().getId();
     }
+
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> saveAllFileUpload(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        String userIdRegister = CommonUtil.getUsernameByToken();
+        //Find the customer by token
+        Long valueId = getIdByUserName(userIdRegister);
+        //Only find the list student upload in file
+        request.setRegUser(userIdRegister);
+        PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
+        Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
+        //Select list file upload
+        Page<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findListAssignmentRegisterIsApprove(request, pageable);
+        pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+    @Transactional
+    public BasicResponseDto updateAssignmentRegister(AssignmentRegisterDto.AssignmentInsertListFileUploadInsertInfo request, String lang) throws Exception {
+        String userIdRegister = CommonUtil.getUsernameByToken();
+        BasicResponseDto messageResponse;
+        List<FileUpload> listFileUpload = new ArrayList<>();
+        try{
+            if(null == request){
+                throw new CustomException("the object send request not null ", "en");
+            }
+            for (MultipartFile file : request.getListFile()){
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                String tailFile = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+                Blob blob = new SerialBlob(file.getBytes());
+                try{
+                    FileUpload objectSave = new FileUpload();
+                    objectSave.setData(blob);
+                    objectSave.setFileType(tailFile);
+                    objectSave.setFileName(fileName);
+                    objectSave.setFileSize(file.getSize());
+                    objectSave.setCreateUser(userIdRegister);
+                    objectSave.setStatus(CommonUtil.STATUS_USE);
+//                    objectSave.setAssignmentRegisterInfo(assignmentStudentRegister);
+                    listFileUpload.add(objectSave);
+                }catch (Exception e){
+                    throw new Exception("Could not save file:" +fileName);
+                }
+            }
+            fileMetadataRepository.saveAll(listFileUpload);
+            messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
+        }catch (Exception e){
+            throw new Exception("Could not save file:");
+        }
+        return messageResponse;
+    }
+
+
 
 }

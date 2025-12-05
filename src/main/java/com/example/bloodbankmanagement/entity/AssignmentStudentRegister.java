@@ -28,6 +28,10 @@ public class AssignmentStudentRegister extends EntityCommon {
     @JoinColumn(name = "student_map_instructor_id")
     private StudentMapInstructor studentMapInstructor;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "period_assignment_id")
+    private PeriodAssignment periodAssignmentInfo;
+
     public static AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse convertToDto(AssignmentStudentRegister request){
         AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse objectDtoResponse = new AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse();
         if(request != null){
