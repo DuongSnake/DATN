@@ -152,6 +152,15 @@ public class ResponseCommon {
         return result;
     }
 
+    public <T> ListResponseDto<T> getListResponseMessage(List<T> list, String responseCode, String responseMessage) {
+        ListResponseDto<T> result = new ListResponseDto<>();
+        result.setList(list);
+        setSuccessResult(result);
+        result.setResponseCd(responseCode);
+        result.setResponseMsg(responseMessage);
+        return result;
+    }
+
     public BasicResponseDto getFailResult(String code, String msg){
         BasicResponseDto result = new BasicResponseDto();
         setFailResult(result, code, msg);

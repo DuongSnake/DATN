@@ -82,4 +82,30 @@ public class FileUpload extends EntityCommon {
         objectDtoResponse.setTotalRecord((int) listData.getTotalElements());
         return objectDtoResponse;
     }
+
+    public static List<UploadFileDto.UploadFileListInfo> convertListObjectToDtoUserSite(List<FileUpload> listData){
+        if(null == listData || listData.size() == 0){
+            return null;
+        }
+        List<UploadFileDto.UploadFileListInfo> listObject = new ArrayList<>();
+        for (FileUpload object: listData){
+            Long assignmentRegisterId = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getId(): null;
+            String assignmentName = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getAssignmentName(): null;
+            String studentName = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo().getFullName(): null;
+            String instructorName = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getStudentMapInstructor().getInstructorInfo().getFullName(): null;
+            UploadFileDto.UploadFileListInfo newObject = new UploadFileDto.UploadFileListInfo();
+            newObject.setFileId(object.getId());
+            newObject.setFileName(object.getFileName());
+            newObject.setFileSize(object.getFileSize());
+            newObject.setFileType(object.getFileType());
+            newObject.setStatus(object.getStatus());
+            newObject.setCreateAt(object.getCreateAt());
+            newObject.setAssignmentRegisterId(assignmentRegisterId);
+            newObject.setAssignmentName(assignmentName);
+            newObject.setStudentName(studentName);
+            newObject.setInstructorName(instructorName);
+            listObject.add(newObject);
+        }
+        return listObject;
+    }
 }

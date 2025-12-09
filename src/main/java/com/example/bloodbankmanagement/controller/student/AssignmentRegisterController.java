@@ -1,8 +1,10 @@
 package com.example.bloodbankmanagement.controller.student;
 
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
+import com.example.bloodbankmanagement.dto.common.ListResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.service.UploadFileDto;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegisterDto;
 import com.example.bloodbankmanagement.service.student.AssignmentRegisterServiceImpl;
 import jakarta.validation.Valid;
@@ -70,6 +72,38 @@ public class AssignmentRegisterController {
     public ResponseEntity<BasicResponseDto> sendRequestAssignment(@RequestBody @Valid AssignmentRegisterDto.SendRequestAssignmentInfo request, @RequestHeader("lang") String lang) {
         return new ResponseEntity<>(
                 assignmentRegisterService.sendRequestAssignmentRegister(request, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/selectListAssApprove")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>>> selectListAssignmentRegisterApprove(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectListInfo request) {
+        return new ResponseEntity<>(
+                assignmentRegisterService.findListAssignmentRegisterIsApprove(request),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/selectListFileAss")
+    public ResponseEntity<ListResponseDto<UploadFileDto.UploadFileListInfo>> selectListFileAssignmentRegisterApprove(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectInfo request) {
+        return new ResponseEntity<>(
+                assignmentRegisterService.findListFileUploadByAssignmentIdApprove(request),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/insertListFileAssignment")
+    public ResponseEntity<BasicResponseDto> insertListFileAssignment(@ModelAttribute @Valid AssignmentRegisterDto.AssignmentInsertListFileUploadInsertInfo request, @RequestHeader("lang") String lang) throws Exception {
+        return new ResponseEntity<>(
+                assignmentRegisterService.insertFileAssignmentRegister(request, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/updateListFileAssignment")
+    public ResponseEntity<BasicResponseDto> updateListFileAssignment(@ModelAttribute @Valid AssignmentRegisterDto.AssignmentFileUploadInfo request, @RequestHeader("lang") String lang) throws Exception {
+        return new ResponseEntity<>(
+                assignmentRegisterService.updateFileAssignmentRegister(request, lang),
                 HttpStatus.OK
         );
     }

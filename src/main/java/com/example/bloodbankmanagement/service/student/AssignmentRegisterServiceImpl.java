@@ -7,9 +7,11 @@ import com.example.bloodbankmanagement.common.exception.CustomException;
 import com.example.bloodbankmanagement.common.security.AuthTokenFilter;
 import com.example.bloodbankmanagement.common.untils.CommonUtil;
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
+import com.example.bloodbankmanagement.dto.common.ListResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
+import com.example.bloodbankmanagement.dto.service.UploadFileDto;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegister;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegisterDto;
 import com.example.bloodbankmanagement.entity.*;
@@ -53,6 +55,8 @@ public class AssignmentRegisterServiceImpl {
             String userIdRegister = CommonUtil.getUsernameByToken();
             AssignmentStudentRegister objectUpdate = new AssignmentStudentRegister();
             objectUpdate.setAssignmentName(request.getAssignmentRegisterName());
+            //Tim thong tin giao vien map sinh vien
+
             //Tim thong tin ky han
             PeriodAssignment periodAssignment = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
             if(null == periodAssignment){
@@ -230,39 +234,13 @@ public class AssignmentRegisterServiceImpl {
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }
-    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> findListFileUpload(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
-        SingleResponseDto objectResponse = new SingleResponseDto();
-        String userIdRegister = CommonUtil.getUsernameByToken();
-        //Find the customer by token
-        Long valueId = getIdByUserName(userIdRegister);
-        //Only find the list student upload in file
-        request.setRegUser(userIdRegister);
-        PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
-        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
-        Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
+
+    public ListResponseDto<UploadFileDto.UploadFileListInfo> findListFileUploadByAssignmentIdApprove(AssignmentRegisterDto.AssignmentRegisterSelectInfo request){
+        ListResponseDto<UploadFileDto.UploadFileListInfo> objectResponse = new ListResponseDto<>();
         //Select list file upload
-        Page<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findListAssignmentRegisterIsApprove(request, pageable);
-        pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
-        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
-        return objectResponse;
-    }
-
-
-
-    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> findListAssignmentRegisterIsApprove2(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
-        SingleResponseDto objectResponse = new SingleResponseDto();
-        String userIdRegister = CommonUtil.getUsernameByToken();
-        //Find the customer by token
-        Long valueId = getIdByUserName(userIdRegister);
-        //Only find the list student upload in file
-        request.setRegUser(userIdRegister);
-        PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
-        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
-        Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
-        //Select list file upload
-        Page<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findListAssignmentRegisterIsApprove(request, pageable);
-        pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
-        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        List<FileUpload> listDataFileMetadata = fileMetadataRepository.findListFileUpload(request.getAssignmentRegisterId());
+        List<UploadFileDto.UploadFileListInfo> listDataFileMetadataDto = FileUpload.convertListObjectToDtoUserSite(listDataFileMetadata);
+        objectResponse = responseService.getListResponseMessage(listDataFileMetadataDto,CommonUtil.successValue, CommonUtil.querySuccess);
         return objectResponse;
     }
 
@@ -299,8 +277,8 @@ public class AssignmentRegisterServiceImpl {
         return messageResponse;
     }
 
+    @Transactional
     public BasicResponseDto updateFileAssignmentRegister(AssignmentRegisterDto.AssignmentFileUploadInfo request, String lang) throws Exception {
-        String userIdRegister = CommonUtil.getUsernameByToken();
         BasicResponseDto messageResponse;
         try{
             if(null == request){
