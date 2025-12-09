@@ -131,9 +131,9 @@ public class InstructorMapPeriodAssignmentServiceImpl {
             throw new CustomException(CommonUtil.NOT_ACCEPT_EMPTY_VALUE, "en");
         }
         //Check list user have any student not exist in table user
-        Integer listInstructorFind = userRepository.countListUerInRangeAndByTypeRole(request.getListInstructorId(), ERole.ROLE_MODERATOR.toString());
+        Integer listInstructorFind = userRepository.countListUerInRangeAndByTypeRole(request.getListInstructorId(), ERole.ROLE_USER.toString());
         if(request.getListInstructorId().size() != listInstructorFind){
-            logger.info("Not found instructor info with userId: "+request.getListInstructorId().toString());
+            logger.info("Not found student info with userId: "+request.getListInstructorId().toString());
             throw new CustomException(CommonUtil.EXIST_DATA_USER_NOT_FOUND_IN_LIST, "en");
         }
         List<InstructorMapPeriodAssignment> listStudentMapInsert = new ArrayList<>();
@@ -164,9 +164,9 @@ public class InstructorMapPeriodAssignmentServiceImpl {
             throw new CustomException(CommonUtil.NOT_ACCEPT_EMPTY_VALUE, "en");
         }
         //Check list period assignment
-        Integer listInstructorFind = userRepository.countListUerInRangeAndByTypeRole(request.getListInstructorId(), ERole.ROLE_MODERATOR.toString());
+        Integer listInstructorFind = userRepository.countListUerInRangeAndByTypeRole(request.getListInstructorId(), ERole.ROLE_USER.toString());
         if(request.getListInstructorId().size() != listInstructorFind){
-            logger.info("Not found instructor info with userId: "+request.getListInstructorId().toString());
+            logger.info("Not found student info with userId: "+request.getListInstructorId().toString());
             throw new CustomException(CommonUtil.EXIST_DATA_USER_NOT_FOUND_IN_LIST, "en");
         }
         InstructorMapPeriodAssignment objectUpdate = new InstructorMapPeriodAssignment();

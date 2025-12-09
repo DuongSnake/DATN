@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Blob;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,9 @@ public class AssignmentStudentRegister extends EntityCommon {
         AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse objectDtoResponse = new AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse();
         if(request != null){
             Long studentMapIntructorId = null;
+            Long periodAssignmentId = null;
+            String periodName = "";
+            LocalDate expireDate = null;
             String studentName = "";
             String instructorName = "";
             if(null != request.getStudentMapInstructor() && null != request.getStudentMapInstructor().getId()){
@@ -47,6 +51,15 @@ public class AssignmentStudentRegister extends EntityCommon {
             if(null != request.getStudentMapInstructor() && null != request.getStudentMapInstructor().getInstructorInfo()){
                 instructorName = request.getStudentMapInstructor().getInstructorInfo().getFullName();
             }
+            if(null != request.getPeriodAssignmentInfo() && null != request.getPeriodAssignmentInfo().getId()){
+                periodAssignmentId = request.getPeriodAssignmentInfo().getId();
+            }
+            if(null != request.getPeriodAssignmentInfo() && null != request.getPeriodAssignmentInfo().getAdmissionPeriodInfo().getAdmissionPeriodName()){
+                periodName = request.getPeriodAssignmentInfo().getAdmissionPeriodInfo().getAdmissionPeriodName();
+            }
+            if(null != request.getPeriodAssignmentInfo() && null != request.getPeriodAssignmentInfo().getAdmissionPeriodInfo().getEndPeriod()){
+                expireDate = request.getPeriodAssignmentInfo().getAdmissionPeriodInfo().getEndPeriod();
+            }
             objectDtoResponse.setAssignmentStudentRegisterId(request.getId());
             objectDtoResponse.setAssignmentStudentRegisterName(request.getAssignmentName());
             objectDtoResponse.setStudentName(studentName);
@@ -55,6 +68,9 @@ public class AssignmentStudentRegister extends EntityCommon {
             objectDtoResponse.setFileName(request.getFileName());
             objectDtoResponse.setFileType(request.getFileType());
             objectDtoResponse.setIsApproved(request.getIsApproved());
+            objectDtoResponse.setPeriodAssignmentId(periodAssignmentId);
+            objectDtoResponse.setPeriodAssignmentName(periodName);
+            objectDtoResponse.setExpirePeriodDate(expireDate);
             objectDtoResponse.setStatus(request.getStatus());
             objectDtoResponse.setCreateAt(request.getCreateAt());
             objectDtoResponse.setCreateUser(request.getCreateUser());
@@ -70,6 +86,9 @@ public class AssignmentStudentRegister extends EntityCommon {
                 Long studentMapIntructorId = null;
                 String studentName = "";
                 String instructorName = "";
+                Long periodAssignmentId = null;
+                String periodName = "";
+                LocalDate expireDate = null;
                 if(null != listRequestUser.get(i).getStudentMapInstructor() && null != listRequestUser.get(i).getStudentMapInstructor().getId()){
                     studentMapIntructorId = listRequestUser.get(i).getStudentMapInstructor().getId();
                 }
@@ -78,6 +97,15 @@ public class AssignmentStudentRegister extends EntityCommon {
                 }
                 if(null != listRequestUser.get(i).getStudentMapInstructor() && null != listRequestUser.get(i).getStudentMapInstructor().getInstructorInfo()){
                     instructorName = listRequestUser.get(i).getStudentMapInstructor().getInstructorInfo().getFullName();
+                }
+                if(null != listRequestUser.get(i).getPeriodAssignmentInfo() && null != listRequestUser.get(i).getPeriodAssignmentInfo().getId()){
+                    periodAssignmentId = listRequestUser.get(i).getPeriodAssignmentInfo().getId();
+                }
+                if(null != listRequestUser.get(i).getPeriodAssignmentInfo() && null != listRequestUser.get(i).getPeriodAssignmentInfo().getAdmissionPeriodInfo().getAdmissionPeriodName()){
+                    periodName = listRequestUser.get(i).getPeriodAssignmentInfo().getAdmissionPeriodInfo().getAdmissionPeriodName();
+                }
+                if(null != listRequestUser.get(i).getPeriodAssignmentInfo() && null != listRequestUser.get(i).getPeriodAssignmentInfo().getAdmissionPeriodInfo().getEndPeriod()){
+                    expireDate = listRequestUser.get(i).getPeriodAssignmentInfo().getAdmissionPeriodInfo().getEndPeriod();
                 }
                 AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo newObject = new AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo();
                 newObject.setAssignmentStudentRegisterId(listRequestUser.get(i).getId());
@@ -90,6 +118,9 @@ public class AssignmentStudentRegister extends EntityCommon {
                 newObject.setIsApproved(listRequestUser.get(i).getIsApproved());
                 newObject.setStatus(listRequestUser.get(i).getStatus());
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
+                newObject.setPeriodAssignmentId(periodAssignmentId);
+                newObject.setPeriodAssignmentName(periodName);
+                newObject.setExpirePeriodDate(expireDate);
                 newObject.setCreateUser(listRequestUser.get(i).getCreateUser());
                 listAssignmentStudentRegisterDto.add(newObject);
             }

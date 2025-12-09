@@ -2,6 +2,7 @@ package com.example.bloodbankmanagement.service.student;
 
 import ch.qos.logback.classic.Logger;
 import com.example.bloodbankmanagement.common.ResponseCommon;
+import com.example.bloodbankmanagement.common.exception.AuthenticationException;
 import com.example.bloodbankmanagement.common.exception.CustomException;
 import com.example.bloodbankmanagement.common.security.AuthTokenFilter;
 import com.example.bloodbankmanagement.common.untils.CommonUtil;
@@ -11,11 +12,9 @@ import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegister;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegisterDto;
-import com.example.bloodbankmanagement.entity.AssignmentStudentRegister;
-import com.example.bloodbankmanagement.entity.FileUpload;
-import com.example.bloodbankmanagement.entity.StudentMapInstructor;
-import com.example.bloodbankmanagement.entity.User;
+import com.example.bloodbankmanagement.entity.*;
 import com.example.bloodbankmanagement.repository.FileMetadataRepository;
+import com.example.bloodbankmanagement.repository.PeriodAssignmentRepository;
 import com.example.bloodbankmanagement.repository.StudentMapInstructorRepository;
 import com.example.bloodbankmanagement.repository.UserRepository;
 import com.example.bloodbankmanagement.repository.student.AssignmentRegisterRepository;
@@ -42,6 +41,7 @@ public class AssignmentRegisterServiceImpl {
     private static final Logger logger = (Logger) LoggerFactory.getLogger(AuthTokenFilter.class);
     private final AssignmentRegisterRepository assignmentRegisterRepository;
     private final StudentMapInstructorRepository studentMapInstructorRepository;
+    private final PeriodAssignmentRepository periodAssignmentRepository;
     private final UserRepository userRepository;
     private final ResponseCommon responseService;
     private final FileMetadataRepository fileMetadataRepository;
@@ -53,6 +53,17 @@ public class AssignmentRegisterServiceImpl {
             String userIdRegister = CommonUtil.getUsernameByToken();
             AssignmentStudentRegister objectUpdate = new AssignmentStudentRegister();
             objectUpdate.setAssignmentName(request.getAssignmentRegisterName());
+            //Tim thong tin ky han
+            PeriodAssignment periodAssignment = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
+            if(null == periodAssignment){
+                throw new Exception("Not found the period assignment:");
+            }
+            //Check expire time upload
+            LocalDate currentDate = LocalDate.now();
+            if(null != periodAssignment.getEndPeriod() && periodAssignment.getEndPeriod().isBefore(currentDate)){
+                throw new CustomException("The time upload file is expire ", "en");
+            }
+            objectUpdate.setPeriodAssignmentInfo(periodAssignment);
             //Xu lý thong tin file upload
             if(null != request.getFileUpload()){
                 //Xu ly file upload
@@ -119,6 +130,17 @@ public class AssignmentRegisterServiceImpl {
             objectUpdate.setAssignmentName(request.getAssignmentRegisterName());
             objectUpdate.setUpdateUser(userIdUpdate);
             objectUpdate.setUpdateAt(LocalDate.now());
+            //Tim thong tin ky han
+            PeriodAssignment periodAssignment = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
+            if(null == periodAssignment){
+                throw new Exception("Not found the period assignment:");
+            }
+            //Check expire time upload
+            LocalDate currentDate = LocalDate.now();
+            if(null != periodAssignment.getEndPeriod() && periodAssignment.getEndPeriod().isBefore(currentDate)){
+                throw new CustomException("The time upload file is expire ", "en");
+            }
+            objectUpdate.setPeriodAssignmentInfo(periodAssignment);
             //Xu lý thong tin file upload
             if(null != request.getFileUpload() && !"".equals(request.getFileUpload().getOriginalFilename()) ){
                 //Xu ly file upload
@@ -192,7 +214,7 @@ public class AssignmentRegisterServiceImpl {
         return userInfo.get().getId();
     }
 
-    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> saveAllFileUpload(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> findListAssignmentRegisterIsApprove(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         String userIdRegister = CommonUtil.getUsernameByToken();
         //Find the customer by token
@@ -208,8 +230,44 @@ public class AssignmentRegisterServiceImpl {
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> findListFileUpload(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        String userIdRegister = CommonUtil.getUsernameByToken();
+        //Find the customer by token
+        Long valueId = getIdByUserName(userIdRegister);
+        //Only find the list student upload in file
+        request.setRegUser(userIdRegister);
+        PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
+        Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
+        //Select list file upload
+        Page<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findListAssignmentRegisterIsApprove(request, pageable);
+        pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
+
+
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> findListAssignmentRegisterIsApprove2(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        String userIdRegister = CommonUtil.getUsernameByToken();
+        //Find the customer by token
+        Long valueId = getIdByUserName(userIdRegister);
+        //Only find the list student upload in file
+        request.setRegUser(userIdRegister);
+        PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
+        Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
+        //Select list file upload
+        Page<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findListAssignmentRegisterIsApprove(request, pageable);
+        pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
     @Transactional
-    public BasicResponseDto updateAssignmentRegister(AssignmentRegisterDto.AssignmentInsertListFileUploadInsertInfo request, String lang) throws Exception {
+    public BasicResponseDto insertFileAssignmentRegister(AssignmentRegisterDto.AssignmentInsertListFileUploadInsertInfo request, String lang) throws Exception {
         String userIdRegister = CommonUtil.getUsernameByToken();
         BasicResponseDto messageResponse;
         List<FileUpload> listFileUpload = new ArrayList<>();
@@ -218,31 +276,144 @@ public class AssignmentRegisterServiceImpl {
                 throw new CustomException("the object send request not null ", "en");
             }
             for (MultipartFile file : request.getListFile()){
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-                String tailFile = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
-                Blob blob = new SerialBlob(file.getBytes());
-                try{
-                    FileUpload objectSave = new FileUpload();
-                    objectSave.setData(blob);
-                    objectSave.setFileType(tailFile);
-                    objectSave.setFileName(fileName);
-                    objectSave.setFileSize(file.getSize());
-                    objectSave.setCreateUser(userIdRegister);
-                    objectSave.setStatus(CommonUtil.STATUS_USE);
-//                    objectSave.setAssignmentRegisterInfo(assignmentStudentRegister);
-                    listFileUpload.add(objectSave);
-                }catch (Exception e){
-                    throw new Exception("Could not save file:" +fileName);
+                AssignmentStudentRegister assignmentStudentRegister= assignmentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
+                if(null == assignmentStudentRegister){
+                    throw new AuthenticationException("Not found the assignment register");
                 }
+                //Check expire time upload
+                LocalDate currentDate = LocalDate.now();
+                if(null == assignmentStudentRegister.getPeriodAssignmentInfo()){
+                    throw new CustomException("Not found the value period assignemnt ", "en");
+                }
+                if(null != assignmentStudentRegister.getPeriodAssignmentInfo().getEndPeriod() && assignmentStudentRegister.getPeriodAssignmentInfo().getEndPeriod().isBefore(currentDate)){
+                    throw new CustomException("The time upload file is expire ", "en");
+                }
+                FileUpload objectSave = handleObjectBeforeSave(file, userIdRegister, assignmentStudentRegister);
+                listFileUpload.add(objectSave);
             }
             fileMetadataRepository.saveAll(listFileUpload);
-            messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
+            messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.insertSuccess);
         }catch (Exception e){
             throw new Exception("Could not save file:");
         }
         return messageResponse;
     }
 
+    public BasicResponseDto updateFileAssignmentRegister(AssignmentRegisterDto.AssignmentFileUploadInfo request, String lang) throws Exception {
+        String userIdRegister = CommonUtil.getUsernameByToken();
+        BasicResponseDto messageResponse;
+        try{
+            if(null == request){
+                throw new CustomException("the object send request not null ", "en");
+            }
+            AssignmentStudentRegister assignmentStudentRegister= assignmentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
+            if(null == assignmentStudentRegister){
+                throw new AuthenticationException("Not found the assignment register");
+            }
+            //Check expire time upload
+            LocalDate currentDate = LocalDate.now();
+            if(null == assignmentStudentRegister.getPeriodAssignmentInfo()){
+                throw new CustomException("Not found the value period assignemnt ", "en");
+            }
+            if(null != assignmentStudentRegister.getPeriodAssignmentInfo().getEndPeriod() && assignmentStudentRegister.getPeriodAssignmentInfo().getEndPeriod().isBefore(currentDate)){
+                throw new CustomException("The time upload file is expire ", "en");
+            }
+            //Check list insert list file
+            insertListFileUpload(request.getListFileInsert(),assignmentStudentRegister);
+            //Check list update list file
+            updateListFileUpload(request.getListIdUpdate(), request.getListFileUpdate() ,assignmentStudentRegister);
+            //Check list delete list file
+            deleteListFileUpload(request.getListIdUpdate());
+        }catch (Exception e){
+            throw new Exception("Could not save file:");
+        }
+        //Insert list id
+        messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
+        return messageResponse;
+    }
 
 
+    public void insertListFileUpload(MultipartFile listFileInsert[], AssignmentStudentRegister assignmentRegisterInfo) throws Exception {
+        String userIdRegister = CommonUtil.getUsernameByToken();
+        List<FileUpload> listFileUpload = new ArrayList<>();
+        try{
+            if(null == listFileInsert){
+                throw new CustomException("the object send request not null ", "en");
+            }
+            for (MultipartFile file : listFileInsert){
+                FileUpload objectSave = handleObjectBeforeSave(file, userIdRegister, assignmentRegisterInfo);
+                listFileUpload.add(objectSave);
+            }
+            fileMetadataRepository.saveAll(listFileUpload);
+        }catch (Exception e){
+            throw new Exception("Could not save file:");
+        }
+    }
+
+
+    public void updateListFileUpload(List<Long> listIdUpdate,MultipartFile listFileUpdate[], AssignmentStudentRegister assignmentRegisterInfo) throws Exception {
+        String userIdUpdate = CommonUtil.getUsernameByToken();
+        try{
+            if(null == listFileUpdate || null == listIdUpdate){
+                throw new CustomException("the object send request not null ", "en");
+            }
+            if(listFileUpdate.length != listIdUpdate.size()){
+                throw new CustomException("total record upload and total record id update not equal ", "en");
+            }
+            for (int i=0 ;i < listFileUpdate.length;i++){
+                FileUpload objectUpdate = handleObjectBeforeUpdate(listFileUpdate[i], userIdUpdate, assignmentRegisterInfo);
+                objectUpdate.setId(listIdUpdate.get(i));
+                fileMetadataRepository.updateFileUpload(objectUpdate);
+            }
+        }catch (Exception e){
+            throw new Exception("Could not save file:");
+        }
+    }
+
+
+    public void deleteListFileUpload(List<Long> listIdDelete){
+        FileUpload objectDelete = new FileUpload();
+        objectDelete.setStatus(CommonUtil.STATUS_EXPIRE);
+        objectDelete.setUpdateAt(LocalDate.now());
+        objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
+        fileMetadataRepository.deleteFileUpload(objectDelete, listIdDelete);
+    }
+
+    public FileUpload handleObjectBeforeSave(MultipartFile file, String userIdRegister, AssignmentStudentRegister assignmentStudentRegister) throws Exception {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String tailFile = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+        Blob blob = new SerialBlob(file.getBytes());
+        FileUpload objectSave = new FileUpload();
+        try{
+            objectSave.setData(blob);
+            objectSave.setFileType(tailFile);
+            objectSave.setFileName(fileName);
+            objectSave.setFileSize(file.getSize());
+            objectSave.setCreateUser(userIdRegister);
+            objectSave.setStatus(CommonUtil.STATUS_USE);
+            objectSave.setAssignmentRegisterInfo(assignmentStudentRegister);
+        }catch (Exception e){
+            throw new Exception("Could not save file:" +fileName);
+        }
+        return objectSave;
+    }
+
+    public FileUpload handleObjectBeforeUpdate(MultipartFile file, String userIdUpdate, AssignmentStudentRegister assignmentStudentRegister) throws Exception {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String tailFile = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+        Blob blob = new SerialBlob(file.getBytes());
+        FileUpload objectUpdate = new FileUpload();
+        try{
+            objectUpdate.setData(blob);
+            objectUpdate.setFileType(tailFile);
+            objectUpdate.setFileName(fileName);
+            objectUpdate.setFileSize(file.getSize());
+            objectUpdate.setAssignmentRegisterInfo(assignmentStudentRegister);
+            objectUpdate.setUpdateUser(userIdUpdate);
+            objectUpdate.setUpdateAt(LocalDate.now());
+        }catch (Exception e){
+            throw new Exception("Could not save file:" +fileName);
+        }
+        return objectUpdate;
+    }
 }

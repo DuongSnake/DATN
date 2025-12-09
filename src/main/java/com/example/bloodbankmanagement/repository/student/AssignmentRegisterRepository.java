@@ -19,6 +19,7 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
             "where (:#{#request.assignmentRegisterId} is null or ''  = :#{#request.assignmentRegisterId} or id like :#{#request.assignmentRegisterId})" +
             "and (:#{#request.assignmentRegisterName} is null or ''  = :#{#request.assignmentRegisterName} or assignment_name like '%'+:#{#request.assignmentRegisterName}+'%')" +
             "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status})" +
+            "and (:#{#request.periodAssignmentId} is null or ''  = :#{#request.periodAssignmentId} or period_assignment_id = :#{#request.periodAssignmentId})" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.regUser} is null or ''  = :#{#request.regUser} or create_user = :#{#request.regUser}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
@@ -33,13 +34,13 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
     @Modifying
     @Transactional
     @Query(value = "update assignment_student_register set assignment_name =:#{#request.assignmentName},file_name =:#{#request.fileName},file_type =:#{#request.fileType},content_assignment =:#{#request.contentAssignment}" +
-            " ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id} and is_approved in (0,1,3) ",nativeQuery = true)
+            " ,period_assignment_id = :#{#request.periodAssignmentInfo.id} ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id} and is_approved in (0,1,3) ",nativeQuery = true)
     void updateAssignmentRegister(@Param("request") AssignmentStudentRegister request);
 
     @Modifying
     @Transactional
     @Query(value = "update assignment_student_register set assignment_name =:#{#request.assignmentName}" +
-            ",update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id} and is_approved in (0,1,3) ",nativeQuery = true)
+            ",period_assignment_id = :#{#request.periodAssignmentInfo.id} ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id} and is_approved in (0,1,3) ",nativeQuery = true)
     void updateAssignmentRegisterNoFile(@Param("request") AssignmentStudentRegister request);
 
     @Modifying

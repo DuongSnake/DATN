@@ -11,6 +11,7 @@ public class AssignmentStudentRegisterDto {
     @Data
     public static class AssignmentStudentRegisterSelectListInfo {
         private long assignmentStudentRegisterId;
+        private Long periodAssignmentId;
         private String assignmentStudentRegisterName;
         private Date fromDate;
         private Date toDate;
@@ -22,6 +23,9 @@ public class AssignmentStudentRegisterDto {
     public static class AssignmentStudentRegisterListInfo {
         private long assignmentStudentRegisterId;
         private String assignmentStudentRegisterName;
+        private Long periodAssignmentId;
+        private String periodAssignmentName;
+        private LocalDate expirePeriodDate;
         private Long studentMapInstructorId;
         private String studentName;
         private String instructorName;
@@ -43,6 +47,9 @@ public class AssignmentStudentRegisterDto {
         private Long assignmentStudentRegisterId;
         private String assignmentStudentRegisterName;
         private Long studentMapInstructorId;
+        private Long periodAssignmentId;
+        private String periodAssignmentName;
+        private LocalDate expirePeriodDate;
         private String studentName;
         private String instructorName;
         private String fileName;
@@ -57,6 +64,7 @@ public class AssignmentStudentRegisterDto {
     public static class AssignmentStudentRegisterInsertInfo {
         private String assignmentStudentRegisterName;
         private MultipartFile fileUpload;
+        private Long periodAssignmentId;
         private Long studentMapInstructorId;
     }
 
@@ -65,6 +73,7 @@ public class AssignmentStudentRegisterDto {
         private long assignmentStudentRegisterId;
         private MultipartFile fileUpload;
         private Long studentMapInstructorId;
+        private Long periodAssignmentId;
         private String assignmentStudentRegisterName;
     }
 

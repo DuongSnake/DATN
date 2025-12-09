@@ -50,6 +50,10 @@ public interface FileMetadataRepository extends JpaRepository<FileUpload, Long> 
     @Query("select u from FileUpload u where u.id = ?1")
     FileUpload findByFileIdToDownload(Long id);
 
+
+    @Query("select u from FileUpload u where u.assignmentRegisterInfo.id = ?1")
+    FileUpload findListFileUpload(Long id);
+
     @Modifying
     @Transactional
     @Query(value = "update file_meta_data set file_name =:#{#request.fileName},file_type =:#{#request.fileType},file_size =:#{#request.fileSize},period_assignment_id =:#{#request.periodAssignmentInfo.id},assignment_register_info_id =:#{#request.assignmentRegisterInfo.id}" +

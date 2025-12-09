@@ -4,6 +4,8 @@ import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.entity.AssignmentStudentRegister;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,9 @@ public class AssignmentRegister {
             Long studentMapIntructorId = null;
             String studentName = "";
             String instructorName = "";
+            Long periodAssignmentId = null;
+            String periodName = "";
+            LocalDate expireDate = null;
             if(null != request.getStudentMapInstructor() && null != request.getStudentMapInstructor().getId()){
                 studentMapIntructorId = request.getStudentMapInstructor().getId();
             }
@@ -25,6 +30,15 @@ public class AssignmentRegister {
             }
             if(null != request.getStudentMapInstructor() && null != request.getStudentMapInstructor().getInstructorInfo()){
                 instructorName = request.getStudentMapInstructor().getInstructorInfo().getFullName();
+            }
+            if(null != request.getPeriodAssignmentInfo() && null != request.getPeriodAssignmentInfo().getId()){
+                periodAssignmentId = request.getPeriodAssignmentInfo().getId();
+            }
+            if(null != request.getPeriodAssignmentInfo() && null != request.getPeriodAssignmentInfo().getAdmissionPeriodInfo().getAdmissionPeriodName()){
+                periodName = request.getPeriodAssignmentInfo().getAdmissionPeriodInfo().getAdmissionPeriodName();
+            }
+            if(null != request.getPeriodAssignmentInfo() && null != request.getPeriodAssignmentInfo().getAdmissionPeriodInfo().getEndPeriod()){
+                expireDate = request.getPeriodAssignmentInfo().getAdmissionPeriodInfo().getEndPeriod();
             }
             objectDtoResponse.setAssignmentRegisterId(request.getId());
             objectDtoResponse.setAssignmentRegisterName(request.getAssignmentName());
@@ -36,6 +50,9 @@ public class AssignmentRegister {
             objectDtoResponse.setIsApproved(request.getIsApproved());
             objectDtoResponse.setStatus(request.getStatus());
             objectDtoResponse.setCreateAt(request.getCreateAt());
+            objectDtoResponse.setPeriodAssignmentId(periodAssignmentId);
+            objectDtoResponse.setPeriodAssignmentName(periodName);
+            objectDtoResponse.setExpirePeriodDate(expireDate);
             objectDtoResponse.setCreateUser(request.getCreateUser());
         }
         return objectDtoResponse;
@@ -49,6 +66,9 @@ public class AssignmentRegister {
                 Long studentMapIntructorId = null;
                 String studentName = "";
                 String instructorName = "";
+                Long periodAssignmentId = null;
+                String periodName = "";
+                LocalDate expireDate = null;
                 if(null != listRequestUser.get(i).getStudentMapInstructor() && null != listRequestUser.get(i).getStudentMapInstructor().getId()){
                     studentMapIntructorId = listRequestUser.get(i).getStudentMapInstructor().getId();
                 }
@@ -57,6 +77,15 @@ public class AssignmentRegister {
                 }
                 if(null != listRequestUser.get(i).getStudentMapInstructor() && null != listRequestUser.get(i).getStudentMapInstructor().getInstructorInfo()){
                     instructorName = listRequestUser.get(i).getStudentMapInstructor().getInstructorInfo().getFullName();
+                }
+                if(null != listRequestUser.get(i).getPeriodAssignmentInfo() && null != listRequestUser.get(i).getPeriodAssignmentInfo().getId()){
+                    periodAssignmentId = listRequestUser.get(i).getPeriodAssignmentInfo().getId();
+                }
+                if(null != listRequestUser.get(i).getPeriodAssignmentInfo() && null != listRequestUser.get(i).getPeriodAssignmentInfo().getAdmissionPeriodInfo().getAdmissionPeriodName()){
+                    periodName = listRequestUser.get(i).getPeriodAssignmentInfo().getAdmissionPeriodInfo().getAdmissionPeriodName();
+                }
+                if(null != listRequestUser.get(i).getPeriodAssignmentInfo() && null != listRequestUser.get(i).getPeriodAssignmentInfo().getAdmissionPeriodInfo().getEndPeriod()){
+                    expireDate = listRequestUser.get(i).getPeriodAssignmentInfo().getAdmissionPeriodInfo().getEndPeriod();
                 }
                 AssignmentRegisterDto.AssignmentRegisterListInfo newObject = new AssignmentRegisterDto.AssignmentRegisterListInfo();
                 newObject.setAssignmentRegisterId(listRequestUser.get(i).getId());
@@ -70,6 +99,9 @@ public class AssignmentRegister {
                 newObject.setStatus(listRequestUser.get(i).getStatus());
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
                 newObject.setCreateUser(listRequestUser.get(i).getCreateUser());
+                newObject.setPeriodAssignmentId(periodAssignmentId);
+                newObject.setPeriodAssignmentName(periodName);
+                newObject.setExpirePeriodDate(expireDate);
                 listAssignmentRegisterDto.add(newObject);
             }
         }
