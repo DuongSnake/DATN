@@ -19,6 +19,7 @@ public interface AssignmentStudentRegisterRepository extends JpaRepository<Assig
             "where (:#{#request.assignmentStudentRegisterId} is null or ''  = :#{#request.assignmentStudentRegisterId} or id like :#{#request.assignmentStudentRegisterId})" +
             "and (:#{#request.assignmentStudentRegisterName} is null or ''  = :#{#request.assignmentStudentRegisterName} or assignment_name like '%'+:#{#request.assignmentStudentRegisterName}+'%')" +
             "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status})" +
+            "and (:#{#request.periodAssignmentId} is null or ''  = :#{#request.periodAssignmentId} or period_assignment_id = :#{#request.periodAssignmentId})" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
             " order by create_at DESC,update_at DESC ",
@@ -31,13 +32,13 @@ public interface AssignmentStudentRegisterRepository extends JpaRepository<Assig
     @Modifying
     @Transactional
     @Query(value = "update assignment_student_register set assignment_name =:#{#request.assignmentName},file_name =:#{#request.fileName},file_type =:#{#request.fileType},content_assignment =:#{#request.contentAssignment}" +
-            ",student_map_instructor_id =:#{#request.studentMapInstructor.id} ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
+            ",period_assignment_id = :#{#request.periodAssignmentInfo.id} ,student_map_instructor_id =:#{#request.studentMapInstructor.id} ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
     void updateAssignmentStudentRegister(@Param("request") AssignmentStudentRegister request);
 
     @Modifying
     @Transactional
     @Query(value = "update assignment_student_register set assignment_name =:#{#request.assignmentName}" +
-            ",student_map_instructor_id =:#{#request.studentMapInstructor.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
+            ",period_assignment_id = :#{#request.periodAssignmentInfo.id} ,student_map_instructor_id =:#{#request.studentMapInstructor.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
     void updateAssignmentStudentRegisterNoFile(@Param("request") AssignmentStudentRegister request);
 
     @Modifying

@@ -12,6 +12,7 @@ import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.entity.*;
 import com.example.bloodbankmanagement.repository.AssignmentStudentRegisterRepository;
+import com.example.bloodbankmanagement.repository.PeriodAssignmentRepository;
 import com.example.bloodbankmanagement.repository.StudentMapInstructorRepository;
 import com.example.bloodbankmanagement.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -34,6 +35,7 @@ public class AssignmentStudentRegisterServiceImpl {
     private static final Logger logger = (Logger) LoggerFactory.getLogger(AuthTokenFilter.class);
     private final AssignmentStudentRegisterRepository assignmentStudentRegisterRepository;
     private final StudentMapInstructorRepository studentMapInstructorRepository;
+    private final PeriodAssignmentRepository periodAssignmentRepository;
     private final UserRepository userRepository;
     private final ResponseCommon responseService;
 
@@ -41,15 +43,30 @@ public class AssignmentStudentRegisterServiceImpl {
     public BasicResponseDto insertAssignmentStudentRegister(AssignmentStudentRegisterDto.AssignmentStudentRegisterInsertInfo request, String lang) throws Exception {
         BasicResponseDto result;
         try{
-
+        LocalDate nowDate = LocalDate.now();
         String userIdCreate = CommonUtil.getUsernameByToken();
         String userIdRegister = checkExistUser(userIdCreate);
         AssignmentStudentRegister objectUpdate = new AssignmentStudentRegister();
         objectUpdate.setAssignmentName(request.getAssignmentStudentRegisterName());
+        //Tim thong tin giao vien map sinh vien
         StudentMapInstructor objectStudentMapInstructor = studentMapInstructorRepository.findByStudentMapInstructorId(request.getStudentMapInstructorId());
+        if(null == objectStudentMapInstructor){
+            throw new Exception("Not found the student map instructor:");
+        }
         if(null != objectStudentMapInstructor){
             objectUpdate.setStudentMapInstructor(objectStudentMapInstructor);
         }
+        //Tim thong tin ky han
+        PeriodAssignment periodAssignment = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
+        if(null == periodAssignment){
+            throw new Exception("Not found the period assignment:");
+        }
+        //Check expire time upload
+        LocalDate currentDate = LocalDate.now();
+        if(null != periodAssignment.getEndPeriod() && periodAssignment.getEndPeriod().isBefore(currentDate)){
+            throw new CustomException("The time upload file is expire ", "en");
+        }
+        objectUpdate.setPeriodAssignmentInfo(periodAssignment);
         //Xu lý thong tin file upload
         if(null != request.getFileUpload()){
             //Xu ly file upload
@@ -114,11 +131,22 @@ public class AssignmentStudentRegisterServiceImpl {
         objectUpdate.setAssignmentName(request.getAssignmentStudentRegisterName());
         objectUpdate.setUpdateUser(userIdUpdate);
         objectUpdate.setUpdateAt(LocalDate.now());
-        //Find info
+        //Find thong tin giao vien map sinh vien
         StudentMapInstructor objectStudentMapInstructor = studentMapInstructorRepository.findByStudentMapInstructorId(request.getStudentMapInstructorId());
         if(null != objectStudentMapInstructor){
             objectUpdate.setStudentMapInstructor(objectStudentMapInstructor);
         }
+        //Tim thong tin ky han
+        PeriodAssignment periodAssignment = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
+        if(null == periodAssignment){
+            throw new Exception("Not found the period assignment:");
+        }
+        //Check expire time upload
+        LocalDate currentDate = LocalDate.now();
+        if(null != periodAssignment.getEndPeriod() && periodAssignment.getEndPeriod().isBefore(currentDate)){
+            throw new CustomException("The time upload file is expire ", "en");
+        }
+        objectUpdate.setPeriodAssignmentInfo(periodAssignment);
         //Xu lý thong tin file upload
         if(null != request.getFileUpload() && !"".equals(request.getFileUpload().getOriginalFilename()) ){
             //Xu ly file upload
