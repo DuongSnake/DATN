@@ -52,7 +52,7 @@ public interface FileMetadataRepository extends JpaRepository<FileUpload, Long> 
 
 
     @Query("select u from FileUpload u where u.assignmentRegisterInfo.id = ?1")
-    FileUpload findListFileUpload(Long id);
+    List<FileUpload> findListFileUpload(Long id);
 
     @Modifying
     @Transactional

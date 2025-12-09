@@ -27,7 +27,7 @@ public class CommonUtil {
     private static final String[] IP_HEADER_CANDIDATES = new String[]{"X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_X_FORWARDED_FOR", "HTTP_X_FORWARDED", "HTTP_X_CLUSTER_CLIENT_IP", "HTTP_CLIENT_IP", "HTTP_FORWARDED_FOR", "HTTP_FORWARDED", "HTTP_VIA", "REMOTE_ADDR"};
     public static final String insertSuccess =  "InsertSuccess";
     public static final String updateSuccess =  "UpdateSuccess";
-    public static final String querySuccess =  "OK.";
+    public static final String querySuccess =  "QuerySuccess";
     public static final String deleteSuccess =  "DeleteSuccess";
     public static final String sendMAilSuccess =  "SendMAilSuccess";
     public static final String STATUS_EXPIRE = "99";
