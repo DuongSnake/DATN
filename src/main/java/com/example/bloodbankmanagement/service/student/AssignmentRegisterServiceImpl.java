@@ -254,7 +254,7 @@ public class AssignmentRegisterServiceImpl {
                 throw new CustomException("the object send request not null ", "en");
             }
             for (MultipartFile file : request.getListFile()){
-                AssignmentStudentRegister assignmentStudentRegister= assignmentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
+                AssignmentStudentRegister assignmentStudentRegister= assignmentRegisterRepository.findByFileIdApproveAss(request.getAssignmentRegisterId());
                 if(null == assignmentStudentRegister){
                     throw new AuthenticationException("Not found the assignment register");
                 }
@@ -284,7 +284,7 @@ public class AssignmentRegisterServiceImpl {
             if(null == request){
                 throw new CustomException("the object send request not null ", "en");
             }
-            AssignmentStudentRegister assignmentStudentRegister= assignmentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
+            AssignmentStudentRegister assignmentStudentRegister= assignmentRegisterRepository.findByFileIdApproveAss(request.getAssignmentRegisterId());
             if(null == assignmentStudentRegister){
                 throw new AuthenticationException("Not found the assignment register");
             }
