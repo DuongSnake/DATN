@@ -31,6 +31,10 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
     @Query(value = "select * from assignment_student_register where id = ?1 and is_approved in (0,1,3) ",nativeQuery = true)
     AssignmentStudentRegister findByFileId(Long id);
 
+
+    @Query(value = "select * from assignment_student_register where id = ?1 and is_approved in (2) ",nativeQuery = true)
+    AssignmentStudentRegister findByFileIdApproveAss(Long id);
+
     @Modifying
     @Transactional
     @Query(value = "update assignment_student_register set assignment_name =:#{#request.assignmentName},file_name =:#{#request.fileName},file_type =:#{#request.fileType},content_assignment =:#{#request.contentAssignment}" +
