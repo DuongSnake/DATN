@@ -53,10 +53,14 @@ public class AssignmentRegisterServiceImpl {
         BasicResponseDto result;
         try{
             String userIdRegister = CommonUtil.getUsernameByToken();
+            Long valueId = getIdByUserName(userIdRegister);
             AssignmentStudentRegister objectUpdate = new AssignmentStudentRegister();
             objectUpdate.setAssignmentName(request.getAssignmentRegisterName());
             //Tim thong tin giao vien map sinh vien
-
+            List<StudentMapInstructor> infoInstructor = studentMapInstructorRepository.getStudentMapInstructorIdActiveByStudentId(valueId);
+            if(infoInstructor.size() == 0 || infoInstructor.get(0).getInstructorInfo() == null || infoInstructor.get(0).getInstructorInfo().getId() == null){
+                throw new CustomException("Not found the  instructor before send request,please call to admin assign the instructor", "en");
+            }
             //Tim thong tin ky han
             PeriodAssignment periodAssignment = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
             if(null == periodAssignment){
@@ -82,6 +86,7 @@ public class AssignmentRegisterServiceImpl {
             objectUpdate.setCreateUser(userIdRegister);
             objectUpdate.setStatus(CommonUtil.STATUS_USE);
             objectUpdate.setCreateAt(LocalDate.now());
+            objectUpdate.setStudentMapInstructor(infoInstructor.get(0));
             assignmentRegisterRepository.save(objectUpdate);
             result = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.insertSuccess);
         }catch (Exception e){
@@ -125,15 +130,22 @@ public class AssignmentRegisterServiceImpl {
     public BasicResponseDto updateAssignmentRegister(AssignmentRegisterDto.AssignmentRegisterUpdateInfo request, String lang) throws Exception {
         String userIdUpdate = CommonUtil.getUsernameByToken();
         BasicResponseDto messageResponse;
+        Long valueId = getIdByUserName(userIdUpdate);
         try{
             if(null == request){
                 throw new CustomException("the object send request not null ", "en");
+            }
+            //Tim thong tin giao vien map sinh vien
+            List<StudentMapInstructor> infoInstructor = studentMapInstructorRepository.getStudentMapInstructorIdActiveByStudentId(valueId);
+            if(infoInstructor.size() == 0 || infoInstructor.get(0).getInstructorInfo() == null || infoInstructor.get(0).getInstructorInfo().getId() == null){
+                throw new CustomException("Not found the  instructor before send request,please call to admin assign the instructor", "en");
             }
             AssignmentStudentRegister objectUpdate = new AssignmentStudentRegister();
             objectUpdate.setId(request.getAssignmentRegisterId());
             objectUpdate.setAssignmentName(request.getAssignmentRegisterName());
             objectUpdate.setUpdateUser(userIdUpdate);
             objectUpdate.setUpdateAt(LocalDate.now());
+            objectUpdate.setStudentMapInstructor(infoInstructor.get(0));
             //Tim thong tin ky han
             PeriodAssignment periodAssignment = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
             if(null == periodAssignment){
