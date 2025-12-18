@@ -38,13 +38,13 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
     @Modifying
     @Transactional
     @Query(value = "update assignment_student_register set assignment_name =:#{#request.assignmentName},file_name =:#{#request.fileName},file_type =:#{#request.fileType},content_assignment =:#{#request.contentAssignment}" +
-            " ,period_assignment_id = :#{#request.periodAssignmentInfo.id} ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id} and is_approved in (0,1,3) ",nativeQuery = true)
+            ",student_map_instructor_id = :#{#request.studentMapInstructor.id} ,period_assignment_id = :#{#request.periodAssignmentInfo.id} ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id} and is_approved in (0,1,3) ",nativeQuery = true)
     void updateAssignmentRegister(@Param("request") AssignmentStudentRegister request);
 
     @Modifying
     @Transactional
     @Query(value = "update assignment_student_register set assignment_name =:#{#request.assignmentName}" +
-            ",period_assignment_id = :#{#request.periodAssignmentInfo.id} ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id} and is_approved in (0,1,3) ",nativeQuery = true)
+            ",student_map_instructor_id = :#{#request.studentMapInstructor.id} ,period_assignment_id = :#{#request.periodAssignmentInfo.id} ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id} and is_approved in (0,1,3) ",nativeQuery = true)
     void updateAssignmentRegisterNoFile(@Param("request") AssignmentStudentRegister request);
 
     @Modifying
