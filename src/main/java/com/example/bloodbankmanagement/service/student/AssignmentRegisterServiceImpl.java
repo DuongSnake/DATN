@@ -313,7 +313,7 @@ public class AssignmentRegisterServiceImpl {
             //Check list update list file
             updateListFileUpload(request.getListIdUpdate(), request.getListFileUpdate() ,assignmentStudentRegister);
             //Check list delete list file
-            deleteListFileUpload(request.getListIdUpdate());
+            deleteListFileUpload(request.getListIdDelete());
         }catch (Exception e){
             throw new Exception("Could not save file:");
         }
@@ -327,8 +327,8 @@ public class AssignmentRegisterServiceImpl {
         String userIdRegister = CommonUtil.getUsernameByToken();
         List<FileUpload> listFileUpload = new ArrayList<>();
         try{
-            if(null == listFileInsert){
-                throw new CustomException("the object send request not null ", "en");
+            if(null == listFileInsert || listFileInsert.length == 0){
+                return;
             }
             for (MultipartFile file : listFileInsert){
                 FileUpload objectSave = handleObjectBeforeSave(file, userIdRegister, assignmentRegisterInfo);
@@ -344,10 +344,10 @@ public class AssignmentRegisterServiceImpl {
     public void updateListFileUpload(List<Long> listIdUpdate,MultipartFile listFileUpdate[], AssignmentStudentRegister assignmentRegisterInfo) throws Exception {
         String userIdUpdate = CommonUtil.getUsernameByToken();
         try{
-            if(null == listFileUpdate || null == listIdUpdate){
-                throw new CustomException("the object send request not null ", "en");
+            if(null == listFileUpdate || listFileUpdate.length == 0){
+                return;
             }
-            if(listFileUpdate.length != listIdUpdate.size()){
+            if(!(Integer.valueOf(listFileUpdate.length) == listIdUpdate.size())){
                 throw new CustomException("total record upload and total record id update not equal ", "en");
             }
             for (int i=0 ;i < listFileUpdate.length;i++){
@@ -362,6 +362,9 @@ public class AssignmentRegisterServiceImpl {
 
 
     public void deleteListFileUpload(List<Long> listIdDelete){
+        if(null == listIdDelete || listIdDelete.size() == 0){
+            return;
+        }
         FileUpload objectDelete = new FileUpload();
         objectDelete.setStatus(CommonUtil.STATUS_EXPIRE);
         objectDelete.setUpdateAt(LocalDate.now());
