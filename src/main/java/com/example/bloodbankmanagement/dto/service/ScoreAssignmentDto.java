@@ -10,7 +10,6 @@ public class ScoreAssignmentDto {
     public static class ScoreAssignmentSelectListInfo {
         private Long scoreAssignmentId;
         private Long assignmentRegisterId;
-        private Double scoreAverage;
         private LocalDate fromDate;
         private LocalDate toDate;
         private String status;
@@ -22,6 +21,9 @@ public class ScoreAssignmentDto {
         private Long scoreAssignmentId;
         private Long assignmentRegisterId;
         private Double scoreAverage;
+        private Double scoreInstructor;
+        private Double scoreExaminer;
+        private Double scoreCritical;
         private String assignmentRegisterName;
         private String status;
         private LocalDate createAt;
@@ -37,6 +39,9 @@ public class ScoreAssignmentDto {
         private Long scoreAssignmentId;
         private Long assignmentRegisterId;
         private Double scoreAverage;
+        private Double scoreInstructor;
+        private Double scoreExaminer;
+        private Double scoreCritical;
         private String assignmentRegisterName;
         private String status;
         private LocalDate createAt;
@@ -45,14 +50,18 @@ public class ScoreAssignmentDto {
     @Data
     public static class ScoreAssignmentInsertInfo {
         private Long assignmentRegisterId;
-        private Double scoreAverage;
+        private Double scoreInstructor;
+        private Double scoreExaminer;
+        private Double scoreCritical;
     }
 
     @Data
     public static class ScoreAssignmentUpdateInfo {
         private Long scoreAssignmentId;
         private Long assignmentRegisterId;
-        private Double scoreAverage;
+        private Double scoreInstructor;
+        private Double scoreExaminer;
+        private Double scoreCritical;
     }
 
     @Data

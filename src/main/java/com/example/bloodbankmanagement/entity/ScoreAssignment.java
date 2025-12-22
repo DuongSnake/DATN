@@ -6,6 +6,7 @@ import com.example.bloodbankmanagement.dto.service.ScoreAssignmentDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,9 @@ import java.util.List;
 @Entity
 @Table(name = "score_assignment")
 public class ScoreAssignment extends EntityCommon {
-    private Double scoreAverage;
+    private Double scoreInstructor;
+    private Double scoreExaminer;//Hoi dong cham thi
+    private Double scoreCritical;//Diem giao vien phan bien
     private String note;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignment_register_info_id")
@@ -26,8 +29,21 @@ public class ScoreAssignment extends EntityCommon {
         if(request != null){
             Long assignmentRegisterId = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getId() : null;
             String assignmentRegisterName = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getAssignmentName() : null;
-            objectDtoResponse.setScoreAssignmentId(request.getId());
-            objectDtoResponse.setScoreAverage(request.getScoreAverage());
+            objectDtoResponse.setScoreAssignmentId(request.getId());                //Check caculate average score
+            objectDtoResponse.setScoreExaminer(request.getScoreExaminer());
+            objectDtoResponse.setScoreInstructor(request.getScoreInstructor());
+            objectDtoResponse.setScoreCritical(request.getScoreCritical());
+            if(!StringUtils.isEmpty(String.valueOf(request.getScoreCritical())) && !StringUtils.isEmpty(String.valueOf(request.getScoreInstructor()))
+                    && !StringUtils.isEmpty(String.valueOf(request.getScoreExaminer()))){
+                Double valueAverage = 0.0;
+                valueAverage +=request.getScoreCritical();
+                valueAverage +=request.getScoreInstructor();
+                valueAverage +=request.getScoreExaminer();
+                valueAverage = valueAverage/3;
+                objectDtoResponse.setScoreAverage(null);
+            }else{
+                objectDtoResponse.setScoreAverage(null);
+            }
             objectDtoResponse.setAssignmentRegisterId(assignmentRegisterId);
             objectDtoResponse.setAssignmentRegisterName(assignmentRegisterName);
             objectDtoResponse.setStatus(request.getStatus());
@@ -45,7 +61,21 @@ public class ScoreAssignment extends EntityCommon {
                 String assignmentRegisterName = null != listRequestUser.get(i).getAssignmentRegisterInfo() ? listRequestUser.get(i).getAssignmentRegisterInfo().getAssignmentName() : null;
                 ScoreAssignmentDto.ScoreAssignmentListInfo newObject = new ScoreAssignmentDto.ScoreAssignmentListInfo();
                 newObject.setScoreAssignmentId(listRequestUser.get(i).getId());
-                newObject.setScoreAverage(listRequestUser.get(i).getScoreAverage());
+                newObject.setScoreExaminer(listRequestUser.get(i).getScoreExaminer());
+                newObject.setScoreInstructor(listRequestUser.get(i).getScoreInstructor());
+                newObject.setScoreCritical(listRequestUser.get(i).getScoreCritical());
+                //Check caculate average score
+                if(!StringUtils.isEmpty(String.valueOf(listRequestUser.get(i).getScoreCritical())) && !StringUtils.isEmpty(String.valueOf(listRequestUser.get(i).getScoreInstructor()))
+                        && !StringUtils.isEmpty(String.valueOf(listRequestUser.get(i).getScoreExaminer()))){
+                    Double valueAverage = 0.0;
+                    valueAverage +=listRequestUser.get(i).getScoreCritical();
+                    valueAverage +=listRequestUser.get(i).getScoreInstructor();
+                    valueAverage +=listRequestUser.get(i).getScoreExaminer();
+                    valueAverage = valueAverage/3;
+                    newObject.setScoreAverage(valueAverage);
+                }else{
+                    newObject.setScoreAverage(null);
+                }
                 newObject.setAssignmentRegisterId(assignmentRegisterId);
                 newObject.setAssignmentRegisterName(assignmentRegisterName);
                 newObject.setStatus(listRequestUser.get(i).getStatus());

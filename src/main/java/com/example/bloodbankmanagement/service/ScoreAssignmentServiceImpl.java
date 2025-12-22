@@ -43,7 +43,9 @@ public class ScoreAssignmentServiceImpl {
         String userIdCreate = CommonUtil.getUsernameByToken();
         String userIdRegister = checkExistUser(userIdCreate);
         ScoreAssignment objectUpdate = new ScoreAssignment();
-        objectUpdate.setScoreAverage(request.getScoreAverage());
+        objectUpdate.setScoreInstructor(request.getScoreInstructor());
+        objectUpdate.setScoreExaminer(request.getScoreExaminer());
+        objectUpdate.setScoreCritical(request.getScoreCritical());
         //Find the Assignment register
         AssignmentStudentRegister assignmentStudentRegisterInfo = assignmentStudentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
         if(null == assignmentStudentRegisterInfo){
@@ -95,7 +97,9 @@ public class ScoreAssignmentServiceImpl {
         }
         ScoreAssignment objectUpdate = new ScoreAssignment();
         objectUpdate.setId(request.getScoreAssignmentId());
-        objectUpdate.setScoreAverage(request.getScoreAverage());
+        objectUpdate.setScoreExaminer(request.getScoreExaminer());
+        objectUpdate.setScoreCritical(request.getScoreCritical());
+        objectUpdate.setScoreInstructor(request.getScoreInstructor());
         //Find the Assignment register
         AssignmentStudentRegister assignmentStudentRegisterInfo = assignmentStudentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
         if(null == assignmentStudentRegisterInfo){
