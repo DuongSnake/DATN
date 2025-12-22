@@ -76,6 +76,14 @@ public class AssignmentRegisterController {
         );
     }
 
+    @PostMapping("/selectListWaitingSend")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>>> selectListAssignmentStudentWaitingSend(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectListInfo request) {
+        return new ResponseEntity<>(
+                assignmentRegisterService.selectListAssignmentWaitingSend(request),
+                HttpStatus.OK
+        );
+    }
+
     @PostMapping("/selectListAssApprove")
     public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>>> selectListAssignmentRegisterApprove(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectListInfo request) {
         return new ResponseEntity<>(
@@ -104,6 +112,14 @@ public class AssignmentRegisterController {
     public ResponseEntity<BasicResponseDto> updateListFileAssignment(@ModelAttribute @Valid AssignmentRegisterDto.AssignmentFileUploadInfo request, @RequestHeader("lang") String lang) throws Exception {
         return new ResponseEntity<>(
                 assignmentRegisterService.updateFileAssignmentRegister(request, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/selectListAllAssApprove")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>>> selectListAssignmentRegisterApprove() {
+        return new ResponseEntity<>(
+                assignmentRegisterService.findListAllAssignmentRegisterIsApprove(),
                 HttpStatus.OK
         );
     }

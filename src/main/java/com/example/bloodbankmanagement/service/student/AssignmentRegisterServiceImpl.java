@@ -110,6 +110,22 @@ public class AssignmentRegisterServiceImpl {
         return objectResponse;
     }
 
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> selectListAssignmentWaitingSend(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        String userIdRegister = CommonUtil.getUsernameByToken();
+        //Only find the list student upload in file
+        request.setRegUser(userIdRegister);
+        PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
+        Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
+        //Select list file upload
+        Page<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findListAssignmentWaitingsend(request, pageable);
+        pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
+
     public SingleResponseDto<AssignmentRegisterDto.AssignmentRegisterSelectInfoResponse> selectAssignmentRegister(AssignmentRegisterDto.AssignmentRegisterSelectInfo request, String lang){
         if(null == request || request.getAssignmentRegisterId().equals("") || null == request.getAssignmentRegisterId()){
             throw new CustomException("Not found value request param ", "en");
@@ -320,6 +336,20 @@ public class AssignmentRegisterServiceImpl {
         //Insert list id
         messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
         return messageResponse;
+    }
+
+
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> findListAllAssignmentRegisterIsApprove(){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        String userIdRegister = CommonUtil.getUsernameByToken();
+        //Find the customer by token
+        Long valueId = getIdByUserName(userIdRegister);
+        PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        //Select list file upload
+        List<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findListAllAssignmentRegisterIsApprove();
+        pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata, Long.valueOf(listDataFileMetadata.size()));
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
     }
 
 

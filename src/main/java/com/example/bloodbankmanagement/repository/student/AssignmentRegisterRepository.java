@@ -73,4 +73,23 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
             " order by create_at DESC,update_at DESC ",
             nativeQuery = true)
     Page<AssignmentStudentRegister> findListAssignmentRegisterIsApprove(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request, Pageable pageable);
+
+    @Query(value = "select *  from assignment_student_register " +
+            "where is_approved = 2 " +
+            " order by create_at DESC,update_at DESC ",
+            nativeQuery = true)
+    List<AssignmentStudentRegister> findListAllAssignmentRegisterIsApprove();
+
+    @Query(value = "select *  from assignment_student_register " +
+            "where (:#{#request.assignmentRegisterId} is null or ''  = :#{#request.assignmentRegisterId} or id like :#{#request.assignmentRegisterId})" +
+            "and (:#{#request.assignmentRegisterName} is null or ''  = :#{#request.assignmentRegisterName} or assignment_name like '%'+:#{#request.assignmentRegisterName}+'%')" +
+            "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status})" +
+            "and (:#{#request.periodAssignmentId} is null or ''  = :#{#request.periodAssignmentId} or period_assignment_id = :#{#request.periodAssignmentId})" +
+            "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
+            "and (:#{#request.regUser} is null or ''  = :#{#request.regUser} or create_user = :#{#request.regUser}) " +
+            "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
+            "and is_approved in (1) " +
+            " order by create_at DESC,update_at DESC ",
+            nativeQuery = true)
+    Page<AssignmentStudentRegister> findListAssignmentWaitingsend(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request, Pageable pageable);
 }

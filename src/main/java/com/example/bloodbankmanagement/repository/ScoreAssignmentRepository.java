@@ -17,7 +17,6 @@ import java.util.List;
 public interface ScoreAssignmentRepository extends JpaRepository<ScoreAssignment, Long> {
     @Query(value = "select *  from score_assignment " +
             "where (:#{#request.scoreAssignmentId} is null or ''  = :#{#request.scoreAssignmentId} or id like :#{#request.scoreAssignmentId})" +
-            "and (:#{#request.scoreAverage} is null or ''  = :#{#request.scoreAverage} or score_average = :#{#request.scoreAverage})" +
             "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status})" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or create_at <= :#{#request.toDate}) " +
@@ -30,7 +29,11 @@ public interface ScoreAssignmentRepository extends JpaRepository<ScoreAssignment
 
     @Modifying
     @Transactional
-    @Query(value = "update score_assignment set score_average =:#{#request.scoreAverage},assignment_register_info_id =:#{#request.assignmentRegisterInfo.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
+    @Query(value = "update score_assignment set " +
+            "score_instructor =:#{#request.scoreInstructor} " +
+            ",score_examiner =:#{#request.scoreExaminer} " +
+            ",score_critical =:#{#request.scoreCritical} " +
+            ",assignment_register_info_id =:#{#request.assignmentRegisterInfo.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
     void updateScoreAssignment(@Param("request") ScoreAssignment request);
 
     @Modifying
