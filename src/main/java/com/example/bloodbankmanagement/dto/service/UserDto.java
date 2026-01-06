@@ -4,6 +4,7 @@ import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.entity.Role;
 import com.example.bloodbankmanagement.entity.User;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -162,5 +163,24 @@ public class UserDto {
     @Data
     public static class UserDeleteInfo {
         private List<Long> listData;
+    }
+
+    @Data
+    public static class UploadBatchFileRegisterUserInfo {
+        private MultipartFile fileUploadContent;
+    }
+
+    @Data
+    public static class UploadFileRegisterUserInfo {
+        private String numberIndex;
+        private String email;
+        private String phone;
+        private String fullName;
+        private String identityCard;
+        private String address;
+        private String note;
+        private Long majorId;
+        private Long admissionPeriodId;
+        private List<String> errors;
     }
 }
