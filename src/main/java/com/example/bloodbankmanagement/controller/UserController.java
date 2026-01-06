@@ -116,4 +116,12 @@ public class UserController {
                 HttpStatus.OK
         );
     }
+
+    @PostMapping("/uploadFile")
+    public ResponseEntity<BasicResponseDto> uploadFileRegisterListUser(@ModelAttribute @Valid UserDto.UploadBatchFileRegisterUserInfo request, @RequestHeader("lang") String lang){
+        return new ResponseEntity<>(
+                userService.uploadFileRegisterListUser(request, lang),
+                HttpStatus.OK
+        );
+    }
 }
