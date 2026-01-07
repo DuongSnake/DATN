@@ -6,6 +6,7 @@ import com.example.bloodbankmanagement.common.untils.AbstractEntity;
 import com.example.bloodbankmanagement.common.untils.EntityCommon;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.service.UserDto;
+import com.example.bloodbankmanagement.dto.service.student.StudentDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -133,5 +134,85 @@ public class User extends EntityCommon {
             }
         }
         return listUserDto;
+    }
+
+
+
+    public static StudentDto.StudentSelectInfoResponse convertToDtoStudent(User request){
+        StudentDto.StudentSelectInfoResponse objectDtoResponse = new StudentDto.StudentSelectInfoResponse();
+        //Get information
+        Long majorId = null;
+        Long admissionPeriodId = null;
+        String majorName ="";
+        String admissionPeriodName ="";
+        if(request != null){
+            if(null != request.getMajorInfo()){
+                majorId = request.getMajorInfo().getId();
+                majorName = request.getMajorInfo().getMajorName();
+            }
+            if(null != request.getPeriodTime()){
+                admissionPeriodId = request.getPeriodTime().getId();
+                admissionPeriodName = request.getPeriodTime().getAdmissionPeriodName();
+            }
+            objectDtoResponse.setId(request.getId());
+            objectDtoResponse.setUsername(request.getUsername());
+            objectDtoResponse.setEmail(request.getEmail());
+            objectDtoResponse.setPhone(request.getPhone());
+            objectDtoResponse.setFullName(request.getFullName());
+            objectDtoResponse.setIdentityCard(request.getIdentityCard());
+            objectDtoResponse.setAddress(request.getAddress());
+            objectDtoResponse.setStatus(request.getStatus());
+            objectDtoResponse.setNote(request.getNote());
+            objectDtoResponse.setMajorId(majorId);
+            objectDtoResponse.setMajorName(majorName);
+            objectDtoResponse.setAdmissionPeriodId(admissionPeriodId);
+            objectDtoResponse.setAdmissionPeriodName(admissionPeriodName);
+            objectDtoResponse.setCreateAt(request.getCreateAt());
+            objectDtoResponse.setUpdateAt(request.getUpdateAt());
+            objectDtoResponse.setRoles(request.getRoles());
+        }
+        return objectDtoResponse;
+    }
+
+    public static PageAmtListResponseDto<StudentDto.StudentSelectListInfo> convertListObjectToDtoStudent(List<User> listRequestUser){
+        PageAmtListResponseDto<StudentDto.StudentSelectListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
+        List<StudentDto.StudentSelectListInfo> listUserDto = new ArrayList<StudentDto.StudentSelectListInfo>();
+        //Get information
+        Long majorId = null;
+        Long admissionPeriodId = null;
+        String majorName ="";
+        String admissionPeriodName ="";
+        if(listRequestUser.size() >0 ){
+            for (int i=0;i<listRequestUser.size();i++){
+                if(null != listRequestUser.get(i).getMajorInfo()){
+                    majorId = listRequestUser.get(i).getMajorInfo().getId();
+                    majorName = listRequestUser.get(i).getMajorInfo().getMajorName();
+                }
+                if(null != listRequestUser.get(i).getPeriodTime()){
+                    admissionPeriodId = listRequestUser.get(i).getPeriodTime().getId();
+                    admissionPeriodName = listRequestUser.get(i).getPeriodTime().getAdmissionPeriodName();
+                }
+                StudentDto.StudentSelectListInfo newObject = new StudentDto.StudentSelectListInfo();
+                newObject.setId(listRequestUser.get(i).getId());
+                newObject.setUsername(listRequestUser.get(i).getUsername());
+                newObject.setEmail(listRequestUser.get(i).getEmail());
+                newObject.setPhone(listRequestUser.get(i).getPhone());
+                newObject.setFullName(listRequestUser.get(i).getFullName());
+                newObject.setIdentityCard(listRequestUser.get(i).getIdentityCard());
+                newObject.setAddress(listRequestUser.get(i).getAddress());
+                newObject.setStatus(listRequestUser.get(i).getStatus());
+                newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
+                newObject.setUpdateAt(listRequestUser.get(i).getUpdateAt());
+                newObject.setNote(listRequestUser.get(i).getNote());
+                newObject.setMajorId(majorId);
+                newObject.setMajorName(majorName);
+                newObject.setAdmissionPeriodId(admissionPeriodId);
+                newObject.setAdmissionPeriodName(admissionPeriodName);
+                listUserDto.add(newObject);
+            }
+        }
+        objectDtoResponse.setData(listUserDto);
+        objectDtoResponse.setTotalRecord(listRequestUser.size());
+        return objectDtoResponse;
     }
 }
