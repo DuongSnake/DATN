@@ -208,6 +208,7 @@ public class User extends EntityCommon {
                 newObject.setMajorName(majorName);
                 newObject.setAdmissionPeriodId(admissionPeriodId);
                 newObject.setAdmissionPeriodName(admissionPeriodName);
+                newObject.setRoles(listRequestUser.get(i).getRoles());
                 listUserDto.add(newObject);
             }
         }
