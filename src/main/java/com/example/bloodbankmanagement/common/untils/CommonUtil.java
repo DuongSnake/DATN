@@ -70,6 +70,32 @@ public class CommonUtil {
         }
     }
 
+    public static enum HeaderExcel {
+        TITLE("Title"),
+        COMPANY_VI("Công ty:"),
+        COMPANY_EN("Company:"),
+        CREATE_USER_EN("Create user:"),
+        CREATE_USER_VI("Người tạo:"),
+        DATE_VI("Ngày xuất tệp:"),
+        DATE_EN("Date:"),
+        TITLE_ECOL_BATCH_CREATION_VI("Danh sách E-Collection tạo lô"),
+        TITLE_ECOL_BATCH_CREATION_EN("E-Collection Payer List");
+
+        private final String id;
+
+        private HeaderExcel(final String id) {
+            this.id = id;
+        }
+
+        public String toString() {
+            return this.id;
+        }
+
+        public String getId() {
+            return this.id;
+        }
+    }
+
     public static String getMessage(MessageSource messageSource, String code, String locale) {
         return messageSource.getMessage(code, (Object[])null, Locale.forLanguageTag(locale));
     }

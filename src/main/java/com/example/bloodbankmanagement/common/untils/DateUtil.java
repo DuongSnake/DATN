@@ -98,4 +98,39 @@ public class DateUtil {
             return null;
         }
     }
+
+    public static boolean isDatePattern(String date, String format) {
+
+        String pattern = "";
+        switch (format) {
+            case "yyyy-MM-dd":
+                pattern = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$";
+                break;
+            case "yyyy/MM/dd":
+                pattern = "^\\d{4}\\/(0[1-9]|1[012])\\/(0[1-9]|[12][0-9]|3[01])$";
+                break;
+            case "yyyy.MM.dd":
+                pattern = "^\\d{4}\\.(0[1-9]|1[012])\\.(0[1-9]|[12][0-9]|3[01])$";
+                break;
+            case DATE_FORMAT_YYYYMMDD:
+                pattern = "^\\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$";
+                break;
+            case DATE_FORMAT_DD_SOURCE_MM_SOURCE_YYYY:
+                pattern = "^(0?[1-9]|[12][0-9]|3[01])[\\/](0?[1-9]|1[012])[\\/]\\d{4}$";
+                break;
+            case DATE_FORMAT_DD_MM_YYYY:
+                pattern = "^(0?[1-9]|[12][0-9]|3[01])[\\-](0?[1-9]|1[012])[\\-]\\d{4}$";
+                break;
+            default:
+                break;
+        }
+        return date.matches(pattern);
+    }
+
+    public static String nowToTimestampStr() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return timestampFormat.format(calendar.getTime());
+    }
+
 }
