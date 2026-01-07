@@ -101,4 +101,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
             " period_time_id =:#{#request.periodTime.id}, major_id =:#{#request.majorInfo.id}, note =:#{#request.note},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt}" +
             " where id =:#{#request.id}",nativeQuery = true)
     void updateStudent(@Param("request") User request);
+    @Modifying
+    @Transactional
+    @Query(value = "update Users set  username =:#{#request.username}, email =:#{#request.email}, phone =:#{#request.phone},full_name =:#{#request.fullName},identity_card =:#{#request.identityCard},address =:#{#request.address}," +
+            " major_id =:#{#request.majorInfo.id}, note =:#{#request.note},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt}" +
+            " where id =:#{#request.id}",nativeQuery = true)
+    void updateTeacher(@Param("request") User request);
 }

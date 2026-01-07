@@ -140,7 +140,9 @@ public class StudentServiceImpl {
         //update data date time and userId
         objectEnity.setStatus(CommonUtil.STATUS_USE);
         //Set role
-        Set<Role> roles = roleService.getRole(Collections.singleton("user"));
+        Role rolesTeacher = roleRepository.findByName(ERole.ROLE_USER).get();
+        Set<Role> roles = new HashSet<>();
+        roles.add(rolesTeacher);
         objectEnity.setRoles(roles);
         //Check period
         AdmissionPeriod inforAdminPeriod = admissionPeriodRepository.findByFileId(request.getAdmissionPeriodId());
@@ -163,10 +165,10 @@ public class StudentServiceImpl {
         params.put("email", request.getEmail());
         params.put("password", defaultPassword);
         params.put("urlLogin", urlLogin);
-//        boolean sendSuccess = mailService.sendEmailByTemplate(params, EmailTemplate.REG_NEW.getName(), EmailTemplate.REG_NEW.getSubject());
-//        if (!sendSuccess) {
-//            return responseCommon.getSingleFailResult("EmailSendFail", lang);
-//        }
+        boolean sendSuccess = mailService.sendEmailByTemplate(params, EmailTemplate.REG_NEW.getName(), EmailTemplate.REG_NEW.getSubject());
+        if (!sendSuccess) {
+            return responseCommon.getSingleFailResult("EmailSendFail", lang);
+        }
         objectResponse = responseCommon.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.insertSuccess);
         return objectResponse;
     }
