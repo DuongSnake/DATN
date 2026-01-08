@@ -97,7 +97,10 @@ public class UserServiceImpl {
         objectInsert.setCreateUser(CommonUtil.getUsernameByToken());
         //Set role
         Set<Role> roles = roleService.getRole(request.getRoles());
-        objectInsert.setRoles(roles);
+        objectInsert.setRoles(roles.stream().iterator());
+        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        objectInsert.setRoleInfo(userRole);
         userRepository.save(objectInsert);
         //Send mail announcement register new user
         Map<String, String> params = new HashMap<>();

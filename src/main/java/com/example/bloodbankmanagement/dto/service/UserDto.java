@@ -55,7 +55,7 @@ public class UserDto {
         private String note;
         private LocalDate createAt;
         private LocalDate updateAt;
-        private Set<Role> roles;
+        private Role roles;
     }
 
     @Data

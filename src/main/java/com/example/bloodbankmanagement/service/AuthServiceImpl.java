@@ -5,16 +5,14 @@ import com.example.bloodbankmanagement.common.ResponseCommon;
 import com.example.bloodbankmanagement.common.exception.AuthenticationException;
 import com.example.bloodbankmanagement.common.exception.ExceptionEntity;
 import com.example.bloodbankmanagement.common.exception.ValidateException;
-import com.example.bloodbankmanagement.common.untils.CommonUtil;
-import com.example.bloodbankmanagement.common.untils.DateUtil;
-import com.example.bloodbankmanagement.common.untils.EmailTemplate;
-import com.example.bloodbankmanagement.common.untils.JwtUtils;
+import com.example.bloodbankmanagement.common.untils.*;
 import com.example.bloodbankmanagement.dto.common.JwtResponseDto;
 import com.example.bloodbankmanagement.dto.common.LoginRequestDto;
 import com.example.bloodbankmanagement.dto.common.SignupRequestDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.entity.Role;
 import com.example.bloodbankmanagement.entity.User;
+import com.example.bloodbankmanagement.repository.RoleRepository;
 import com.example.bloodbankmanagement.repository.UserRepository;
 import com.example.bloodbankmanagement.service.authorization.RoleServiceImpl;
 import com.example.bloodbankmanagement.service.authorization.UserDetailsImpl;
@@ -64,6 +62,9 @@ public class AuthServiceImpl {
     @Value("${url-login}")
     private String urlLogin;
 
+    @Autowired
+    RoleRepository roleRepository;
+
 
     @Autowired
     JwtUtils jwtUtils;
@@ -97,13 +98,13 @@ public class AuthServiceImpl {
         String defaultPassword = "ktx2024";
         //Crate new user's account
         User user = new User(signupRequestDto.getUsername(), encoder.encode(defaultPassword), signupRequestDto.getEmail(), signupRequestDto.getPhone(), signupRequestDto.getFullName());
-        Set<String> strRoles = signupRequestDto.getRole();
-        //The line config name role to assign type account(likeL: admin,mod,user)
-        Set<Role> roles = roleService.getRole(strRoles);
-        user.setRoles(roles);
         user.setStatus(CommonUtil.STATUS_USE);
         user.setCreateAt(LocalDate.now());
         user.setCreateUser(user.getUsername());
+        //Set value admin
+        Role userRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        user.setRoleInfo(userRole);
         userRepository.save(user);
         dataResponse = responseCommon.getSingleResponse(signupRequestDto, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.insertSuccess);
         //Send mail anoucement register new user

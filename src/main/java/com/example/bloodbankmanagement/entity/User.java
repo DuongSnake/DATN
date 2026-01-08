@@ -49,9 +49,9 @@ public class User extends EntityCommon {
     @JoinColumn(name = "major_id")
     private Major majorInfo;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role roleInfo;
 
     public User(String username, String password) {
         this.username = username;
@@ -80,7 +80,7 @@ public class User extends EntityCommon {
             objectDtoResponse.setNote(request.getNote());
             objectDtoResponse.setCreateAt(request.getCreateAt());
             objectDtoResponse.setUpdateAt(request.getUpdateAt());
-            objectDtoResponse.setRoles(request.getRoles());
+            objectDtoResponse.setRoles(request.getRoleInfo());
         }
         return objectDtoResponse;
     }
@@ -169,7 +169,7 @@ public class User extends EntityCommon {
             objectDtoResponse.setAdmissionPeriodName(admissionPeriodName);
             objectDtoResponse.setCreateAt(request.getCreateAt());
             objectDtoResponse.setUpdateAt(request.getUpdateAt());
-            objectDtoResponse.setRoles(request.getRoles());
+            objectDtoResponse.setRoles(request.getRoleInfo());
         }
         return objectDtoResponse;
     }
@@ -208,7 +208,7 @@ public class User extends EntityCommon {
                 newObject.setMajorName(majorName);
                 newObject.setAdmissionPeriodId(admissionPeriodId);
                 newObject.setAdmissionPeriodName(admissionPeriodName);
-                newObject.setRoles(listRequestUser.get(i).getRoles());
+                newObject.setRoles(listRequestUser.get(i).getRoleInfo());
                 listUserDto.add(newObject);
             }
         }
