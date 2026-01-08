@@ -44,7 +44,7 @@ public class StudentDto {
         private String admissionPeriodName;
         private LocalDate createAt;
         private LocalDate updateAt;
-        private Set<Role> roles;
+        private Role roles;
     }
 
     @Data
@@ -64,7 +64,7 @@ public class StudentDto {
         private String admissionPeriodName;
         private LocalDate createAt;
         private LocalDate updateAt;
-        private Set<Role> roles;
+        private Role roles;
     }
 
     @Data
