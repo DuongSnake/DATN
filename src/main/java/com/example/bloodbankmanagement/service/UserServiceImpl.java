@@ -97,9 +97,7 @@ public class UserServiceImpl {
         objectInsert.setCreateUser(CommonUtil.getUsernameByToken());
         //Set role
         Set<Role> roles = roleService.getRole(request.getRoles());
-        objectInsert.setRoles(roles.stream().iterator());
-        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        Role userRole = roles.stream().findFirst().get();//Get first role
         objectInsert.setRoleInfo(userRole);
         userRepository.save(objectInsert);
         //Send mail announcement register new user
@@ -168,8 +166,9 @@ public class UserServiceImpl {
         //update data date time and userId
         objectEnity.setStatus(CommonUtil.STATUS_USE);
         //Set role
-        Set<Role> roles = roleService.getRole(Collections.singleton("user"));
-        objectEnity.setRoles(roles);
+        Set<Role> roles = roleService.getRole(null);//If the
+        Role userRole = roles.stream().findFirst().get();//Get first role
+        objectEnity.setRoleInfo(userRole);
         //Check period
         AdmissionPeriod inforAdminPeriod = admissionPeriodRepository.findByFileId(request.getPeriodId());
         if(null != inforAdminPeriod){
@@ -343,7 +342,7 @@ public class UserServiceImpl {
         for (User userData: listUserRole){
             for (UserDto.UserSelectListInfo userRequest: objectResponseData.getData()){
                 if(userData.getId().equals(userRequest.getId())){
-                    userRequest.setRoles(userData.getRoles());
+                    userRequest.setRoles(userData.getRoleInfo());
                 }
             }
         }

@@ -21,7 +21,7 @@ public class SignupRequestDto {
         @NotBlank
         @Size(max = 50)
         private String username;
-        private Set<String> role;
+        private String role;
         @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}")
         private String email;
         private String phone;

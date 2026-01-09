@@ -16,15 +16,14 @@ public class RoleServiceImpl {
 
     private final RoleRepository roleRepository;
 
-    public Set<Role> getRole(Set<String> roleRequest){
+    public Set<Role> getRole(String roleRequest){
         Set<Role> roles = new HashSet<>();
         if(null == roleRequest){
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(userRole);
         }else {
-            roleRequest.forEach(role ->{
-                switch (role){
+                switch (roleRequest){
                     case "3":
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -45,8 +44,7 @@ public class RoleServiceImpl {
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(userRole);
                         break;
-                }
-            });
+            }
         }
         return roles;
     }

@@ -101,9 +101,9 @@ public class AuthServiceImpl {
         user.setStatus(CommonUtil.STATUS_USE);
         user.setCreateAt(LocalDate.now());
         user.setCreateUser(user.getUsername());
-        //Set value admin
-        Role userRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        //Set role
+        Set<Role> roles = roleService.getRole(signupRequestDto.getRole());
+        Role userRole = roles.stream().findFirst().get();//Get first role
         user.setRoleInfo(userRole);
         userRepository.save(user);
         dataResponse = responseCommon.getSingleResponse(signupRequestDto, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.insertSuccess);

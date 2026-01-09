@@ -135,9 +135,7 @@ public class TeacherServiceImpl {
         objectEnity.setStatus(CommonUtil.STATUS_USE);
         //Set role
         Role rolesTeacher = roleRepository.findByName(ERole.ROLE_MODERATOR).get();
-        Set<Role> roles = new HashSet<>();
-        roles.add(rolesTeacher);
-        objectEnity.setRoles(roles);
+        objectEnity.setRoleInfo(rolesTeacher);
         //Check major
         Major majorInfo = majorRepository.findByFileId(request.getMajorId());
         if(null != majorInfo){

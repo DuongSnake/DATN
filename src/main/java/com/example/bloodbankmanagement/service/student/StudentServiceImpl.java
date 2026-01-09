@@ -140,10 +140,8 @@ public class StudentServiceImpl {
         //update data date time and userId
         objectEnity.setStatus(CommonUtil.STATUS_USE);
         //Set role
-        Role rolesTeacher = roleRepository.findByName(ERole.ROLE_USER).get();
-        Set<Role> roles = new HashSet<>();
-        roles.add(rolesTeacher);
-        objectEnity.setRoles(roles);
+        Role rolesStudent = roleRepository.findByName(ERole.ROLE_USER).get();
+        objectEnity.setRoleInfo(rolesStudent);
         //Check period
         AdmissionPeriod inforAdminPeriod = admissionPeriodRepository.findByFileId(request.getAdmissionPeriodId());
         if(null != inforAdminPeriod){

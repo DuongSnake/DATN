@@ -189,11 +189,8 @@ public class PeriodAssignmentServiceImpl {
         if(ObjectUtils.isEmpty(userInfo.get())){
             throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
         }
-        for(Role objectRole: userInfo.get().getRoles()){
-            logger.info("Value role name: "+objectRole.getName() +" of userId: "+ userInfo.get().getUsername());
-            if(CommonUtil.ROLE_ADMIN.equals(objectRole.getName().toString())){
-                isTypeAdmin = true;
-            }
+        if(CommonUtil.ROLE_ADMIN.equals(userInfo.get().getRoleInfo().getName().toString())){
+            isTypeAdmin = true;
         }
         if(isTypeAdmin){
             return "";
