@@ -164,6 +164,7 @@ public class StudentDto {
         private String note;
         private Long majorId;
         private Long admissionPeriodId;
+        private Long roleId;
         private List<String> errors;
     }
 

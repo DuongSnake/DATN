@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface UserEntityPermissionBulkInsertStrategy {
     void bulkInsert(List<UserDto.UploadFileRegisterUserInfo> permissions);
-    void bulkInsertStudent(List<StudentDto.UploadFileRegisterStudentInfo> permissions);
+    void bulkInsertStudent(List<StudentDto.UploadFileRegisterStudentInfo> permissions, Long roleId);
 }

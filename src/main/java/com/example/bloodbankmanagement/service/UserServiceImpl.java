@@ -284,10 +284,10 @@ public class UserServiceImpl {
                 break;
             }
         }
-        nativeSqlInsertStrategy.bulkInsert(listPosPayerFromExcel);
         //check status before insert all
         if(statusInsertAll){
             //Insert list
+            nativeSqlInsertStrategy.bulkInsert(listPosPayerFromExcel);
         }
         return objectResponse;
     }

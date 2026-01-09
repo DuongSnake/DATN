@@ -193,17 +193,19 @@ public class StudentServiceImpl {
         //set default value success
         objectResponse=responseService.getSingleResponse(listPosPayerFromExcel);
         //Set value if have any problem when insert
-        for (StudentDto.UploadFileRegisterStudentInfo objectLoop:listPosPayerFromExcel) {
-            if (objectLoop.getErrors().size() > 0) {
+        for (int i=0; i<listPosPayerFromExcel.size() && statusInsertAll;i++ ) {
+            if (listPosPayerFromExcel.get(i).getErrors().size() > 0) {
                 statusInsertAll = false;
                 objectResponse=responseCommon.getSingleResponseHandleMessage(listPosPayerFromExcel, CommonUtil.failValue, "Noi dung message fail");
                 break;
             }
         }
-        nativeSqlInsertStrategy.bulkInsertStudent(listPosPayerFromExcel);
+        //Set role
+        Role rolesStudent = roleRepository.findByName(ERole.ROLE_USER).get();
         //check status before insert all
         if(statusInsertAll){
             //Insert list
+            nativeSqlInsertStrategy.bulkInsertStudent(listPosPayerFromExcel, rolesStudent.getId());
         }
         return objectResponse;
     }
@@ -245,7 +247,8 @@ public class StudentServiceImpl {
                 pos.setAddress(ExcelUtils.getCellValue(row.getCell(6)));
                 pos.setMajorId(Long.valueOf(ExcelUtils.getCellValue(row.getCell(7))));
                 pos.setAdmissionPeriodId(Long.valueOf(ExcelUtils.getCellValue(row.getCell(8))));
-                pos.setNote(ExcelUtils.getCellValue(row.getCell(9)));
+                pos.setRoleId(Long.valueOf(ExcelUtils.getCellValue(row.getCell(9))));
+                pos.setNote(ExcelUtils.getCellValue(row.getCell(10)));
                 batchList.add(pos);
             }
         } catch (IOException e) {
