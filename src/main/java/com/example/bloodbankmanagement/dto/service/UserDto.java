@@ -39,7 +39,7 @@ public class UserDto {
         private String majorName;
         private LocalDate createAt;
         private LocalDate updateAt;
-        private Set<Role> roles;
+        private Role roles;
     }
 
     @Data
@@ -92,7 +92,7 @@ public class UserDto {
         private String identityCard;
         private String address;
         private String note;
-        private Set<String> roles;
+        private String roles;
 
         public static User convertToEntity(UserInsertInfo userInsertInfo) {
             User objectEntity = new User();
