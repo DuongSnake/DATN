@@ -278,7 +278,7 @@ public class UserServiceImpl {
         objectResponse=responseService.getSingleResponse(listPosPayerFromExcel);
         //Set value if have any problem when insert
         for (UserDto.UploadFileRegisterUserInfo objectLoop:listPosPayerFromExcel) {
-            if (objectLoop.getErrors().size() > 0) {
+            if (null != objectLoop.getErrors() && objectLoop.getErrors().size() > 0) {
                 statusInsertAll = false;
                 objectResponse=responseCommon.getSingleResponseHandleMessage(listPosPayerFromExcel, CommonUtil.failValue, "Noi dung message fail");
                 break;
@@ -288,6 +288,21 @@ public class UserServiceImpl {
         if(statusInsertAll){
             //Insert list
             nativeSqlInsertStrategy.bulkInsert(listPosPayerFromExcel);
+            //Handle send announcement to list email (asynchronous with @Async or a task executor)
+            //Send mail announcement register new user
+            logger.info("Vao insert thong tin");
+            String defaultPassword = "ktx2024";
+            for(int i = 0; i < listPosPayerFromExcel.size(); i++){
+                Map<String, String> params = new HashMap<>();
+                params.put("userNm", listPosPayerFromExcel.get(i).getFullName());
+                params.put("email", listPosPayerFromExcel.get(i).getEmail());
+                params.put("password", defaultPassword);
+                params.put("urlLogin", urlLogin);
+                boolean sendSuccess = mailService.sendEmailByTemplate(params, EmailTemplate.REG_NEW.getName(), EmailTemplate.REG_NEW.getSubject());
+                if (!sendSuccess) {
+                    return responseCommon.getSingleFailResult("EmailSendFail", lang);
+                }
+            }
         }
         return objectResponse;
     }
@@ -368,15 +383,11 @@ public class UserServiceImpl {
         try (InputStream inputStream = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(inputStream)) {
             Sheet sheet = workbook.getSheetAt(0);
-            int numberOfRows = sheet.getPhysicalNumberOfRows();
-            logger.info("Number of rows in excel: {}", numberOfRows);
-            if (numberOfRows > MAX_RECORD) {
-                throw new CustomException("EXCEED_MAX_RECORDS", language);
-            }
             Iterator<Row> rowIterator = sheet.iterator();
             int rowNum = 0;
 
             while (rowIterator.hasNext()) {
+                List<String> listError = new ArrayList<>();
                 Row row = rowIterator.next();
                 //Not get value in 3 row first
                 if (rowNum++ < 3) {
@@ -391,9 +402,20 @@ public class UserServiceImpl {
                 pos.setFullName(ExcelUtils.getCellValue(row.getCell(4)));
                 pos.setIdentityCard(ExcelUtils.getCellValue(row.getCell(5)));
                 pos.setAddress(ExcelUtils.getCellValue(row.getCell(6)));
-                pos.setMajorId(Long.valueOf(ExcelUtils.getCellValue(row.getCell(7))));
-                pos.setAdmissionPeriodId(Long.valueOf(ExcelUtils.getCellValue(row.getCell(8))));
-                pos.setNote(ExcelUtils.getCellValue(row.getCell(9)));
+                //Handle value column convert to long
+                Long valueColumnRoleId = (StringUtils.isEmpty(ExcelUtils.getCellValue(row.getCell(9))) ||
+                        !matches(ExcelUtils.getCellValue(row.getCell(9)), "^[0-9]*$",
+                                ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, listError) ) ? null : Long.valueOf(ExcelUtils.getCellValue(row.getCell(9)));
+                Long valueColumnMajorId = (StringUtils.isEmpty(ExcelUtils.getCellValue(row.getCell(7))) ||
+                        !matches(ExcelUtils.getCellValue(row.getCell(7)), "^[0-9]*$",
+                                ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, listError) ) ? null : Long.valueOf(ExcelUtils.getCellValue(row.getCell(7)));
+                Long valueColumnAdmissionPeriodId = (StringUtils.isEmpty(ExcelUtils.getCellValue(row.getCell(8))) ||
+                        !matches(ExcelUtils.getCellValue(row.getCell(8)), "^[0-9]*$",
+                                ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, listError) )  ? null : Long.valueOf(ExcelUtils.getCellValue(row.getCell(8)));
+                pos.setMajorId(valueColumnMajorId);
+                pos.setAdmissionPeriodId(valueColumnAdmissionPeriodId);
+                pos.setRoleId(valueColumnRoleId);
+                pos.setNote(ExcelUtils.getCellValue(row.getCell(10)));
                 batchList.add(pos);
             }
         } catch (IOException e) {
@@ -409,35 +431,55 @@ public class UserServiceImpl {
         if (excelData == null || excelData.isEmpty()) {
             return excelData;
         }
+        //Check list account have any exist in database or not
+        List<String> listUserNameRegister = excelData.stream().map(item -> item.getFullName())
+                .collect(Collectors.toList());
+        List<User> listUserExist = userRepository.getListUsersActiveByUserName(listUserNameRegister);
+        if(null != listUserExist && listUserExist.size() > 0){
+            List<String> errorsDuplicate = new ArrayList<>();
+            errorsDuplicate.add("Trùng dữ liệu thông tin tài khoản");
+            //Find the object have value duplicate ->update value message error
+            for(int i=0;i< listUserExist.size();i++){
+                int valueIndex = i;
+                excelData.stream().filter(str -> str.getFullName().equals(listUserExist.get(valueIndex).getUsername()))
+                        .forEach(str -> str.setErrors(errorsDuplicate));
+            }
+             return excelData;
+        }
         Map<Long, AdmissionPeriod> admissionPeriodMap = admissionPeriodRepository.selectListAdmissionPeriodActiveInNowYear().stream()
                 .collect(Collectors.toMap(AdmissionPeriod::getId, c -> c));
         Map<Long, Major> majorMap = majorRepository.getAllMajorActive().stream()
                 .collect(Collectors.toMap(Major::getId, c -> c));
+        Map<Long, Role> roleMap = roleRepository.getAllRole().stream()
+                .collect(Collectors.toMap(Role::getId, c -> c));
         excelData.forEach(item -> {
             List<String> errors = new ArrayList<>();
-            // ADMISSION_PERIOD
+            //Check format value input full name
+            matches(item.getFullName(), "^[a-zA-Z0-9]*$",
+                    ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, errors);
+            // ===== ADMISSION_PERIOD =====
             validateField(String.valueOf(item.getAdmissionPeriodId()), 20,
-                    ExcelUtils.UserExcelCode.CUSTOMER_ID_NOT_BLANK,
-                    ExcelUtils.UserExcelCode.CUSTOMER_ID_LENGTH,
-                    language, errors);
-            if (ExcelUtils.isValid(String.valueOf(item.getAdmissionPeriodId()))) {
-                matches(item.getFullName(), "^[a-zA-Z0-9]*$",
-                        ExcelUtils.UserExcelCode.CUSTOMER_ID_INVALID_FORMAT, language, errors);
-                if (!admissionPeriodMap.containsKey(item.getAdmissionPeriodId())) {
-                    addErrorMessage(ExcelUtils.UserExcelCode.CUSTOMER_ID_NOT_FOUND, language, errors);
-                }
+                    ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_NOT_BLANK,
+                    ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_LENGTH, errors);
+            //Check value input exist in database or not
+            if (!admissionPeriodMap.containsKey(item.getAdmissionPeriodId())) {
+                addErrorMessage(ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_NOT_FOUND, errors);
             }
-            // MAJOR
+            // ===== MAJOR =====
             validateField(String.valueOf(item.getMajorId()), 10,
-                    ExcelUtils.UserExcelCode.PROVIDER_ID_NOT_BLANK,
-                    ExcelUtils.UserExcelCode.PROVIDER_ID_LENGTH,
-                    language, errors);
-            if (ExcelUtils.isValid(String.valueOf(item.getMajorId()))) {
-                matches(String.valueOf(item.getMajorId()), "^[a-zA-Z0-9]*$",
-                        ExcelUtils.UserExcelCode.PROVIDER_ID_INVALID_FORMAT, language, errors);
-                if (!majorMap.containsKey(item.getMajorId())) {
-                    addErrorMessage(ExcelUtils.UserExcelCode.PROVIDER_ID_NOT_FOUND, language, errors);
-                }
+                    ExcelUtils.UserExcelCode.MAJOR_ID_NOT_BLANK,
+                    ExcelUtils.UserExcelCode.MAJOR_ID_LENGTH, errors);
+            //Check value input exist in database or not
+            if (!majorMap.containsKey(item.getMajorId())) {
+                addErrorMessage(ExcelUtils.UserExcelCode.MAJOR_ID_NOT_FOUND, errors);
+            }
+            // ===== ROLE =====
+            validateField(String.valueOf(item.getRoleId()), 10,
+                    ExcelUtils.UserExcelCode.ROLE_ID_NOT_BLANK,
+                    ExcelUtils.UserExcelCode.ROLE_ID_LENGTH, errors);
+            //Check value input exist in database or not
+            if (!roleMap.containsKey(item.getRoleId())) {
+                addErrorMessage(ExcelUtils.UserExcelCode.ROLE_ID_NOT_FOUND, errors);
             }
             item.setErrors(errors);
         });
@@ -445,25 +487,24 @@ public class UserServiceImpl {
     }
 
     public void validateField(String value, int maxLength, ExcelUtils.UserExcelCode notBlankKey,
-                                     ExcelUtils.UserExcelCode lengthKey, String language, List<String> errors) {
+                                     ExcelUtils.UserExcelCode lengthKey, List<String> errors) {
         if (StringUtils.isBlank(value)) {
-            addErrorMessage(notBlankKey, language, errors);
+            addErrorMessage(notBlankKey, errors);
         } else if (value.length() > maxLength) {
-            addErrorMessage(lengthKey, language, errors);
+            addErrorMessage(lengthKey, errors);
         }
     }
 
-    public void addErrorMessage(ExcelUtils.UserExcelCode code, String language, List<String> errors) {
+    public void addErrorMessage(ExcelUtils.UserExcelCode code, List<String> errors) {
         BasicResponseDto dto = responseService.getFailResult(code.toString());
         if (dto != null && StringUtils.isNotBlank(dto.getResponseMsg())) {
             errors.add(dto.getResponseMsg());
         }
     }
 
-    private boolean matches(String value, String regex, ExcelUtils.UserExcelCode errorCode,
-                            String language, List<String> errors) {
+    private boolean matches(String value, String regex, ExcelUtils.UserExcelCode errorCode, List<String> errors) {
         if (value != null && !value.matches(regex)) {
-            addErrorMessage(errorCode, language, errors);
+            addErrorMessage(errorCode, errors);
             return false;
         }
         return true;

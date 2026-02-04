@@ -24,7 +24,7 @@ public class NativeSqlInsertStrategy  implements UserEntityPermissionBulkInsertS
 
     @Override
     public void bulkInsert(List<UserDto.UploadFileRegisterUserInfo> permissions) {
-        String sql = "INSERT INTO users (email, phone, full_name, identity_card, address, note, password, username, role_id) VALUES (?, ?, ?, ?,?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, phone, full_name, identity_card, address, note, password, username, role_id, status) VALUES (?, ?, ?, ?,?, ?, ?, ?, ?, ?)";
         String defaultPassword = encoder.encode("ktx2024");
         jdbcTemplate.batchUpdate(sql, permissions, permissions.size(), (ps, permission) -> {
             ps.setString(1, permission.getEmail());
@@ -36,12 +36,13 @@ public class NativeSqlInsertStrategy  implements UserEntityPermissionBulkInsertS
             ps.setString(7, defaultPassword);
             ps.setString(8, permission.getFullName());
             ps.setLong(9, permission.getRoleId());
+            ps.setString(10, "1");
         });
     }
 
     @Override
     public void bulkInsertStudent(List<StudentDto.UploadFileRegisterStudentInfo> permissions, Long roleId) {
-        String sql = "INSERT INTO users (email, phone, full_name, identity_card, address, note, password, username, role_id) VALUES (?, ?, ?, ?,?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, phone, full_name, identity_card, address, note, password, username, role_id, status) VALUES (?, ?, ?, ?,?, ?, ?, ?, ?, ?)";
         String defaultPassword = encoder.encode("ktx2024");
         jdbcTemplate.batchUpdate(sql, permissions, permissions.size(), (ps, permission) -> {
             ps.setString(1, permission.getEmail());
@@ -53,6 +54,7 @@ public class NativeSqlInsertStrategy  implements UserEntityPermissionBulkInsertS
             ps.setString(7, defaultPassword);
             ps.setString(8, permission.getFullName());
             ps.setLong(9, roleId);
+            ps.setString(10, "1");
         });
     }
 }

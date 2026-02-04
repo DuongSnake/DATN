@@ -107,4 +107,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             " major_id =:#{#request.majorInfo.id}, note =:#{#request.note},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt}" +
             " where id =:#{#request.id}",nativeQuery = true)
     void updateTeacher(@Param("request") User request);
+
+    @Modifying
+    @Transactional
+    @Query(value = "select * from Users WHERE status = '1' and username in :ids",nativeQuery = true)
+    List<User> getListUsersActiveByUserName(@Param("ids") List<String> ids);
 }
