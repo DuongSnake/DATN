@@ -58,4 +58,20 @@ public class CommentProcessAssignmentController {
         );
     }
 
+    @PostMapping("/confirmListProcessToDone")
+    public ResponseEntity<BasicResponseDto> confirmListCommentProcessAssignmentDone(@RequestBody @Valid CommentProcessAssignmentDto.ConfirmListCommentProcessAssignmentDone request, @RequestHeader("lang") String lang) {
+        return new ResponseEntity<>(
+                majorService.confirmListCommentProcessAssignmentDone(request, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/confirmProcessToDone")
+    public ResponseEntity<BasicResponseDto> confirmCommentProcessAssignmentDone(@RequestBody @Valid CommentProcessAssignmentDto.CommentProcessAssignmentAssignmentDone request, @RequestHeader("lang") String lang) {
+        return new ResponseEntity<>(
+                majorService.confirmCommentProcessAssignmentDone(request, lang),
+                HttpStatus.OK
+        );
+    }
+
 }

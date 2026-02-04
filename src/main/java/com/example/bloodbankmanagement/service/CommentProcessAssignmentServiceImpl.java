@@ -47,6 +47,8 @@ public class CommentProcessAssignmentServiceImpl {
             throw new CustomException("Not found value request param ", "en");
         }
         objectUpdate.setFileUploadInfo(fileUploadInfo);
+        objectUpdate.setExamDueDate(request.getExamDueDate());
+        objectUpdate.setStatusDone(CommonUtil.STATUS_CRATE_NEW_TASK);
         objectUpdate.setNote(request.getNote());
         objectUpdate.setCreateUser(userIdRegister);
         objectUpdate.setStatus(CommonUtil.STATUS_USE);
@@ -98,6 +100,7 @@ public class CommentProcessAssignmentServiceImpl {
         }
         CommentProcessAssignment objectUpdate = new CommentProcessAssignment();
         objectUpdate.setId(request.getCommentProcessAssignmentId());
+        objectUpdate.setExamDueDate(request.getExamDueDate());
         objectUpdate.setFileUploadInfo(fileUploadInfo);
         objectUpdate.setNote(request.getNote());
         objectUpdate.setUpdateUser(userIdUpdate);
@@ -116,6 +119,35 @@ public class CommentProcessAssignmentServiceImpl {
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
         commentProcessAssignmentRepository.deleteCommentProcessAssignment(objectDelete, listFileId.getListData());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
+        return objectResponse;
+    }
+
+    @Transactional
+    public BasicResponseDto confirmListCommentProcessAssignmentDone(CommentProcessAssignmentDto.ConfirmListCommentProcessAssignmentDone listFileId, String lang){
+        BasicResponseDto objectResponse;
+        CommentProcessAssignment objectDelete = new CommentProcessAssignment();
+        objectDelete.setStatusDone(CommonUtil.STATUS_USE);
+        objectDelete.setConfirmDoneDate(listFileId.getExamDueDate());
+        objectDelete.setNote(listFileId.getNote());
+        objectDelete.setUpdateAt(LocalDate.now());
+        objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
+        commentProcessAssignmentRepository.confirmListCommentProcessAssignmentDone(objectDelete, listFileId.getListData());
+        objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
+        return objectResponse;
+    }
+
+    @Transactional
+    public BasicResponseDto confirmCommentProcessAssignmentDone(CommentProcessAssignmentDto.CommentProcessAssignmentAssignmentDone request, String lang){
+        BasicResponseDto objectResponse;
+        CommentProcessAssignment objectDelete = new CommentProcessAssignment();
+        objectDelete.setId(request.getCommentProcessAssignmentId());
+        objectDelete.setStatusDone(CommonUtil.STATUS_USE);
+        objectDelete.setConfirmDoneDate(request.getExamDueDate());
+        objectDelete.setNote(request.getNote());
+        objectDelete.setUpdateAt(LocalDate.now());
+        objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
+        commentProcessAssignmentRepository.confirmCommentProcessAssignmentDone(objectDelete);
+        objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
         return objectResponse;
     }
 

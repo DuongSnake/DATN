@@ -28,11 +28,24 @@ public interface CommentProcessAssignmentRepository extends JpaRepository<Commen
 
     @Modifying
     @Transactional
-    @Query(value = "update comment_process_assignment set file_upload_id =:#{#request.fileUploadInfo.id}, note =:#{#request.note},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
+    @Query(value = "update comment_process_assignment set file_upload_id =:#{#request.fileUploadInfo.id}, note =:#{#request.note}" +
+            ",exam_due_date =:#{#request.examDueDate},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
     void updateCommentProcessAssignment(@Param("request") CommentProcessAssignment request);
 
     @Modifying
     @Transactional
     @Query(value = "update comment_process_assignment set status =:#{#request.status},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id in :ids",nativeQuery = true)
     void deleteCommentProcessAssignment(@Param("request") CommentProcessAssignment request, @Param("ids") List<Long> ids);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update comment_process_assignment set status_done =:#{#request.statusDone}, note =:#{#request.note}, confirm_done_date =:#{#request.confirmDoneDate} " +
+            " ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id in :ids",nativeQuery = true)
+    void confirmListCommentProcessAssignmentDone(@Param("request") CommentProcessAssignment request, @Param("ids") List<Long> ids);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update comment_process_assignment set status_done =:#{#request.statusDone}, note =:#{#request.note}, confirm_done_date =:#{#request.confirmDoneDate} " +
+            " ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
+    void confirmCommentProcessAssignmentDone(@Param("request") CommentProcessAssignment request);
 }

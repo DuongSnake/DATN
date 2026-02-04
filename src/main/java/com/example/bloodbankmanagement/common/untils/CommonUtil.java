@@ -22,6 +22,7 @@ public class CommonUtil {
     public static final String NO_VALUE = "N";
     public static final String USER_NAME = "username";
     public static final String STATUS_USE = "1";
+    public static final String STATUS_CRATE_NEW_TASK = "0";
     private static final String URL_REGEX = "^((((https?|http?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@&=+$,A-Za-z0-9])+)([).!';/?:,][[:blank:]])?$";
     private static final Pattern URL_PATTERN = Pattern.compile("^((((https?|http?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@&=+$,A-Za-z0-9])+)([).!';/?:,][[:blank:]])?$");
     private static final String[] IP_HEADER_CANDIDATES = new String[]{"X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_X_FORWARDED_FOR", "HTTP_X_FORWARDED", "HTTP_X_CLUSTER_CLIENT_IP", "HTTP_CLIENT_IP", "HTTP_FORWARDED_FOR", "HTTP_FORWARDED", "HTTP_VIA", "REMOTE_ADDR"};

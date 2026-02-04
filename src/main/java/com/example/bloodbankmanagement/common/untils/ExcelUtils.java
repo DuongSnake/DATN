@@ -28,36 +28,27 @@ public class ExcelUtils {
 
     public enum UserExcelCode {
 
-        // BeneficiaryAccount
-        BENEFICIARY_ACCOUNT_INVALID_FORMAT("PosExcelColumn.BeneficiaryAccount.InvalidFormat"),
-        BENEFICIARY_ACCOUNT_LENGTH("PosExcelColumn.BeneficiaryAccount.Length"),
-        BENEFICIARY_ACCOUNT_NOT_BLANK("PosExcelColumn.BeneficiaryAccount.NotBlank"),
-        BENEFICIARY_ACCOUNT_NOT_FOUND("PosExcelColumn.BeneficiaryAccount.NotFound"),
+        // AdmissionPeriodMap
+        USER_NAME_DUPLICATE("UserExcelColumn.UserName.Duplicate"),
 
-        // CustomerId
-        CUSTOMER_ID_INVALID_CONTRACT("PosExcelColumn.CustomerId.Contract"),
-        CUSTOMER_ID_INVALID_FORMAT("FAIL"),
-        CUSTOMER_ID_LENGTH("OldPasswordMatched"),
-        CUSTOMER_ID_NOT_BLANK("NotFoundDataUser"),
-        CUSTOMER_ID_NOT_FOUND("NotNullValueInput"),
-        CUSTOMER_ID_POS("PosExcelColumn.CustomerId.Pos"),
+        // AdmissionPeriodMap
+        ADMISSION_PERIOD_MAP_INVALID_FORMAT("UserExcelColumn.AdmissionPeriodMap.InvalidFormat"),
+        ADMISSION_PERIOD_MAP_LENGTH("UserExcelColumn.AdmissionPeriodMap.Length"),
+        ADMISSION_PERIOD_MAP_NOT_BLANK("UserExcelColumn.AdmissionPeriodMap.NotBlank"),
+        ADMISSION_PERIOD_MAP_NOT_FOUND("UserExcelColumn.AdmissionPeriodMap.NotFound"),
 
-        // PosId
-        POS_ID_DUPLICATE("PosExcelColumn.PosId.Duplicate"),
-        POS_ID_INVALID_FORMAT("PosExcelColumn.PosId.InvalidFormat"),
-        POS_ID_LENGTH("PosExcelColumn.PosId.Length"),
-        POS_ID_NOT_BLANK("PosExcelColumn.PosId.NotBlank"),
+        // RoleId
+        ROLE_ID_DUPLICATE("UserExcelColumn.RoleId.Duplicate"),
+        ROLE_ID_INVALID_FORMAT("UserExcelColumn.RoleId.InvalidFormat"),
+        ROLE_ID_LENGTH("UserExcelColumn.RoleId.Length"),
+        ROLE_ID_NOT_BLANK("UserExcelColumn.RoleId.NotBlank"),
+        ROLE_ID_NOT_FOUND("UserExcelColumn.RoleId.NotFound"),
 
-        // PosName
-        POS_NAME_INVALID_FORMAT("PosExcelColumn.PosName.InvalidFormat"),
-        POS_NAME_LENGTH("PosExcelColumn.PosName.Length"),
-        POS_NAME_NOT_BLANK("PosExcelColumn.PosName.NotBlank"),
-
-        // ProviderId
-        PROVIDER_ID_INVALID_FORMAT("PosExcelColumn.ProviderId.InvalidFormat"),
-        PROVIDER_ID_LENGTH("PosExcelColumn.ProviderId.Length"),
-        PROVIDER_ID_NOT_BLANK("PosExcelColumn.ProviderId.NotBlank"),
-        PROVIDER_ID_NOT_FOUND("PosExcelColumn.ProviderId.NotFound");
+        // MajorId
+        MAJOR_ID_INVALID_FORMAT("UserExcelColumn.MajorId.InvalidFormat"),
+        MAJOR_ID_LENGTH("UserExcelColumn.MajorId.Length"),
+        MAJOR_ID_NOT_BLANK("UserExcelColumn.MajorId.NotBlank"),
+        MAJOR_ID_NOT_FOUND("UserExcelColumn.MajorId.NotFound");
 
 
         private final String id;

@@ -28,7 +28,6 @@ public class MailServiceImpl {
         try {
             logger.info("Email start send: " + subject);
             MimeMessage message = javaMailSender.createMimeMessage();
-            logger.info("Email javaMailSender.createMimeMessage()");
             message.setFrom(new InternetAddress(emailConfig.getUsername()));
             if(CommonUtil.trueValue.equals(params.get(CommonUtil.SendToSingleMailYes))){
                 logger.info("Send single mail: ");
@@ -41,7 +40,7 @@ public class MailServiceImpl {
             message.setSubject(subject);
             message.setContent(thymeleafService.getContentForEmailTemplate(params, templateName), CONTENT_TYPE_TEXT_HTML);
 
-            logger.info("Email javaMailSender.createMimeMessage() setting done");
+            logger.info("Email setting done");
             javaMailSender.send(message);
             logger.info("Email end send: ");
             return true;

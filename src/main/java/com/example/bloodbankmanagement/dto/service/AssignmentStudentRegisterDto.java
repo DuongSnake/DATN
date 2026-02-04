@@ -29,6 +29,7 @@ public class AssignmentStudentRegisterDto {
         private Long studentMapInstructorId;
         private String studentName;
         private String instructorName;
+        private LocalDate examDueDate;
         private String fileName;
         private String fileType;
         private Integer isApproved;
@@ -50,6 +51,7 @@ public class AssignmentStudentRegisterDto {
         private Long periodAssignmentId;
         private String periodAssignmentName;
         private LocalDate expirePeriodDate;
+        private LocalDate examDueDate;
         private String studentName;
         private String instructorName;
         private String fileName;
@@ -64,6 +66,7 @@ public class AssignmentStudentRegisterDto {
     public static class AssignmentStudentRegisterInsertInfo {
         private String assignmentStudentRegisterName;
         private MultipartFile fileUpload;
+        private LocalDate examDueDate;
         private Long periodAssignmentId;
         private Long studentMapInstructorId;
     }
@@ -73,6 +76,7 @@ public class AssignmentStudentRegisterDto {
         private long assignmentStudentRegisterId;
         private MultipartFile fileUpload;
         private Long studentMapInstructorId;
+        private LocalDate examDueDate;
         private Long periodAssignmentId;
         private String assignmentStudentRegisterName;
     }

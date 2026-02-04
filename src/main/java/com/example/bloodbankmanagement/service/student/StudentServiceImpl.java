@@ -205,7 +205,21 @@ public class StudentServiceImpl {
         //check status before insert all
         if(statusInsertAll){
             //Insert list
+            logger.info("Vao insert thong tin");
             nativeSqlInsertStrategy.bulkInsertStudent(listPosPayerFromExcel, rolesStudent.getId());
+            //Send mail announcement register new user
+            String defaultPassword = "ktx2024";
+            for(int i = 0; i < listPosPayerFromExcel.size(); i++){
+                Map<String, String> params = new HashMap<>();
+                params.put("userNm", listPosPayerFromExcel.get(i).getFullName());
+                params.put("email", listPosPayerFromExcel.get(i).getEmail());
+                params.put("password", defaultPassword);
+                params.put("urlLogin", urlLogin);
+                boolean sendSuccess = mailService.sendEmailByTemplate(params, EmailTemplate.REG_NEW.getName(), EmailTemplate.REG_NEW.getSubject());
+                if (!sendSuccess) {
+                    return responseCommon.getSingleFailResult("EmailSendFail", lang);
+                }
+            }
         }
         return objectResponse;
     }
@@ -231,6 +245,7 @@ public class StudentServiceImpl {
             int rowNum = 0;
 
             while (rowIterator.hasNext()) {
+                List<String> listError = new ArrayList<>();
                 Row row = rowIterator.next();
                 //Not get value in 3 row first
                 if (rowNum++ < 3) {
@@ -245,10 +260,16 @@ public class StudentServiceImpl {
                 pos.setFullName(ExcelUtils.getCellValue(row.getCell(4)));
                 pos.setIdentityCard(ExcelUtils.getCellValue(row.getCell(5)));
                 pos.setAddress(ExcelUtils.getCellValue(row.getCell(6)));
-                pos.setMajorId(Long.valueOf(ExcelUtils.getCellValue(row.getCell(7))));
-                pos.setAdmissionPeriodId(Long.valueOf(ExcelUtils.getCellValue(row.getCell(8))));
-                pos.setRoleId(Long.valueOf(ExcelUtils.getCellValue(row.getCell(9))));
-                pos.setNote(ExcelUtils.getCellValue(row.getCell(10)));
+                //Handle value column convert to long
+                Long valueColumnMajorId = (StringUtils.isEmpty(ExcelUtils.getCellValue(row.getCell(7))) ||
+                        !matches(ExcelUtils.getCellValue(row.getCell(7)), "^[0-9]*$",
+                                ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, listError) ) ? null : Long.valueOf(ExcelUtils.getCellValue(row.getCell(7)));
+                Long valueColumnAdmissionPeriodId = (StringUtils.isEmpty(ExcelUtils.getCellValue(row.getCell(8))) ||
+                        !matches(ExcelUtils.getCellValue(row.getCell(8)), "^[0-9]*$",
+                                ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, listError) )  ? null : Long.valueOf(ExcelUtils.getCellValue(row.getCell(8)));
+                pos.setMajorId(valueColumnMajorId);
+                pos.setAdmissionPeriodId(valueColumnAdmissionPeriodId);
+                pos.setNote(ExcelUtils.getCellValue(row.getCell(9)));
                 batchList.add(pos);
             }
         } catch (IOException e) {
@@ -268,29 +289,36 @@ public class StudentServiceImpl {
                 .collect(Collectors.toMap(AdmissionPeriod::getId, c -> c));
         Map<Long, Major> majorMap = majorRepository.getAllMajorActive().stream()
                 .collect(Collectors.toMap(Major::getId, c -> c));
+        Map<Long, Role> roleMap = roleRepository.getAllRole().stream()
+                .collect(Collectors.toMap(Role::getId, c -> c));
         excelData.forEach(item -> {
             List<String> errors = new ArrayList<>();
+            //Check format value input full name
+            matches(item.getFullName(), "^[a-zA-Z0-9]*$",
+                    ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, errors);
             // ADMISSION_PERIOD
             validateField(String.valueOf(item.getAdmissionPeriodId()), 20,
-                    ExcelUtils.UserExcelCode.CUSTOMER_ID_NOT_BLANK,
-                    ExcelUtils.UserExcelCode.CUSTOMER_ID_LENGTH,errors);
-            if (ExcelUtils.isValid(String.valueOf(item.getAdmissionPeriodId()))) {
-                matches(item.getFullName(), "^[a-zA-Z0-9]*$",
-                        ExcelUtils.UserExcelCode.CUSTOMER_ID_INVALID_FORMAT, language, errors);
-                if (!admissionPeriodMap.containsKey(item.getAdmissionPeriodId())) {
-                    addErrorMessage(ExcelUtils.UserExcelCode.CUSTOMER_ID_NOT_FOUND, errors);
-                }
+                    ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_NOT_BLANK,
+                    ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_LENGTH,errors);
+            //Check value input exist in database or not
+            if (!admissionPeriodMap.containsKey(item.getAdmissionPeriodId())) {
+                addErrorMessage(ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_NOT_FOUND, errors);
             }
             // MAJOR
             validateField(String.valueOf(item.getMajorId()), 10,
-                    ExcelUtils.UserExcelCode.PROVIDER_ID_NOT_BLANK,
-                    ExcelUtils.UserExcelCode.PROVIDER_ID_LENGTH,errors);
-            if (ExcelUtils.isValid(String.valueOf(item.getMajorId()))) {
-                matches(String.valueOf(item.getMajorId()), "^[a-zA-Z0-9]*$",
-                        ExcelUtils.UserExcelCode.PROVIDER_ID_INVALID_FORMAT, language, errors);
-                if (!majorMap.containsKey(item.getMajorId())) {
-                    addErrorMessage(ExcelUtils.UserExcelCode.PROVIDER_ID_NOT_FOUND, errors);
-                }
+                    ExcelUtils.UserExcelCode.MAJOR_ID_NOT_BLANK,
+                    ExcelUtils.UserExcelCode.MAJOR_ID_LENGTH,errors);
+            //Check value input exist in database or not
+            if (!majorMap.containsKey(item.getMajorId())) {
+                addErrorMessage(ExcelUtils.UserExcelCode.MAJOR_ID_NOT_FOUND, errors);
+            }
+            // ===== ROLE =====
+            validateField(String.valueOf(item.getRoleId()), 10,
+                    ExcelUtils.UserExcelCode.ROLE_ID_NOT_BLANK,
+                    ExcelUtils.UserExcelCode.ROLE_ID_LENGTH,errors);
+            //Check value input exist in database or not
+            if (!roleMap.containsKey(item.getRoleId())) {
+                addErrorMessage(ExcelUtils.UserExcelCode.ROLE_ID_NOT_FOUND, errors);
             }
             item.setErrors(errors);
         });
@@ -313,8 +341,8 @@ public class StudentServiceImpl {
         }
     }
 
-    private boolean matches(String value, String regex, ExcelUtils.UserExcelCode errorCode,
-                            String language, List<String> errors) {
+    private boolean matches(String value, String regex, ExcelUtils.UserExcelCode errorCode
+                            , List<String> errors) {
         if (value != null && !value.matches(regex)) {
             addErrorMessage(errorCode, errors);
             return false;

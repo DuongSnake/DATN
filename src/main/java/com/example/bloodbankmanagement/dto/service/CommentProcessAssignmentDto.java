@@ -23,8 +23,14 @@ public class CommentProcessAssignmentDto {
         private Long commentProcessAssignmentId;
         private String note;
         private String status;
+        private String statusDone;
         private Long fileUploadId;
+        private LocalDate examDueDate;
+        private LocalDate confirmDateDone;
         private String fileUploadName;
+        private String studentName;
+        private String instructorName;
+        private String assignmentName;
         private LocalDate createAt;
     }
 
@@ -38,8 +44,14 @@ public class CommentProcessAssignmentDto {
         private Long commentProcessAssignmentId;
         private String note;
         private String status;
+        private String statusDone;
         private Long fileUploadId;
+        private LocalDate examDueDate;
+        private LocalDate confirmDateDone;
         private String fileUploadName;
+        private String studentName;
+        private String instructorName;
+        private String assignmentName;
         private LocalDate createAt;
     }
 
@@ -47,17 +59,33 @@ public class CommentProcessAssignmentDto {
     public static class CommentProcessAssignmentInsertInfo {
         private String note;
         private Long fileUploadId;
+        private LocalDate examDueDate;
     }
 
     @Data
     public static class CommentProcessAssignmentUpdateInfo {
         private long commentProcessAssignmentId;
         private Long fileUploadId;
+        private LocalDate examDueDate;
         private String note;
     }
 
     @Data
     public static class CommentProcessAssignmentDeleteInfo {
         private List<Long> listData;
+    }
+
+    @Data
+    public static class ConfirmListCommentProcessAssignmentDone {
+        private List<Long> listData;
+        private LocalDate examDueDate;
+        private String note;
+    }
+
+    @Data
+    public static class CommentProcessAssignmentAssignmentDone {
+        private Long commentProcessAssignmentId;
+        private LocalDate examDueDate;
+        private String note;
     }
 }
