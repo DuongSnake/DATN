@@ -340,7 +340,7 @@ public class UserServiceImpl {
     public SingleResponseDto<List<UserDto.UserSelectListInfo>> selectListInstructor() {
         SingleResponseDto objectResponse = new SingleResponseDto();
         List<UserDto.UserSelectListInfo> pageAmtObject = new ArrayList<>();
-        List<User> listDataUser = userRepository.getListUserByRoleName(ERole.ROLE_MODERATOR.toString());
+        List<User> listDataUser = userRepository.getListUserByRoleName(ERole.ROLE_INSTRUCTOR.toString());
         pageAmtObject = User.convertListObjectStudentOrInstructorToDto(listDataUser);
         objectResponse = responseCommon.getSingleResponse(pageAmtObject, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
