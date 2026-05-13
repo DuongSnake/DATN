@@ -222,7 +222,7 @@ public class StudentMapInstructorServiceImpl {
     }
 
     public User getInfoInstructorById(Long userid){
-        User userInfo = userRepository.getValueUserByIdAndRole(userid, ERole.ROLE_MODERATOR.toString());
+        User userInfo = userRepository.getValueUserByIdAndRole(userid, ERole.ROLE_INSTRUCTOR.toString());
         if(ObjectUtils.isEmpty(userInfo)){
             logger.info("Not found instructor info with userId: "+userid);
             throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");

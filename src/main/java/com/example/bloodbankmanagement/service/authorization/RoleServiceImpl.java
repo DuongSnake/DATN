@@ -35,7 +35,7 @@ public class RoleServiceImpl {
                         roles.add(modRole);
                         break;
                     case "4":
-                        Role criticalRole = roleRepository.findByName(ERole.ROLE_CRITICAL)
+                        Role criticalRole = roleRepository.findByName(ERole.ROLE_INSTRUCTOR)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(criticalRole);
                         break;

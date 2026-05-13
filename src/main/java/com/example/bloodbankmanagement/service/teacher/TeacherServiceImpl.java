@@ -134,7 +134,7 @@ public class TeacherServiceImpl {
         //update data date time and userId
         objectEnity.setStatus(CommonUtil.STATUS_USE);
         //Set role
-        Role rolesTeacher = roleRepository.findByName(ERole.ROLE_MODERATOR).get();
+        Role rolesTeacher = roleRepository.findByName(ERole.ROLE_INSTRUCTOR).get();
         objectEnity.setRoleInfo(rolesTeacher);
         //Check major
         Major majorInfo = majorRepository.findByFileId(request.getMajorId());
