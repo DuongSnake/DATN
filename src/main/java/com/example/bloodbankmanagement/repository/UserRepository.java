@@ -40,14 +40,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User getById(Long id);
 
     @Query(value = "select u.*  from users u " +
-            "join user_roles ur  on u.id = ur.user_id " +
-            "join roles r on r.id = ur.role_id " +
+            "join roles r on r.id = u.role_id " +
             "where u.id = ?1 and r.name = ?2", nativeQuery = true)
     User getValueUserByIdAndRole(Long id, String valueRole);
 
     @Query(value = "select u.*  from users u " +
-            "join user_roles ur  on u.id = ur.user_id " +
-            "join roles r on r.id = ur.role_id " +
+            "join roles r on r.id = u.role_id " +
             "where r.name = ?1 and u.status ='1' ", nativeQuery = true)
     List<User> getListUserByRoleName(String valueRole);
 
@@ -69,8 +67,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByIdIn(ArrayList<Long> userId);
 
     @Query(value = "select count(u.id)  from users u " +
-            "join user_roles ur  on u.id = ur.user_id " +
-            "join roles r on r.id = ur.role_id " +
+            "join roles r on r.id = u.role_id " +
             "where u.id in ?1 and r.name = ?2", nativeQuery = true)
     Integer countListUerInRangeAndByTypeRole(List<Long> userId, String typeRole);
 
@@ -89,8 +86,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "and (:#{#request.identityCard} is null or ''  = :#{#request.identityCard} or identity_card like '%'+:#{#request.identityCard}+'%')" +
             "and (:#{#request.fullName} is null or ''  = :#{#request.fullName} or full_name like '%'+:#{#request.fullName}+'%')" +
             "and (:#{#request.status} is null or ''  = :#{#request.status} or status = :#{#request.status}) " +
-            "and (:#{#request.majorId} is null or ''  = :#{#request.majorId} or major_id = :#{#request.majorId}) " +
-            "and (:#{#request.admissionPeriodId} is null or ''  = :#{#request.admissionPeriodId} or period_time_id = :#{#request.admissionPeriodId}) " +
             " order by create_at DESC,update_at DESC ",
             nativeQuery = true)
     Page<User> findListStudents(@Param("request") StudentDto.StudentSelectListRequest request, Pageable pageable);
@@ -98,13 +93,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Transactional
     @Query(value = "update Users set  username =:#{#request.username}, email =:#{#request.email}, phone =:#{#request.phone},full_name =:#{#request.fullName},identity_card =:#{#request.identityCard},address =:#{#request.address}," +
-            " period_time_id =:#{#request.periodTime.id}, major_id =:#{#request.majorInfo.id}, note =:#{#request.note},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt}" +
+            " note =:#{#request.note},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt}" +
             " where id =:#{#request.id}",nativeQuery = true)
     void updateStudent(@Param("request") User request);
     @Modifying
     @Transactional
     @Query(value = "update Users set  username =:#{#request.username}, email =:#{#request.email}, phone =:#{#request.phone},full_name =:#{#request.fullName},identity_card =:#{#request.identityCard},address =:#{#request.address}," +
-            " major_id =:#{#request.majorInfo.id}, note =:#{#request.note},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt}" +
+            " note =:#{#request.note},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt}" +
             " where id =:#{#request.id}",nativeQuery = true)
     void updateTeacher(@Param("request") User request);
 

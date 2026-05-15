@@ -87,11 +87,6 @@ public class TeacherServiceImpl {
         //Check exist before update
         checkExistTeacher(request.getId(), lang);
         User objectUpdate = StudentDto.StudentUpdateInfo.convertToEntity(request,userId);
-        //Check major
-        Major majorInfo = majorRepository.findByFileId(request.getMajorId());
-        if(null != majorInfo){
-            objectUpdate.setMajorInfo(majorInfo);
-        }
         objectUpdate.setUpdateAt(LocalDate.now());
         userRepository.updateTeacher(objectUpdate);
         messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
@@ -136,11 +131,6 @@ public class TeacherServiceImpl {
         //Set role
         Role rolesTeacher = roleRepository.findByName(ERole.ROLE_INSTRUCTOR).get();
         objectEnity.setRoleInfo(rolesTeacher);
-        //Check major
-        Major majorInfo = majorRepository.findByFileId(request.getMajorId());
-        if(null != majorInfo){
-            objectEnity.setMajorInfo(majorInfo);
-        }
         objectEnity.setUpdateAt(LocalDate.now());
         String defaultPassword = "ktx2024";
         objectEnity.setPassword(encoder.encode(defaultPassword));

@@ -112,8 +112,6 @@ public class ReportYearServiceImpl {
             objectData.setAddress(listDataUSer.get(i).getAddress());
             objectData.setNote(listDataUSer.get(i).getNote());
             objectData.setStatus(listDataUSer.get(i).getStatus());
-            objectData.setMajorName(null != listDataUSer.get(i).getMajorInfo() ? listDataUSer.get(i).getMajorInfo().getMajorName() : "");
-            objectData.setAdmissionPeriodName(null != listDataUSer.get(i).getPeriodTime() ? listDataUSer.get(i).getPeriodTime().getAdmissionPeriodName() : "");
             listDataResponse.add(objectData);
         }
         return listDataResponse;

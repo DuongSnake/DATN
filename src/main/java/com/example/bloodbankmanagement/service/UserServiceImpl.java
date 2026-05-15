@@ -169,16 +169,6 @@ public class UserServiceImpl {
         Set<Role> roles = roleService.getRole(null);//If the
         Role userRole = roles.stream().findFirst().get();//Get first role
         objectEnity.setRoleInfo(userRole);
-        //Check period
-        AdmissionPeriod inforAdminPeriod = admissionPeriodRepository.findByFileId(request.getPeriodId());
-        if(null != inforAdminPeriod){
-            objectEnity.setPeriodTime(inforAdminPeriod);
-        }
-        //Check major
-        Major majorInfo = majorRepository.findByFileId(request.getMajorId());
-        if(null != majorInfo){
-            objectEnity.setMajorInfo(majorInfo);
-        }
         objectEnity.setUpdateAt(LocalDate.now());
         String defaultPassword = "ktx2024";
         objectEnity.setPassword(encoder.encode(defaultPassword));

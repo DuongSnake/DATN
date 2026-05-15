@@ -21,8 +21,6 @@ public class StudentDto {
         private String phone;
         private String identityCard;
         private String fullName;
-        private Long majorId;
-        private Long admissionPeriodId;
         private String status;
         private PageRequestDto pageRequestDto;
     }
@@ -38,10 +36,6 @@ public class StudentDto {
         private String address;
         private String status;
         private String note;
-        private Long majorId;
-        private String majorName;
-        private Long admissionPeriodId;
-        private String admissionPeriodName;
         private LocalDate createAt;
         private LocalDate updateAt;
         private Role roles;
@@ -58,10 +52,6 @@ public class StudentDto {
         private String address;
         private String status;
         private String note;
-        private Long majorId;
-        private String majorName;
-        private Long admissionPeriodId;
-        private String admissionPeriodName;
         private LocalDate createAt;
         private LocalDate updateAt;
         private Role roles;
@@ -76,8 +66,6 @@ public class StudentDto {
         private String fullName;
         private String identityCard;
         private String address;
-        private Long majorId;
-        private Long admissionPeriodId;
         private String note;
         public static User convertToEntity(StudentDto.StudentUpdateInfo userUpdateInfo, String userId){
             User objectEntity = new User();
@@ -103,8 +91,6 @@ public class StudentDto {
         private String identityCard;
         private String address;
         private String note;
-        private Long majorId;
-        private Long admissionPeriodId;
 
         public static User convertToEntity(StudentDto.StudentInsertInfo userInsertInfo) {
             User objectEntity = new User();
@@ -162,8 +148,6 @@ public class StudentDto {
         private String identityCard;
         private String address;
         private String note;
-        private Long majorId;
-        private Long admissionPeriodId;
         private Long roleId;
         private List<String> errors;
     }
@@ -180,16 +164,12 @@ public class StudentDto {
         private String address;
         private String status;
         private String note;
-        private Long majorId;
-        private String majorName;
-        private Long admissionPeriodId;
-        private String admissionPeriodName;
         private LocalDate createAt;
         private LocalDate updateAt;
         private Set<Role> roles;
         ///Add for line code convert to entity to object export excel at line List<StudentExcel> dtoObject = studentExportMapper.toEntity(listAllUser);
         @Builder
-        public StudentForExportExcelResponse(String username, String email, String phone, String fullName, String identityCard, String address, String note, String status, String majorName, String admissionPeriodName) {
+        public StudentForExportExcelResponse(String username, String email, String phone, String fullName, String identityCard, String address, String note, String status) {
             this.username = username;
             this.email = email;
             this.phone = phone;
@@ -198,8 +178,6 @@ public class StudentDto {
             this.address = address;
             this.note = note;
             this.status = status;
-            this.majorName = majorName;
-            this.admissionPeriodName = admissionPeriodName;
         }
     }
 }

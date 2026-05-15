@@ -88,16 +88,6 @@ public class StudentServiceImpl {
         //Check exist before update
         checkExistStudent(request.getId(), lang);
         User objectUpdate = StudentDto.StudentUpdateInfo.convertToEntity(request,userId);
-        //Check period
-        AdmissionPeriod inforAdminPeriod = admissionPeriodRepository.findByFileId(request.getAdmissionPeriodId());
-        if(null != inforAdminPeriod){
-            objectUpdate.setPeriodTime(inforAdminPeriod);
-        }
-        //Check major
-        Major majorInfo = majorRepository.findByFileId(request.getMajorId());
-        if(null != majorInfo){
-            objectUpdate.setMajorInfo(majorInfo);
-        }
         objectUpdate.setUpdateAt(LocalDate.now());
         userRepository.updateStudent(objectUpdate);
         messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
@@ -142,16 +132,6 @@ public class StudentServiceImpl {
         //Set role
         Role rolesStudent = roleRepository.findByName(ERole.ROLE_USER).get();
         objectEnity.setRoleInfo(rolesStudent);
-        //Check period
-        AdmissionPeriod inforAdminPeriod = admissionPeriodRepository.findByFileId(request.getAdmissionPeriodId());
-        if(null != inforAdminPeriod){
-            objectEnity.setPeriodTime(inforAdminPeriod);
-        }
-        //Check major
-        Major majorInfo = majorRepository.findByFileId(request.getMajorId());
-        if(null != majorInfo){
-            objectEnity.setMajorInfo(majorInfo);
-        }
         objectEnity.setUpdateAt(LocalDate.now());
         String defaultPassword = "ktx2024";
         objectEnity.setPassword(encoder.encode(defaultPassword));
@@ -260,15 +240,6 @@ public class StudentServiceImpl {
                 pos.setFullName(ExcelUtils.getCellValue(row.getCell(4)));
                 pos.setIdentityCard(ExcelUtils.getCellValue(row.getCell(5)));
                 pos.setAddress(ExcelUtils.getCellValue(row.getCell(6)));
-                //Handle value column convert to long
-                Long valueColumnMajorId = (StringUtils.isEmpty(ExcelUtils.getCellValue(row.getCell(7))) ||
-                        !matches(ExcelUtils.getCellValue(row.getCell(7)), "^[0-9]*$",
-                                ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, listError) ) ? null : Long.valueOf(ExcelUtils.getCellValue(row.getCell(7)));
-                Long valueColumnAdmissionPeriodId = (StringUtils.isEmpty(ExcelUtils.getCellValue(row.getCell(8))) ||
-                        !matches(ExcelUtils.getCellValue(row.getCell(8)), "^[0-9]*$",
-                                ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, listError) )  ? null : Long.valueOf(ExcelUtils.getCellValue(row.getCell(8)));
-                pos.setMajorId(valueColumnMajorId);
-                pos.setAdmissionPeriodId(valueColumnAdmissionPeriodId);
                 pos.setNote(ExcelUtils.getCellValue(row.getCell(9)));
                 batchList.add(pos);
             }
@@ -296,22 +267,6 @@ public class StudentServiceImpl {
             //Check format value input full name
             matches(item.getFullName(), "^[a-zA-Z0-9]*$",
                     ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, errors);
-            // ADMISSION_PERIOD
-            validateField(String.valueOf(item.getAdmissionPeriodId()), 20,
-                    ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_NOT_BLANK,
-                    ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_LENGTH,errors);
-            //Check value input exist in database or not
-            if (!admissionPeriodMap.containsKey(item.getAdmissionPeriodId())) {
-                addErrorMessage(ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_NOT_FOUND, errors);
-            }
-            // MAJOR
-            validateField(String.valueOf(item.getMajorId()), 10,
-                    ExcelUtils.UserExcelCode.MAJOR_ID_NOT_BLANK,
-                    ExcelUtils.UserExcelCode.MAJOR_ID_LENGTH,errors);
-            //Check value input exist in database or not
-            if (!majorMap.containsKey(item.getMajorId())) {
-                addErrorMessage(ExcelUtils.UserExcelCode.MAJOR_ID_NOT_FOUND, errors);
-            }
             // ===== ROLE =====
             validateField(String.valueOf(item.getRoleId()), 10,
                     ExcelUtils.UserExcelCode.ROLE_ID_NOT_BLANK,
