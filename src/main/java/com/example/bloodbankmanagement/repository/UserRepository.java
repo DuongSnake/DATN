@@ -1,6 +1,8 @@
 package com.example.bloodbankmanagement.repository;
 
 
+import com.example.bloodbankmanagement.dto.service.InstructorDto;
+import com.example.bloodbankmanagement.dto.service.StudentManagementDto;
 import com.example.bloodbankmanagement.dto.service.UserDto;
 import com.example.bloodbankmanagement.dto.service.student.StudentDto;
 import com.example.bloodbankmanagement.entity.StudentMapInstructor;
@@ -107,4 +109,36 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Query(value = "select * from Users WHERE status = '1' and username in :ids",nativeQuery = true)
     List<User> getListUsersActiveByUserName(@Param("ids") List<String> ids);
+
+    @Query(value = "select u.* from users u " +
+            "join roles r on r.id = u.role_id " +
+            "where r.name = 'ROLE_INSTRUCTOR' " +
+            "and (:#{#request.instructorId} is null or ''  = :#{#request.instructorId} or u.id like :#{#request.instructorId}) " +
+            "and (:#{#request.username} is null or ''  = :#{#request.username} or u.username like '%'+:#{#request.username}+'%') " +
+            "and (:#{#request.email} is null or ''  = :#{#request.email} or u.email like '%'+:#{#request.email}+'%') " +
+            "and (:#{#request.phone} is null or ''  = :#{#request.phone} or u.phone like '%'+:#{#request.phone}+'%') " +
+            "and (:#{#request.fullName} is null or ''  = :#{#request.fullName} or u.full_name like '%'+:#{#request.fullName}+'%') " +
+            "and (:#{#request.identityCard} is null or ''  = :#{#request.identityCard} or u.identity_card like '%'+:#{#request.identityCard}+'%') " +
+            "and (:#{#request.status} is null or ''  = :#{#request.status} or u.status = :#{#request.status}) " +
+            "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or u.create_at >= :#{#request.fromDate}) " +
+            "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or u.create_at <= :#{#request.toDate}) " +
+            "order by u.create_at DESC, u.update_at DESC ",
+            nativeQuery = true)
+    Page<User> findListInstructor(@Param("request") InstructorDto.InstructorSelectListRequest request, Pageable pageable);
+
+    @Query(value = "select u.* from users u " +
+            "join roles r on r.id = u.role_id " +
+            "where r.name = 'ROLE_USER' " +
+            "and (:#{#request.studentId} is null or ''  = :#{#request.studentId} or u.id like :#{#request.studentId}) " +
+            "and (:#{#request.username} is null or ''  = :#{#request.username} or u.username like '%'+:#{#request.username}+'%') " +
+            "and (:#{#request.email} is null or ''  = :#{#request.email} or u.email like '%'+:#{#request.email}+'%') " +
+            "and (:#{#request.phone} is null or ''  = :#{#request.phone} or u.phone like '%'+:#{#request.phone}+'%') " +
+            "and (:#{#request.fullName} is null or ''  = :#{#request.fullName} or u.full_name like '%'+:#{#request.fullName}+'%') " +
+            "and (:#{#request.identityCard} is null or ''  = :#{#request.identityCard} or u.identity_card like '%'+:#{#request.identityCard}+'%') " +
+            "and (:#{#request.status} is null or ''  = :#{#request.status} or u.status = :#{#request.status}) " +
+            "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or u.create_at >= :#{#request.fromDate}) " +
+            "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or u.create_at <= :#{#request.toDate}) " +
+            "order by u.create_at DESC, u.update_at DESC ",
+            nativeQuery = true)
+    Page<User> findListStudent(@Param("request") StudentManagementDto.StudentSelectListRequest request, Pageable pageable);
 }
