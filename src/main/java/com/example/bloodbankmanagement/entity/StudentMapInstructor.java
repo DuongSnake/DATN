@@ -26,6 +26,7 @@ public class StudentMapInstructor extends EntityCommon {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "critical_teacher_id")
     private User criticalTeacherInfo;//giao vien phan bien
+    private String note;
 
     public static StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse convertToDto(StudentMapInstructor request){
         StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse objectDtoResponse = new StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse();

@@ -157,7 +157,7 @@ public class FileMetadataServiceImpl {
             objectUpdate.setUpdateAt(LocalDate.now());
             objectUpdate.setStatus(CommonUtil.STATUS_USE);
             //Check assignment register
-            AssignmentStudentRegister assignmentStudentRegister = assignmentStudentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
+            AssignmentStudentRegister assignmentStudentRegister = assignmentStudentRegisterRepository.findByFileId2(request.getAssignmentRegisterId());
             if(null == assignmentStudentRegister){
                 throw new CustomException("Value assignmentRegisterId not exist in database ", "en");
             }
@@ -197,7 +197,7 @@ public class FileMetadataServiceImpl {
             objectUpdate.setFileName(fileName);
             objectUpdate.setFileSize(request.getFileUploadContent().getSize());
             //Check assignment register
-            AssignmentStudentRegister assignmentStudentRegister = assignmentStudentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
+            AssignmentStudentRegister assignmentStudentRegister = assignmentStudentRegisterRepository.findByFileId2(request.getAssignmentRegisterId());
             if(null == assignmentStudentRegister){
                 throw new CustomException("Value assignmentRegisterId not exist in database ", "en");
             }
@@ -273,7 +273,7 @@ public class FileMetadataServiceImpl {
         String userIdRegister = checkExistUser(userIdCreate);
         List<FileUpload> listFileUpload = new ArrayList<>();
         //Check assignment register
-        AssignmentStudentRegister assignmentStudentRegister = assignmentStudentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
+        AssignmentStudentRegister assignmentStudentRegister = assignmentStudentRegisterRepository.findByFileId2(request.getAssignmentRegisterId());
         if(null == assignmentStudentRegister){
             throw new CustomException("Value assignmentRegisterId not exist in database ", lang);
         }

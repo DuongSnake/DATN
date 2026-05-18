@@ -1,6 +1,7 @@
 package com.example.bloodbankmanagement.dto.service;
 
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
@@ -26,16 +27,17 @@ public class AssignmentStudentRegisterDto {
         private Long periodAssignmentId;
         private String periodAssignmentName;
         private LocalDate expirePeriodDate;
-        private Long studentMapInstructorId;
+        private Long studentId;
         private String studentName;
         private String instructorName;
-        private LocalDate examDueDate;
         private String fileName;
         private String fileType;
         private Integer isApproved;
+        private String statusAutoMap;
         private String status;
         private String createUser;
         private LocalDate createAt;
+        private Long oldValueId;
     }
 
     @Data
@@ -47,38 +49,44 @@ public class AssignmentStudentRegisterDto {
     public static class AssignmentStudentRegisterSelectInfoResponse {
         private Long assignmentStudentRegisterId;
         private String assignmentStudentRegisterName;
-        private Long studentMapInstructorId;
+        private Long studentId;
         private Long periodAssignmentId;
         private String periodAssignmentName;
         private LocalDate expirePeriodDate;
-        private LocalDate examDueDate;
         private String studentName;
         private String instructorName;
         private String fileName;
         private String fileType;
         private Integer isApproved;
+        private String statusAutoMap;
         private String status;
         private String createUser;
         private LocalDate createAt;
+        private Long oldValueId;
     }
 
     @Data
     public static class AssignmentStudentRegisterInsertInfo {
         private String assignmentStudentRegisterName;
+        private String statusAutoMap;
+        private Long instructorId;
         private MultipartFile fileUpload;
-        private LocalDate examDueDate;
         private Long periodAssignmentId;
-        private Long studentMapInstructorId;
+        private Long studentId;
     }
 
     @Data
     public static class AssignmentStudentRegisterUpdateInfo {
         private long assignmentStudentRegisterId;
         private MultipartFile fileUpload;
-        private Long studentMapInstructorId;
-        private LocalDate examDueDate;
+        @NotNull
+        private Long studentId;
+        private Long instructorId;
         private Long periodAssignmentId;
         private String assignmentStudentRegisterName;
+        private String statusAutoMap;
+        @NotNull
+        private Long oldValueId;
     }
 
     @Data

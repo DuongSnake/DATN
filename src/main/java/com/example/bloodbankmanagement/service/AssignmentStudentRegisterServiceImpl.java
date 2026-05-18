@@ -5,16 +5,15 @@ import com.example.bloodbankmanagement.common.ResponseCommon;
 import com.example.bloodbankmanagement.common.exception.CustomException;
 import com.example.bloodbankmanagement.common.security.AuthTokenFilter;
 import com.example.bloodbankmanagement.common.untils.CommonUtil;
+import com.example.bloodbankmanagement.common.untils.ERole;
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.objectRepository.AssignmentStudentRegisterDTO;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.entity.*;
-import com.example.bloodbankmanagement.repository.AssignmentStudentRegisterRepository;
-import com.example.bloodbankmanagement.repository.PeriodAssignmentRepository;
-import com.example.bloodbankmanagement.repository.StudentMapInstructorRepository;
-import com.example.bloodbankmanagement.repository.UserRepository;
+import com.example.bloodbankmanagement.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
@@ -43,18 +42,19 @@ public class AssignmentStudentRegisterServiceImpl {
     public BasicResponseDto insertAssignmentStudentRegister(AssignmentStudentRegisterDto.AssignmentStudentRegisterInsertInfo request, String lang) throws Exception {
         BasicResponseDto result;
         try{
+
         LocalDate nowDate = LocalDate.now();
         String userIdCreate = CommonUtil.getUsernameByToken();
         String userIdRegister = checkExistUser(userIdCreate);
         AssignmentStudentRegister objectUpdate = new AssignmentStudentRegister();
         objectUpdate.setAssignmentName(request.getAssignmentStudentRegisterName());
         //Tim thong tin giao vien map sinh vien
-        StudentMapInstructor objectStudentMapInstructor = studentMapInstructorRepository.findByStudentMapInstructorId(request.getStudentMapInstructorId());
-        if(null == objectStudentMapInstructor){
-            throw new Exception("Not found the student map instructor:");
+        User studentInfo = getInfoStudentById(request.getStudentId());
+        if(ObjectUtils.isEmpty(studentInfo)){
+            throw new Exception("Not found the student info:");
         }
-        if(null != objectStudentMapInstructor){
-            objectUpdate.setStudentMapInstructor(objectStudentMapInstructor);
+        if(null != studentInfo){
+            objectUpdate.setStudentInfo(studentInfo);
         }
         //Tim thong tin ky han
         PeriodAssignment periodAssignment = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
@@ -77,11 +77,18 @@ public class AssignmentStudentRegisterServiceImpl {
             objectUpdate.setFileType(tailFile);
             objectUpdate.setContentAssignment(blob);
             }
+        //Logic handle case insert student map instructor by value status autoMap
+        handleCaseInsertToStudentMapInstructor(studentInfo, request.getStatusAutoMap(), request.getInstructorId(), userIdRegister, nowDate);
+        objectUpdate.setStatusAutoMap(request.getStatusAutoMap());
         objectUpdate.setIsApproved(CommonUtil.STATUS_NOT_ACCEPT);//status default not accept
         objectUpdate.setCreateUser(userIdRegister);
         objectUpdate.setStatus(CommonUtil.STATUS_USE);
-        objectUpdate.setCreateAt(LocalDate.now());
+        objectUpdate.setCreateAt(nowDate);
         assignmentStudentRegisterRepository.save(objectUpdate);
+        //Handle for case change userId at case update
+        logger.info("status Id map insert:"+objectUpdate.getId());
+        objectUpdate.setOldValueId(objectUpdate.getId());
+        assignmentStudentRegisterRepository.updateOldValueIdWhenInsertNewRecord(objectUpdate);
         result = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.insertSuccess);
         }catch (Exception e){
             throw new Exception("Could not save file:");
@@ -95,7 +102,7 @@ public class AssignmentStudentRegisterServiceImpl {
         request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
-        Page<AssignmentStudentRegister> listDataFileMetadata = assignmentStudentRegisterRepository.findListAssignmentStudentRegister(request, pageable);
+        Page<AssignmentStudentRegisterDTO> listDataFileMetadata = assignmentStudentRegisterRepository.findListAssignmentStudentRegister(request, pageable);
         pageAmtObject = AssignmentStudentRegister.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
@@ -106,7 +113,7 @@ public class AssignmentStudentRegisterServiceImpl {
             throw new CustomException("Not found value request param ", "en");
         }
         SingleResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse> selectObject = new SingleResponseDto<>();
-        AssignmentStudentRegister dataFileMetadata = assignmentStudentRegisterRepository.findByFileId(request.getAssignmentStudentRegisterId());
+        AssignmentStudentRegisterDTO dataFileMetadata = assignmentStudentRegisterRepository.findByFileId(request.getAssignmentStudentRegisterId());
         AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse objectResponse= new AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse();
         if(null ==dataFileMetadata){
             objectResponse = null;
@@ -120,22 +127,30 @@ public class AssignmentStudentRegisterServiceImpl {
     @Transactional
     public BasicResponseDto updateAssignmentStudentRegister(AssignmentStudentRegisterDto.AssignmentStudentRegisterUpdateInfo request, String lang) throws Exception {
         String userIdUpdate = CommonUtil.getUsernameByToken();
+        LocalDate nowDate = LocalDate.now();
         BasicResponseDto messageResponse;
         try{
         if(null == request){
             throw new CustomException("the object send request not null ", "en");
         }
+        AssignmentStudentRegister objectAssignStudentRegister =  assignmentStudentRegisterRepository.findByFileId2(request.getAssignmentStudentRegisterId());
+        if(ObjectUtils.isEmpty(objectAssignStudentRegister)){
+            logger.info("Not found assignment student register info with id: "+request.getAssignmentStudentRegisterId());
+            throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
+        }
 
+        //Find user student have exist in database
+        User studentInfo = getInfoStudentById(request.getStudentId());
+        if(ObjectUtils.isEmpty(studentInfo)){
+             logger.info("Not found assignment student register info with studentId: "+request.getStudentId());
+             throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
+        }
         AssignmentStudentRegister objectUpdate = new AssignmentStudentRegister();
         objectUpdate.setId(request.getAssignmentStudentRegisterId());
+        objectUpdate.setStudentInfo(studentInfo);
         objectUpdate.setAssignmentName(request.getAssignmentStudentRegisterName());
         objectUpdate.setUpdateUser(userIdUpdate);
-        objectUpdate.setUpdateAt(LocalDate.now());
-        //Find thong tin giao vien map sinh vien
-        StudentMapInstructor objectStudentMapInstructor = studentMapInstructorRepository.findByStudentMapInstructorId(request.getStudentMapInstructorId());
-        if(null != objectStudentMapInstructor){
-            objectUpdate.setStudentMapInstructor(objectStudentMapInstructor);
-        }
+        objectUpdate.setUpdateAt(nowDate);
         //Tim thong tin ky han
         PeriodAssignment periodAssignment = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
         if(null == periodAssignment){
@@ -160,6 +175,8 @@ public class AssignmentStudentRegisterServiceImpl {
         }else{
             assignmentStudentRegisterRepository.updateAssignmentStudentRegisterNoFile(objectUpdate);
         }
+        //Handle case when value student Id will be change
+        handleCaseUpdateToStudentMapInstructor(studentInfo, request.getStatusAutoMap(), request.getInstructorId(), request.getOldValueId(), userIdUpdate, nowDate);
         messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
         }catch (Exception e){
             throw new Exception("Could not save file:");
@@ -216,6 +233,95 @@ public class AssignmentStudentRegisterServiceImpl {
             throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
         }
         return userInfo.get().getUsername();
+    }
+
+    public User getInfoInstructorById(Long userid){
+        User userInfo = userRepository.getValueUserByIdAndRole(userid, ERole.ROLE_INSTRUCTOR.toString());
+        if(ObjectUtils.isEmpty(userInfo)){
+            logger.info("Not found instructor info with userId: "+userid);
+            throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
+        }
+        return userInfo;
+    }
+
+    public User getInfoStudentById(Long userid){
+        User userInfo = userRepository.getValueUserByIdAndRole(userid, ERole.ROLE_USER.toString());
+        if(ObjectUtils.isEmpty(userInfo)){
+            logger.info("Not found student info with userId: "+userid);
+            throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
+        }
+        return userInfo;
+    }
+
+    public void handleCaseInsertToStudentMapInstructor(User studentInfo, String statusAutoMap, Long instructorId,String updateUser, LocalDate nowDate){
+        //Check if mapping auto -> insert to table student map instructor
+        if(!CommonUtil.NO_VALUE.equals(statusAutoMap)){
+            StudentMapInstructor studentMapInstructor = new StudentMapInstructor();
+            studentMapInstructor.setStudentInfo(studentInfo);
+            studentMapInstructor.setCreateUser(updateUser);
+            studentMapInstructor.setCreateAt(nowDate);
+            studentMapInstructorRepository.save(studentMapInstructor);
+        }
+        //Check if user not mapping auto + value instructorId not null -> update to table student map instructor
+        if(CommonUtil.NO_VALUE.equals(statusAutoMap) && StringUtils.isEmpty(instructorId)){
+            //Find the value information of instructor
+            User instructorInfo = getInfoInstructorById(instructorId);
+            StudentMapInstructor studentMapInstructor = new StudentMapInstructor();
+            if(ObjectUtils.isEmpty(instructorInfo)){
+                logger.info("Not found instructor info with instructorId: "+instructorId.toString());
+                throw new CustomException(CommonUtil.NOT_ACCEPT_EMPTY_VALUE, "en");
+            }else{
+                studentMapInstructor.setInstructorInfo(instructorInfo);
+                studentMapInstructor.setStudentInfo(studentInfo);
+                studentMapInstructor.setCreateUser(updateUser);
+                studentMapInstructor.setCreateAt(nowDate);
+                //Update information by studentId
+                studentMapInstructorRepository.updateStudentMapInstructorByStudentId(studentMapInstructor);
+            }
+        }
+    }
+
+    public void handleCaseUpdateToStudentMapInstructor(User studentInfo, String statusAutoMap, Long instructorId, Long valueOldId,String updateUser, LocalDate nowDate){
+        if(studentInfo.getId().equals(valueOldId)){
+            return;
+        }
+        //Check studentId already insert in table student map instructor
+        StudentMapInstructor existInDbBefore = studentMapInstructorRepository.findByStudentMapStudentId(studentInfo.getId());
+        //Check if mapping auto -> insert to table student map instructor(update new value)
+        if(!CommonUtil.NO_VALUE.equals(statusAutoMap)){
+            StudentMapInstructor studentMapInstructor = new StudentMapInstructor();
+            studentMapInstructor.setStudentInfo(studentInfo);
+            studentMapInstructor.setUpdateUser(updateUser);
+            studentMapInstructor.setUpdateAt(nowDate);
+            studentMapInstructorRepository.save(studentMapInstructor);
+        }
+        //Check if user not mapping auto + value instructorId not null -> update to table student map instructor
+        if(CommonUtil.NO_VALUE.equals(statusAutoMap) && StringUtils.isEmpty(instructorId)){
+            //Find the value information of instructor
+            User instructorInfo = getInfoInstructorById(instructorId);
+            StudentMapInstructor studentMapInstructor = new StudentMapInstructor();
+            //When status is not auto map -> the value instructorId not be null
+            if(ObjectUtils.isEmpty(instructorInfo)){
+                logger.info("Not found instructor info with instructorId: "+instructorId.toString());
+                throw new CustomException(CommonUtil.NOT_ACCEPT_EMPTY_VALUE, "en");
+            }else{
+                studentMapInstructor.setInstructorInfo(instructorInfo);
+                studentMapInstructor.setStudentInfo(studentInfo);
+                studentMapInstructor.setUpdateUser(updateUser);
+                studentMapInstructor.setUpdateAt(nowDate);
+                //Update information by studentId
+                studentMapInstructorRepository.updateStudentMapInstructorByStudentId(studentMapInstructor);
+            }
+        }
+        //Will update old value -> remove value instructorId
+        String messageNote = "change value instructor by have request change from studentId:"+valueOldId +" to new value studentId:"+studentInfo.getId();
+        StudentMapInstructor removeValueInstructorIdForOldValue = new StudentMapInstructor();
+        removeValueInstructorIdForOldValue.setId(valueOldId);
+        removeValueInstructorIdForOldValue.setNote(messageNote);
+        removeValueInstructorIdForOldValue.setUpdateAt(nowDate);
+        removeValueInstructorIdForOldValue.setUpdateUser(updateUser);
+        studentMapInstructorRepository.removeOldMapInstructorByOldStudentId(removeValueInstructorIdForOldValue);
+
     }
 
 }

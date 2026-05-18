@@ -28,9 +28,11 @@ public interface StudentMapInstructorRepository extends JpaRepository<StudentMap
     @Query(value = "select * from student_map_instructor where id = ?1",nativeQuery = true)
     StudentMapInstructor findByFileId(Long id);
 
+    @Query("select u from StudentMapInstructor u where u.studentInfo.id = ?1")
+    StudentMapInstructor findByStudentMapStudentId(Long id);
 
     @Query("select u from StudentMapInstructor u where u.id = ?1")
-    StudentMapInstructor findByStudentMapInstructorId(Long id);
+    StudentMapInstructor findByStudentMapInstructorById(Long id);
 
     @Query("select u from StudentMapInstructor u where u.status = '1'")
     List<StudentMapInstructor> getStudentMapInstructorIdActive();
@@ -42,6 +44,16 @@ public interface StudentMapInstructorRepository extends JpaRepository<StudentMap
     @Transactional
     @Query(value = "update student_map_instructor set instructor_id =:#{#request.instructorInfo.id}, student_id =:#{#request.studentInfo.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
     void updateStudentMapInstructor(@Param("request") StudentMapInstructor request);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update student_map_instructor set instructor_id =:#{#request.instructorInfo.id}, student_id =:#{#request.studentInfo.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE student_id =:#{#request.studentInfo.id}",nativeQuery = true)
+    void updateStudentMapInstructorByStudentId(@Param("request") StudentMapInstructor request);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update student_map_instructor set instructor_id = null, note =:#{#request.note},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE student_id =:#{#request.studentInfo.id}",nativeQuery = true)
+    void removeOldMapInstructorByOldStudentId(@Param("request") StudentMapInstructor request);
 
     @Modifying
     @Transactional

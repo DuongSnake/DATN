@@ -22,15 +22,15 @@ public class AssignmentRegister {
             Long periodAssignmentId = null;
             String periodName = "";
             LocalDate expireDate = null;
-            if(null != request.getStudentMapInstructor() && null != request.getStudentMapInstructor().getId()){
-                studentMapIntructorId = request.getStudentMapInstructor().getId();
-            }
-            if(null != request.getStudentMapInstructor() && null != request.getStudentMapInstructor().getStudentInfo()){
-                studentName = request.getStudentMapInstructor().getStudentInfo().getFullName();
-            }
-            if(null != request.getStudentMapInstructor() && null != request.getStudentMapInstructor().getInstructorInfo()){
-                instructorName = request.getStudentMapInstructor().getInstructorInfo().getFullName();
-            }
+//            if(null != request.getStudentMapInstructor() && null != request.getStudentMapInstructor().getId()){
+//                studentMapIntructorId = request.getStudentMapInstructor().getId();
+//            }
+//            if(null != request.getStudentMapInstructor() && null != request.getStudentMapInstructor().getStudentInfo()){
+//                studentName = request.getStudentMapInstructor().getStudentInfo().getFullName();
+//            }
+//            if(null != request.getStudentMapInstructor() && null != request.getStudentMapInstructor().getInstructorInfo()){
+//                instructorName = request.getStudentMapInstructor().getInstructorInfo().getFullName();
+//            }
             if(null != request.getPeriodAssignmentInfo() && null != request.getPeriodAssignmentInfo().getId()){
                 periodAssignmentId = request.getPeriodAssignmentInfo().getId();
             }
@@ -69,15 +69,15 @@ public class AssignmentRegister {
                 Long periodAssignmentId = null;
                 String periodName = "";
                 LocalDate expireDate = null;
-                if(null != listRequestUser.get(i).getStudentMapInstructor() && null != listRequestUser.get(i).getStudentMapInstructor().getId()){
-                    studentMapIntructorId = listRequestUser.get(i).getStudentMapInstructor().getId();
-                }
-                if(null != listRequestUser.get(i).getStudentMapInstructor() && null != listRequestUser.get(i).getStudentMapInstructor().getStudentInfo()){
-                    studentName = listRequestUser.get(i).getStudentMapInstructor().getStudentInfo().getFullName();
-                }
-                if(null != listRequestUser.get(i).getStudentMapInstructor() && null != listRequestUser.get(i).getStudentMapInstructor().getInstructorInfo()){
-                    instructorName = listRequestUser.get(i).getStudentMapInstructor().getInstructorInfo().getFullName();
-                }
+//                if(null != listRequestUser.get(i).getStudentMapInstructor() && null != listRequestUser.get(i).getStudentMapInstructor().getId()){
+//                    studentMapIntructorId = listRequestUser.get(i).getStudentMapInstructor().getId();
+//                }
+//                if(null != listRequestUser.get(i).getStudentMapInstructor() && null != listRequestUser.get(i).getStudentMapInstructor().getStudentInfo()){
+//                    studentName = listRequestUser.get(i).getStudentMapInstructor().getStudentInfo().getFullName();
+//                }
+//                if(null != listRequestUser.get(i).getStudentMapInstructor() && null != listRequestUser.get(i).getStudentMapInstructor().getInstructorInfo()){
+//                    instructorName = listRequestUser.get(i).getStudentMapInstructor().getInstructorInfo().getFullName();
+//                }
                 if(null != listRequestUser.get(i).getPeriodAssignmentInfo() && null != listRequestUser.get(i).getPeriodAssignmentInfo().getId()){
                     periodAssignmentId = listRequestUser.get(i).getPeriodAssignmentInfo().getId();
                 }

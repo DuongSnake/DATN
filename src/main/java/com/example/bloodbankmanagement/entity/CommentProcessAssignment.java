@@ -39,18 +39,18 @@ public class CommentProcessAssignment  extends EntityCommon {
             objectDtoResponse.setFileUploadId(null != request.getFileUploadInfo() ? request.getFileUploadInfo().getId() : null);
             objectDtoResponse.setFileUploadName(null != request.getFileUploadInfo() ? request.getFileUploadInfo().getFileName() : null);
             objectDtoResponse.setAssignmentName(null != request.getFileUploadInfo().getAssignmentRegisterInfo() ? request.getFileUploadInfo().getAssignmentRegisterInfo().getAssignmentName() : null);
-            if((null != request.getFileUploadInfo().getAssignmentRegisterInfo() && null != request.getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor()
-                    && null != request.getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo())){
-                User studentInfo = request.getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo();
-                objectDtoResponse.setStudentName(null != studentInfo ? studentInfo.getFullName() : null);
-
-            }
-            if((null != request.getFileUploadInfo().getAssignmentRegisterInfo() && null != request.getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor()
-                    && null != request.getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getInstructorInfo())){
-                User instructorInfo = request.getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getInstructorInfo();
-                objectDtoResponse.setInstructorName(null != instructorInfo ? instructorInfo.getFullName() : null);
-
-            }
+//            if((null != request.getFileUploadInfo().getAssignmentRegisterInfo() && null != request.getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor()
+//                    && null != request.getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo())){
+//                User studentInfo = request.getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo();
+//                objectDtoResponse.setStudentName(null != studentInfo ? studentInfo.getFullName() : null);
+//
+//            }
+//            if((null != request.getFileUploadInfo().getAssignmentRegisterInfo() && null != request.getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor()
+//                    && null != request.getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getInstructorInfo())){
+//                User instructorInfo = request.getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getInstructorInfo();
+//                objectDtoResponse.setInstructorName(null != instructorInfo ? instructorInfo.getFullName() : null);
+//
+//            }
             objectDtoResponse.setCreateAt(request.getCreateAt());
         }
         return objectDtoResponse;
@@ -72,18 +72,18 @@ public class CommentProcessAssignment  extends EntityCommon {
                 newObject.setFileUploadId(null != listRequestUser.get(i).getFileUploadInfo() ? listRequestUser.get(i).getFileUploadInfo().getId() : null);
                 newObject.setFileUploadName(null != listRequestUser.get(i).getFileUploadInfo() ? listRequestUser.get(i).getFileUploadInfo().getFileName() : null);
                 newObject.setAssignmentName(null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo() ? listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getAssignmentName() : null);
-                if((null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo() && null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor()
-                && null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo())){
-                    User studentInfo = listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo();
-                    newObject.setStudentName(null != studentInfo ? studentInfo.getFullName() : null);
-
-                }
-                if((null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo() && null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor()
-                        && null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getInstructorInfo())){
-                    User instructorInfo = listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getInstructorInfo();
-                    newObject.setInstructorName(null != instructorInfo ? instructorInfo.getFullName() : null);
-
-                }
+//                if((null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo() && null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor()
+//                && null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo())){
+//                    User studentInfo = listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo();
+//                    newObject.setStudentName(null != studentInfo ? studentInfo.getFullName() : null);
+//
+//                }
+//                if((null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo() && null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor()
+//                        && null != listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getInstructorInfo())){
+//                    User instructorInfo = listRequestUser.get(i).getFileUploadInfo().getAssignmentRegisterInfo().getStudentMapInstructor().getInstructorInfo();
+//                    newObject.setInstructorName(null != instructorInfo ? instructorInfo.getFullName() : null);
+//
+//                }
                 listCommentProcessAssignmentDto.add(newObject);
             }
         }

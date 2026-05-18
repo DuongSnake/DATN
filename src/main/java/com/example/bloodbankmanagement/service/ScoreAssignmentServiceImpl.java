@@ -47,7 +47,7 @@ public class ScoreAssignmentServiceImpl {
         objectUpdate.setScoreExaminer(request.getScoreExaminer());
         objectUpdate.setScoreCritical(request.getScoreCritical());
         //Find the Assignment register
-        AssignmentStudentRegister assignmentStudentRegisterInfo = assignmentStudentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
+        AssignmentStudentRegister assignmentStudentRegisterInfo = assignmentStudentRegisterRepository.findByFileId2(request.getAssignmentRegisterId());
         if(null == assignmentStudentRegisterInfo){
             throw new CustomException("Not found value request param assignmentRegisterId ", lang);
         }
@@ -101,7 +101,7 @@ public class ScoreAssignmentServiceImpl {
         objectUpdate.setScoreCritical(request.getScoreCritical());
         objectUpdate.setScoreInstructor(request.getScoreInstructor());
         //Find the Assignment register
-        AssignmentStudentRegister assignmentStudentRegisterInfo = assignmentStudentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
+        AssignmentStudentRegister assignmentStudentRegisterInfo = assignmentStudentRegisterRepository.findByFileId2(request.getAssignmentRegisterId());
         if(null == assignmentStudentRegisterInfo){
             throw new CustomException("Not found value request param assignmentRegisterId ", lang);
         }

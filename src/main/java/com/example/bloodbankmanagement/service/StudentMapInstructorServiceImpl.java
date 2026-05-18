@@ -72,7 +72,7 @@ public class StudentMapInstructorServiceImpl {
             throw new CustomException("Not found value request param ", "en");
         }
         SingleResponseDto<StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse> selectObject = new SingleResponseDto<>();
-        StudentMapInstructor dataFileMetadata = studentMapInstructorRepository.findByStudentMapInstructorId(request.getStudentMapInstructorId());
+        StudentMapInstructor dataFileMetadata = studentMapInstructorRepository.findByStudentMapInstructorById(request.getStudentMapInstructorId());
         StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse objectResponse= new StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse();
         if(null ==dataFileMetadata){
             objectResponse = null;

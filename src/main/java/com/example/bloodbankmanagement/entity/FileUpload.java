@@ -38,8 +38,8 @@ public class FileUpload extends EntityCommon {
         }
         Long assignmentRegisterId = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getId(): null;
         String assignmentName = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getAssignmentName(): null;
-        String studentName = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo().getFullName(): null;
-        String instructorName = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getStudentMapInstructor().getInstructorInfo().getFullName(): null;
+        String studentName = null;
+        String instructorName =  null;
         UploadFileDto.UploadFileSelectInfoResponse objectData = new UploadFileDto.UploadFileSelectInfoResponse();
         objectData.setFileId(request.getId());
         objectData.setFileName(request.getFileName());
@@ -61,10 +61,10 @@ public class FileUpload extends EntityCommon {
         PageAmtListResponseDto<UploadFileDto.UploadFileListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
         List<UploadFileDto.UploadFileListInfo> listObject = new ArrayList<>();
         for (FileUpload object: listData){
-            Long assignmentRegisterId = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getId(): null;
-            String assignmentName = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getAssignmentName(): null;
-            String studentName = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo().getFullName(): null;
-            String instructorName = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getStudentMapInstructor().getInstructorInfo().getFullName(): null;
+            Long assignmentRegisterId = null;
+            String assignmentName = null;
+            String studentName = null;
+            String instructorName = null;
             UploadFileDto.UploadFileListInfo newObject = new UploadFileDto.UploadFileListInfo();
             newObject.setFileId(object.getId());
             newObject.setFileName(object.getFileName());
@@ -91,8 +91,8 @@ public class FileUpload extends EntityCommon {
         for (FileUpload object: listData){
             Long assignmentRegisterId = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getId(): null;
             String assignmentName = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getAssignmentName(): null;
-            String studentName = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getStudentMapInstructor().getStudentInfo().getFullName(): null;
-            String instructorName = null != object.getAssignmentRegisterInfo() ? object.getAssignmentRegisterInfo().getStudentMapInstructor().getInstructorInfo().getFullName(): null;
+            String studentName = null;
+            String instructorName = null;
             UploadFileDto.UploadFileListInfo newObject = new UploadFileDto.UploadFileListInfo();
             newObject.setFileId(object.getId());
             newObject.setFileName(object.getFileName());
