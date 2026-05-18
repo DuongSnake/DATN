@@ -42,6 +42,7 @@ public class AssignmentStudentRegister extends EntityCommon {
         if(request != null){
             objectDtoResponse.setAssignmentStudentRegisterId(request.getAssignmentStudentRegisterId());
             objectDtoResponse.setAssignmentStudentRegisterName(request.getAssignmentStudentRegisterName());
+            objectDtoResponse.setStudentId(request.getStudentId());
             objectDtoResponse.setStudentName(request.getStudentName());
             objectDtoResponse.setInstructorName(request.getInstructorName());
             objectDtoResponse.setFileName(request.getFileName());
@@ -54,6 +55,7 @@ public class AssignmentStudentRegister extends EntityCommon {
             objectDtoResponse.setCreateAt(request.getCreateAt());
             objectDtoResponse.setStatusAutoMap(request.getStatusAutoMap());
             objectDtoResponse.setCreateUser(request.getCreateUser());
+            objectDtoResponse.setOldValueId(request.getOldValueId());
         }
         return objectDtoResponse;
     }
@@ -67,6 +69,7 @@ public class AssignmentStudentRegister extends EntityCommon {
                 AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo newObject = new AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo();
                 newObject.setAssignmentStudentRegisterId(objectInfo.getAssignmentStudentRegisterId());
                 newObject.setAssignmentStudentRegisterName(objectInfo.getAssignmentStudentRegisterName());
+                newObject.setStudentId(objectInfo.getStudentId());
                 newObject.setStudentName(objectInfo.getStudentName());
                 newObject.setInstructorName(objectInfo.getInstructorName());
                 newObject.setFileName(objectInfo.getFileName());
@@ -79,6 +82,7 @@ public class AssignmentStudentRegister extends EntityCommon {
                 newObject.setExpirePeriodDate(objectInfo.getExpirePeriodDate());
                 newObject.setStatusAutoMap(objectInfo.getStatusAutoMap());
                 newObject.setCreateUser(objectInfo.getCreateUser());
+                newObject.setOldValueId(objectInfo.getOldValueId());
                 listAssignmentStudentRegisterDto.add(newObject);
             }
         }

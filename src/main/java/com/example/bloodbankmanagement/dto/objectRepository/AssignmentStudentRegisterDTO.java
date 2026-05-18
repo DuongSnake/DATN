@@ -3,7 +3,7 @@ package com.example.bloodbankmanagement.dto.objectRepository;
 import java.time.LocalDate;
 
 public interface AssignmentStudentRegisterDTO {
-    long getAssignmentStudentRegisterId();
+    Long getAssignmentStudentRegisterId();
     String getAssignmentStudentRegisterName();
     Long getPeriodAssignmentId();
     String getPeriodAssignmentName();
@@ -18,5 +18,5 @@ public interface AssignmentStudentRegisterDTO {
     String getStatus();
     String getCreateUser();
     LocalDate getCreateAt();
-    LocalDate getOldValueId();
+    Long getOldValueId();
 }

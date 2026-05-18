@@ -26,6 +26,7 @@ import org.springframework.util.StringUtils;
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.Blob;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -84,11 +85,9 @@ public class AssignmentStudentRegisterServiceImpl {
         objectUpdate.setCreateUser(userIdRegister);
         objectUpdate.setStatus(CommonUtil.STATUS_USE);
         objectUpdate.setCreateAt(nowDate);
+        objectUpdate.setOldValueId(studentInfo.getId());
         assignmentStudentRegisterRepository.save(objectUpdate);
         //Handle for case change userId at case update
-        logger.info("status Id map insert:"+objectUpdate.getId());
-        objectUpdate.setOldValueId(objectUpdate.getId());
-        assignmentStudentRegisterRepository.updateOldValueIdWhenInsertNewRecord(objectUpdate);
         result = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.insertSuccess);
         }catch (Exception e){
             throw new Exception("Could not save file:");
@@ -255,7 +254,8 @@ public class AssignmentStudentRegisterServiceImpl {
 
     public void handleCaseInsertToStudentMapInstructor(User studentInfo, String statusAutoMap, Long instructorId,String updateUser, LocalDate nowDate){
         //Check if mapping auto -> insert to table student map instructor
-        if(!CommonUtil.NO_VALUE.equals(statusAutoMap)){
+        List<StudentMapInstructor> listStudentByStudentId = studentMapInstructorRepository.getStudentMapInstructorIdActiveByStudentId(studentInfo.getId());
+        if(!CommonUtil.YES_VALUE.equals(statusAutoMap) && listStudentByStudentId.size() == 0){
             StudentMapInstructor studentMapInstructor = new StudentMapInstructor();
             studentMapInstructor.setStudentInfo(studentInfo);
             studentMapInstructor.setCreateUser(updateUser);
@@ -263,7 +263,7 @@ public class AssignmentStudentRegisterServiceImpl {
             studentMapInstructorRepository.save(studentMapInstructor);
         }
         //Check if user not mapping auto + value instructorId not null -> update to table student map instructor
-        if(CommonUtil.NO_VALUE.equals(statusAutoMap) && StringUtils.isEmpty(instructorId)){
+        if(CommonUtil.YES_VALUE.equals(statusAutoMap) && StringUtils.isEmpty(instructorId)){
             //Find the value information of instructor
             User instructorInfo = getInfoInstructorById(instructorId);
             StudentMapInstructor studentMapInstructor = new StudentMapInstructor();
@@ -271,12 +271,16 @@ public class AssignmentStudentRegisterServiceImpl {
                 logger.info("Not found instructor info with instructorId: "+instructorId.toString());
                 throw new CustomException(CommonUtil.NOT_ACCEPT_EMPTY_VALUE, "en");
             }else{
-                studentMapInstructor.setInstructorInfo(instructorInfo);
                 studentMapInstructor.setStudentInfo(studentInfo);
                 studentMapInstructor.setCreateUser(updateUser);
                 studentMapInstructor.setCreateAt(nowDate);
-                //Update information by studentId
-                studentMapInstructorRepository.updateStudentMapInstructorByStudentId(studentMapInstructor);
+                studentMapInstructor.setInstructorInfo(instructorInfo);
+                //Check not exist data with studentID-> insert studentId and instructorId otherwise update instructorId by studentId
+                if(listStudentByStudentId.size() == 0){
+                    studentMapInstructorRepository.save(studentMapInstructor);
+                }else{
+                    studentMapInstructorRepository.updateStudentMapInstructorByStudentId(studentMapInstructor);
+                }
             }
         }
     }
@@ -288,7 +292,7 @@ public class AssignmentStudentRegisterServiceImpl {
         //Check studentId already insert in table student map instructor
         StudentMapInstructor existInDbBefore = studentMapInstructorRepository.findByStudentMapStudentId(studentInfo.getId());
         //Check if mapping auto -> insert to table student map instructor(update new value)
-        if(!CommonUtil.NO_VALUE.equals(statusAutoMap)){
+        if(!CommonUtil.YES_VALUE.equals(statusAutoMap)){
             StudentMapInstructor studentMapInstructor = new StudentMapInstructor();
             studentMapInstructor.setStudentInfo(studentInfo);
             studentMapInstructor.setUpdateUser(updateUser);
@@ -296,7 +300,7 @@ public class AssignmentStudentRegisterServiceImpl {
             studentMapInstructorRepository.save(studentMapInstructor);
         }
         //Check if user not mapping auto + value instructorId not null -> update to table student map instructor
-        if(CommonUtil.NO_VALUE.equals(statusAutoMap) && StringUtils.isEmpty(instructorId)){
+        if(CommonUtil.YES_VALUE.equals(statusAutoMap) && StringUtils.isEmpty(instructorId)){
             //Find the value information of instructor
             User instructorInfo = getInfoInstructorById(instructorId);
             StudentMapInstructor studentMapInstructor = new StudentMapInstructor();

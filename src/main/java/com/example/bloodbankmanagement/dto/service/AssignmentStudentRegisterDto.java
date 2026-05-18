@@ -29,6 +29,7 @@ public class AssignmentStudentRegisterDto {
         private LocalDate expirePeriodDate;
         private Long studentId;
         private String studentName;
+        private String instructorId;
         private String instructorName;
         private String fileName;
         private String fileType;
@@ -54,6 +55,7 @@ public class AssignmentStudentRegisterDto {
         private String periodAssignmentName;
         private LocalDate expirePeriodDate;
         private String studentName;
+        private String instructorId;
         private String instructorName;
         private String fileName;
         private String fileType;

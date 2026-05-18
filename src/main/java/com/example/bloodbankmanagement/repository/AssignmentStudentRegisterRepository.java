@@ -21,10 +21,13 @@ public interface AssignmentStudentRegisterRepository extends JpaRepository<Assig
             "        asr.assignment_name as assignmentStudentRegisterName," +
             "        asr.period_assignment_id as periodAssignmentId," +
             "        ap.admission_period_name as periodAssignmentName," +
-            "        pa.endPeriod as expirePeriodDate," +
+            "        pa.end_period as expirePeriodDate," +
             "        asr.student_id as studentId," +
             "        (select username from users where id = asr.student_id and status = '1') as studentName," +
-            "        us.username as instructorName," +
+            "         case " +
+            "          when smi.instructor_id is null then '' " +
+            "          when smi.instructor_id is not null then(select username from users where id = smi.instructor_id and status = '1') " +
+            "          else '' end as instructorName,"+
             "        asr.file_name as fileName," +
             "        asr.file_type as fileType," +
             "        asr.is_approved as isApproved," +
@@ -37,14 +40,13 @@ public interface AssignmentStudentRegisterRepository extends JpaRepository<Assig
             " join period_assignment pa on asr.period_assignment_id = pa.id " +
             " join admission_period ap on pa.admission_period_id = ap.id " +
             " join student_map_instructor smi on asr.student_id = smi.student_id " +
-            " join users us on smi.instructor_id = us.id " +
             " where (:#{#request.assignmentStudentRegisterId} is null or ''  = :#{#request.assignmentStudentRegisterId} or asr.id like :#{#request.assignmentStudentRegisterId})" +
             " and (:#{#request.assignmentStudentRegisterName} is null or ''  = :#{#request.assignmentStudentRegisterName} or asr.assignment_name like '%'+:#{#request.assignmentStudentRegisterName}+'%')" +
             " and (:#{#request.status} is null or ''  = :#{#request.status} or asr.status = :#{#request.status})" +
             " and (:#{#request.periodAssignmentId} is null or ''  = :#{#request.periodAssignmentId} or asr.period_assignment_id = :#{#request.periodAssignmentId})" +
             " and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or asr.create_at >= :#{#request.fromDate}) " +
             " and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or asr.create_at <= :#{#request.toDate}) " +
-            " order by create_at DESC,update_at DESC ",
+            " order by asr.create_at DESC, asr.update_at DESC ",
             nativeQuery = true)
     Page<AssignmentStudentRegisterDTO> findListAssignmentStudentRegister(AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectListInfo request, Pageable pageable);
 
@@ -53,10 +55,13 @@ public interface AssignmentStudentRegisterRepository extends JpaRepository<Assig
             "        asr.assignment_name as assignmentStudentRegisterName," +
             "        asr.period_assignment_id as periodAssignmentId," +
             "        ap.admission_period_name as periodAssignmentName," +
-            "        pa.endPeriod as expirePeriodDate," +
+            "        pa.end_period as expirePeriodDate," +
             "        asr.student_id as studentId," +
             "        (select username from users where id = asr.student_id and status = '1') as studentName," +
-            "        us.username as instructorName," +
+            "         case " +
+            "          when smi.instructor_id is null then '' " +
+            "          when smi.instructor_id is not null then(select username from users where id = smi.instructor_id and status = '1') " +
+            "          else '' end as instructorName," +
             "        asr.file_name as fileName," +
             "        asr.file_type as fileType," +
             "        asr.is_approved as isApproved," +
@@ -69,7 +74,6 @@ public interface AssignmentStudentRegisterRepository extends JpaRepository<Assig
             " join period_assignment pa on asr.period_assignment_id = pa.id " +
             " join admission_period ap on pa.admission_period_id = ap.id " +
             " join student_map_instructor smi on asr.student_id = smi.student_id " +
-            " join users us on smi.instructor_id = us.id " +
             " where id = ?1",nativeQuery = true)
     AssignmentStudentRegisterDTO findByFileId(Long id);
 
