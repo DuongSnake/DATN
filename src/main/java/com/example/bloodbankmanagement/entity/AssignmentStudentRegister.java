@@ -1,5 +1,6 @@
 package com.example.bloodbankmanagement.entity;
 
+import com.example.bloodbankmanagement.common.untils.CommonUtil;
 import com.example.bloodbankmanagement.common.untils.EntityCommon;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.objectRepository.AssignmentStudentRegisterDTO;
@@ -65,6 +66,8 @@ public class AssignmentStudentRegister extends EntityCommon {
         List<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> listAssignmentStudentRegisterDto = new ArrayList<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>();
         if(listRequestUser.size() >0 ){
             for (AssignmentStudentRegisterDTO objectInfo : listRequestUser){
+                String isApprovedDisplayName = getDisplayNameStatusAutoMap(objectInfo.getStatusAutoMap());
+                String statusAutoMapDisplayName = getDisplayNameStatusIsApprove(objectInfo.getIsApproved());
                 objectInfo.getAssignmentStudentRegisterId();
                 AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo newObject = new AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo();
                 newObject.setAssignmentStudentRegisterId(objectInfo.getAssignmentStudentRegisterId());
@@ -83,12 +86,35 @@ public class AssignmentStudentRegister extends EntityCommon {
                 newObject.setStatusAutoMap(objectInfo.getStatusAutoMap());
                 newObject.setCreateUser(objectInfo.getCreateUser());
                 newObject.setOldValueId(objectInfo.getOldValueId());
+                newObject.setIsApprovedDisplayName(isApprovedDisplayName);
+                newObject.setStatusAutoMapDisplayName(statusAutoMapDisplayName);
                 listAssignmentStudentRegisterDto.add(newObject);
             }
         }
         objectDtoResponse.setData(listAssignmentStudentRegisterDto);
         objectDtoResponse.setTotalRecord(Math.toIntExact(totalRecord));
         return objectDtoResponse;
+    }
+
+    public static String getDisplayNameStatusAutoMap(String statusAutoMap){
+        if(CommonUtil.YES_VALUE.equals(statusAutoMap)){
+            return CommonUtil.AUTO_MAP_INSTRUCTOR_DISPLAY_TEXT;
+        }else{
+            return CommonUtil.MANUAL_MAP_INSTRUCTOR_DISPLAY_TEXT;
+        }
+    }
+
+    public static String getDisplayNameStatusIsApprove(Integer statusAutoMap){
+        switch (statusAutoMap){
+            case 0:
+                return CommonUtil.STATUS_NOT_ACCEPT_DISPLAY_TEXT;
+            case 1:
+                return CommonUtil.STATUS_SEND_REQUEST_DISPLAY_TEXT;
+            case 3:
+                return CommonUtil.STATUS_RESERVE_DISPLAY_TEXT;
+            default:
+                return CommonUtil.STATUS_NOT_ACCEPT_DISPLAY_TEXT;
+        }
     }
 
 }

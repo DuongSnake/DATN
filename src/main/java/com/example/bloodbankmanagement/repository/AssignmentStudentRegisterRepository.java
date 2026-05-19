@@ -23,10 +23,10 @@ public interface AssignmentStudentRegisterRepository extends JpaRepository<Assig
             "        ap.admission_period_name as periodAssignmentName," +
             "        pa.end_period as expirePeriodDate," +
             "        asr.student_id as studentId," +
-            "        (select username from users where id = asr.student_id and status = '1') as studentName," +
+            "        (select full_name from users where id = asr.student_id and status = '1') as studentName," +
             "         case " +
             "          when smi.instructor_id is null then '' " +
-            "          when smi.instructor_id is not null then(select username from users where id = smi.instructor_id and status = '1') " +
+            "          when smi.instructor_id is not null then(select full_name from users where id = smi.instructor_id and status = '1') " +
             "          else '' end as instructorName,"+
             "        asr.file_name as fileName," +
             "        asr.file_type as fileType," +
@@ -57,10 +57,10 @@ public interface AssignmentStudentRegisterRepository extends JpaRepository<Assig
             "        ap.admission_period_name as periodAssignmentName," +
             "        pa.end_period as expirePeriodDate," +
             "        asr.student_id as studentId," +
-            "        (select username from users where id = asr.student_id and status = '1') as studentName," +
+            "        (select full_name from users where id = asr.student_id and status = '1') as studentName," +
             "         case " +
             "          when smi.instructor_id is null then '' " +
-            "          when smi.instructor_id is not null then(select username from users where id = smi.instructor_id and status = '1') " +
+            "          when smi.instructor_id is not null then(select full_name from users where id = smi.instructor_id and status = '1') " +
             "          else '' end as instructorName," +
             "        asr.file_name as fileName," +
             "        asr.file_type as fileType," +

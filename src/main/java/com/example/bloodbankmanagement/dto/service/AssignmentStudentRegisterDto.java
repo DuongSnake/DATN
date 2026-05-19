@@ -39,6 +39,8 @@ public class AssignmentStudentRegisterDto {
         private String createUser;
         private LocalDate createAt;
         private Long oldValueId;
+        private String isApprovedDisplayName;
+        private String statusAutoMapDisplayName;
     }
 
     @Data

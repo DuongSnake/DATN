@@ -49,6 +49,11 @@ public class CommonUtil {
     public static final Integer STATUS_NOT_ACCEPT = 0;
     public static final Integer STATUS_SEND_REQUEST = 1;
     public static final Integer STATUS_RESERVE = 3;
+    public static final String STATUS_NOT_ACCEPT_DISPLAY_TEXT = "Chưa phê duyệt";
+    public static final String STATUS_SEND_REQUEST_DISPLAY_TEXT = "Chờ phê duyệt đăng ký";
+    public static final String STATUS_RESERVE_DISPLAY_TEXT = "Duyệt đăng ký thành công";
+    public static final String AUTO_MAP_INSTRUCTOR_DISPLAY_TEXT = "Sử dụng";
+    public static final String MANUAL_MAP_INSTRUCTOR_DISPLAY_TEXT = "Không sử dụng";
 
     private CommonUtil() {
     }
