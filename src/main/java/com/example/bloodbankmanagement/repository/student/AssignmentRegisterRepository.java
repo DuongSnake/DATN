@@ -40,8 +40,8 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
             " join period_assignment pa on asr.period_assignment_id = pa.id " +
             " join admission_period ap on pa.admission_period_id = ap.id " +
             " join student_map_instructor smi on asr.student_id = smi.student_id " +
-            " where (:#{#request.assignmentRegisterId} is null or ''  = :#{#request.assignmentRegisterId} or asr.id like :#{#request.assignmentRegisterId})" +
-            " and (:#{#request.assignmentRegisterName} is null or ''  = :#{#request.assignmentRegisterName} or asr.assignment_name like '%'+:#{#request.assignmentRegisterName}+'%')" +
+            " where (:#{#request.assignmentStudentRegisterId} is null or ''  = :#{#request.assignmentStudentRegisterId} or asr.id like :#{#request.assignmentStudentRegisterId})" +
+            " and (:#{#request.assignmentStudentRegisterName} is null or ''  = :#{#request.assignmentStudentRegisterName} or asr.assignment_name like '%'+:#{#request.assignmentStudentRegisterName}+'%')" +
             " and (:#{#request.status} is null or ''  = :#{#request.status} or asr.status = :#{#request.status})" +
             " and (:#{#request.periodAssignmentId} is null or ''  = :#{#request.periodAssignmentId} or asr.period_assignment_id = :#{#request.periodAssignmentId})" +
             " and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or asr.create_at >= :#{#request.fromDate}) " +
@@ -134,8 +134,8 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
             " join period_assignment pa on asr.period_assignment_id = pa.id " +
             " join admission_period ap on pa.admission_period_id = ap.id " +
             " join student_map_instructor smi on asr.student_id = smi.student_id " +
-            "where (:#{#request.assignmentRegisterId} is null or ''  = :#{#request.assignmentRegisterId} or asr.id like :#{#request.assignmentRegisterId})" +
-            "and (:#{#request.assignmentRegisterName} is null or ''  = :#{#request.assignmentRegisterName} or asr.assignment_name like '%'+:#{#request.assignmentRegisterName}+'%')" +
+            "where (:#{#request.assignmentStudentRegisterId} is null or ''  = :#{#request.assignmentStudentRegisterId} or asr.id like :#{#request.assignmentStudentRegisterId})" +
+            "and (:#{#request.assignmentStudentRegisterName} is null or ''  = :#{#request.assignmentStudentRegisterName} or asr.assignment_name like '%'+:#{#request.assignmentStudentRegisterName}+'%')" +
             "and (:#{#request.status} is null or ''  = :#{#request.status} or asr.status = :#{#request.status})" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or asr.create_at >= :#{#request.fromDate}) " +
             "and (:#{#request.regUser} is null or ''  = :#{#request.regUser} or asr.create_user = :#{#request.regUser}) " +
@@ -198,8 +198,8 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
             " join period_assignment pa on asr.period_assignment_id = pa.id " +
             " join admission_period ap on pa.admission_period_id = ap.id " +
             " join student_map_instructor smi on asr.student_id = smi.student_id " +
-            "where (:#{#request.assignmentRegisterId} is null or ''  = :#{#request.assignmentRegisterId} or asr.id like :#{#request.assignmentRegisterId})" +
-            "and (:#{#request.assignmentRegisterName} is null or ''  = :#{#request.assignmentRegisterName} or asr.assignment_name like '%'+:#{#request.assignmentRegisterName}+'%')" +
+            "where (:#{#request.assignmentStudentRegisterId} is null or ''  = :#{#request.assignmentStudentRegisterId} or asr.id like :#{#request.assignmentStudentRegisterId})" +
+            "and (:#{#request.assignmentStudentRegisterName} is null or ''  = :#{#request.assignmentStudentRegisterName} or asr.assignment_name like '%'+:#{#request.assignmentStudentRegisterName}+'%')" +
             "and (:#{#request.status} is null or ''  = :#{#request.status} or asr.status = :#{#request.status})" +
             "and (:#{#request.periodAssignmentId} is null or ''  = :#{#request.periodAssignmentId} or period_assignment_id = :#{#request.periodAssignmentId})" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or asr.create_at >= :#{#request.fromDate}) " +

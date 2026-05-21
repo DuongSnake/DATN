@@ -64,7 +64,7 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizeHandle))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**","/api/v1/user/selectAllInstructor","/api/v1/assignmentRegister/**").permitAll()
                         .requestMatchers("/api/v1/room/**","/api/v1/contract/**","/api/v1/bill/**","/api/v1/user/**").hasAnyRole("ADMIN")
                         .requestMatchers("/api/v1/common/**","/api/v1/assignmentRegister/**").hasAnyRole("USER")
                         .requestMatchers("/api/test/**","/api/v1/file/download2").permitAll()

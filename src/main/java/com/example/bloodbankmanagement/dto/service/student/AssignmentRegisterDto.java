@@ -11,8 +11,8 @@ import java.util.List;
 public class AssignmentRegisterDto {
     @Data
     public static class AssignmentRegisterSelectListInfo {
-        private long assignmentRegisterId;
-        private String assignmentRegisterName;
+        private long assignmentStudentRegisterId;
+        private String assignmentStudentRegisterName;
         private Long periodAssignmentId;
         private Date fromDate;
         private Date toDate;
@@ -23,8 +23,8 @@ public class AssignmentRegisterDto {
 
     @Data
     public static class AssignmentRegisterListInfo {
-        private long assignmentRegisterId;
-        private String assignmentRegisterName;
+        private long assignmentStudentRegisterId;
+        private String assignmentStudentRegisterName;
         private String statusAutoMap;
         private String isApprovedDisplayName;
         private String statusAutoMapDisplayName;
@@ -43,13 +43,13 @@ public class AssignmentRegisterDto {
 
     @Data
     public static class AssignmentRegisterSelectInfo {
-        private Long assignmentRegisterId;
+        private Long assignmentStudentRegisterId;
     }
 
     @Data
     public static class AssignmentRegisterSelectInfoResponse {
-        private Long assignmentRegisterId;
-        private String assignmentRegisterName;
+        private Long assignmentStudentRegisterId;
+        private String assignmentStudentRegisterName;
         private String statusAutoMap;
         private String isApprovedDisplayName;
         private String statusAutoMapDisplayName;
@@ -68,7 +68,7 @@ public class AssignmentRegisterDto {
 
     @Data
     public static class AssignmentRegisterInsertInfo {
-        private String assignmentRegisterName;
+        private String assignmentStudentRegisterName;
         private Long periodAssignmentId;
         private MultipartFile fileUpload;
         private String statusAutoMap;
@@ -78,10 +78,10 @@ public class AssignmentRegisterDto {
 
     @Data
     public static class AssignmentRegisterUpdateInfo {
-        private long assignmentRegisterId;
+        private long assignmentStudentRegisterId;
         private Long periodAssignmentId;
         private MultipartFile fileUpload;
-        private String assignmentRegisterName;
+        private String assignmentStudentRegisterName;
         private Long studentId;
         private Long instructorId;
         private String statusAutoMap;
@@ -98,13 +98,13 @@ public class AssignmentRegisterDto {
     }
     @Data
     public static class AssignmentInsertListFileUploadInsertInfo {
-        private Long assignmentRegisterId;
+        private Long assignmentStudentRegisterId;
         private MultipartFile listFile[];
     }
 
     @Data
     public static class AssignmentUpdateListFileUploadInfo {
-        private Long assignmentRegisterId;
+        private Long assignmentStudentRegisterId;
         private List<AssignmentFileUploadInfo> listFile;
     }
 
@@ -114,7 +114,7 @@ public class AssignmentRegisterDto {
         private List<Long> listIdDelete;
         private MultipartFile listFileInsert[];
         private MultipartFile listFileUpdate[];
-        private Long assignmentRegisterId;
+        private Long assignmentStudentRegisterId;
     }
 
     @Data

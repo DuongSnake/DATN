@@ -58,7 +58,7 @@ public class AssignmentRegisterServiceImpl {
             LocalDate nowDate = LocalDate.now();
             String userIdCreate = CommonUtil.getUsernameByToken();
             AssignmentStudentRegister objectUpdate = new AssignmentStudentRegister();
-            objectUpdate.setAssignmentName(request.getAssignmentRegisterName());
+            objectUpdate.setAssignmentName(request.getAssignmentStudentRegisterName());
             //Tim thong tin giao vien map sinh vien
             User studentInfo = getInfoStudentById(request.getStudentId());
             if(ObjectUtils.isEmpty(studentInfo)){
@@ -137,11 +137,11 @@ public class AssignmentRegisterServiceImpl {
 
 
     public SingleResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse> selectAssignmentRegister(AssignmentRegisterDto.AssignmentRegisterSelectInfo request, String lang){
-        if(null == request || request.getAssignmentRegisterId().equals("") || null == request.getAssignmentRegisterId()){
+        if(null == request || request.getAssignmentStudentRegisterId().equals("") || null == request.getAssignmentStudentRegisterId()){
             throw new CustomException("Not found value request param ", "en");
         }
         SingleResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse> selectObject = new SingleResponseDto<>();
-        AssignmentStudentRegisterDTO dataFileMetadata = assignmentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
+        AssignmentStudentRegisterDTO dataFileMetadata = assignmentRegisterRepository.findByFileId(request.getAssignmentStudentRegisterId());
         AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse objectResponse= new AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse();
         if(null ==dataFileMetadata){
             objectResponse = null;
@@ -170,8 +170,8 @@ public class AssignmentRegisterServiceImpl {
 //                throw new CustomException("Not found the  instructor before send request,please call to admin assign the instructor", "en");
 //            }
             AssignmentStudentRegister objectUpdate = new AssignmentStudentRegister();
-            objectUpdate.setId(request.getAssignmentRegisterId());
-            objectUpdate.setAssignmentName(request.getAssignmentRegisterName());
+            objectUpdate.setId(request.getAssignmentStudentRegisterId());
+            objectUpdate.setAssignmentName(request.getAssignmentStudentRegisterName());
             objectUpdate.setUpdateUser(userIdUpdate);
             objectUpdate.setUpdateAt(LocalDate.now());
             //Tim thong tin ky han
@@ -278,7 +278,7 @@ public class AssignmentRegisterServiceImpl {
     public ListResponseDto<UploadFileDto.UploadFileListInfo> findListFileUploadByAssignmentIdApprove(AssignmentRegisterDto.AssignmentRegisterSelectInfo request){
         ListResponseDto<UploadFileDto.UploadFileListInfo> objectResponse = new ListResponseDto<>();
         //Select list file upload
-        List<FileUpload> listDataFileMetadata = fileMetadataRepository.findListFileUpload(request.getAssignmentRegisterId());
+        List<FileUpload> listDataFileMetadata = fileMetadataRepository.findListFileUpload(request.getAssignmentStudentRegisterId());
         List<UploadFileDto.UploadFileListInfo> listDataFileMetadataDto = FileUpload.convertListObjectToDtoUserSite(listDataFileMetadata);
         objectResponse = responseService.getListResponseMessage(listDataFileMetadataDto,CommonUtil.successValue, CommonUtil.querySuccess);
         return objectResponse;
@@ -294,7 +294,7 @@ public class AssignmentRegisterServiceImpl {
                 throw new CustomException("the object send request not null ", "en");
             }
             for (MultipartFile file : request.getListFile()){
-                AssignmentStudentRegister assignmentStudentRegister= assignmentRegisterRepository.findByFileIdApproveAss(request.getAssignmentRegisterId());
+                AssignmentStudentRegister assignmentStudentRegister= assignmentRegisterRepository.findByFileIdApproveAss(request.getAssignmentStudentRegisterId());
                 if(null == assignmentStudentRegister){
                     throw new AuthenticationException("Not found the assignment register");
                 }
@@ -324,7 +324,7 @@ public class AssignmentRegisterServiceImpl {
             if(null == request){
                 throw new CustomException("the object send request not null ", "en");
             }
-            AssignmentStudentRegister assignmentStudentRegister= assignmentRegisterRepository.findByFileIdApproveAss(request.getAssignmentRegisterId());
+            AssignmentStudentRegister assignmentStudentRegister= assignmentRegisterRepository.findByFileIdApproveAss(request.getAssignmentStudentRegisterId());
             if(null == assignmentStudentRegister){
                 throw new AuthenticationException("Not found the assignment register");
             }
