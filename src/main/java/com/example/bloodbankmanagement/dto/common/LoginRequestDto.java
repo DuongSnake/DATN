@@ -19,4 +19,10 @@ public class LoginRequestDto {
         @NotBlank
         private String password;
     }
+
+    @Data
+    public static class FindIdByUserNameDataRequest{
+        @NotBlank
+        private String userName;
+    }
 }

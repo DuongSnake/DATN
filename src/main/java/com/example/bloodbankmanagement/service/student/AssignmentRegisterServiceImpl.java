@@ -6,11 +6,14 @@ import com.example.bloodbankmanagement.common.exception.AuthenticationException;
 import com.example.bloodbankmanagement.common.exception.CustomException;
 import com.example.bloodbankmanagement.common.security.AuthTokenFilter;
 import com.example.bloodbankmanagement.common.untils.CommonUtil;
+import com.example.bloodbankmanagement.common.untils.ERole;
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.ListResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.objectRepository.AssignmentStudentRegisterDTO;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
+import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.dto.service.UploadFileDto;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegister;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegisterDto;
@@ -52,21 +55,18 @@ public class AssignmentRegisterServiceImpl {
     public BasicResponseDto insertAssignmentRegister(AssignmentRegisterDto.AssignmentRegisterInsertInfo request, String lang) throws Exception {
         BasicResponseDto result;
         try{
-            if(null == request){
-                throw new CustomException("the object send request not null ", "en");
-            }
-            String userIdRegister = CommonUtil.getUsernameByToken();
-            Long valueId = getIdByUserName(userIdRegister);
+            LocalDate nowDate = LocalDate.now();
+            String userIdCreate = CommonUtil.getUsernameByToken();
             AssignmentStudentRegister objectUpdate = new AssignmentStudentRegister();
             objectUpdate.setAssignmentName(request.getAssignmentRegisterName());
-            if(null == valueId){
-                throw new CustomException("Not found user infor ", "en");
-            }
             //Tim thong tin giao vien map sinh vien
-//            List<StudentMapInstructor> infoInstructor = studentMapInstructorRepository.getStudentMapInstructorIdActiveByStudentId(valueId);
-//            if(infoInstructor.size() == 0 || infoInstructor.get(0).getInstructorInfo() == null || infoInstructor.get(0).getInstructorInfo().getId() == null){
-//                throw new CustomException("Not found the  instructor before send request,please call to admin assign the instructor", "en");
-//            }
+            User studentInfo = getInfoStudentById(request.getStudentId());
+            if(ObjectUtils.isEmpty(studentInfo)){
+                throw new Exception("Not found the student info:");
+            }
+            if(null != studentInfo){
+                objectUpdate.setStudentInfo(studentInfo);
+            }
             //Tim thong tin ky han
             PeriodAssignment periodAssignment = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
             if(null == periodAssignment){
@@ -88,11 +88,16 @@ public class AssignmentRegisterServiceImpl {
                 objectUpdate.setFileType(tailFile);
                 objectUpdate.setContentAssignment(blob);
             }
+            objectUpdate.setStatusAutoMap(request.getStatusAutoMap());
             objectUpdate.setIsApproved(CommonUtil.STATUS_NOT_ACCEPT);//status default not accept
-            objectUpdate.setCreateUser(userIdRegister);
+            objectUpdate.setCreateUser(userIdCreate);
             objectUpdate.setStatus(CommonUtil.STATUS_USE);
-            objectUpdate.setCreateAt(LocalDate.now());
+            objectUpdate.setCreateAt(nowDate);
+            objectUpdate.setOldValueId(studentInfo.getId());
             assignmentRegisterRepository.save(objectUpdate);
+            //Logic handle case insert student map instructor by value status autoMap
+            handleCaseInsertToStudentMapInstructor(studentInfo, request.getStatusAutoMap(), request.getInstructorId(), userIdCreate, nowDate);
+            //Handle for case change userId at case update
             result = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.insertSuccess);
         }catch (Exception e){
             throw new Exception("Could not save file:");
@@ -100,44 +105,44 @@ public class AssignmentRegisterServiceImpl {
         return result;
     }
 
-    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> selectListAssignmentRegister(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>> selectListAssignmentRegister(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         String userIdRegister = CommonUtil.getUsernameByToken();
         //Only find the list student upload in file
         request.setRegUser(userIdRegister);
-        PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
-        Page<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findListAssignmentRegister(request, pageable);
+        Page<AssignmentStudentRegisterDTO> listDataFileMetadata = assignmentRegisterRepository.findListAssignmentRegister(request, pageable);
         pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }
 
-    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> selectListAssignmentWaitingSend(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>> selectListAssignmentWaitingSend(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         String userIdRegister = CommonUtil.getUsernameByToken();
         //Only find the list student upload in file
         request.setRegUser(userIdRegister);
-        PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
-        Page<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findListAssignmentWaitingsend(request, pageable);
+        Page<AssignmentStudentRegisterDTO> listDataFileMetadata = assignmentRegisterRepository.findListAssignmentWaitingsend(request, pageable);
         pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }
 
 
-    public SingleResponseDto<AssignmentRegisterDto.AssignmentRegisterSelectInfoResponse> selectAssignmentRegister(AssignmentRegisterDto.AssignmentRegisterSelectInfo request, String lang){
+    public SingleResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse> selectAssignmentRegister(AssignmentRegisterDto.AssignmentRegisterSelectInfo request, String lang){
         if(null == request || request.getAssignmentRegisterId().equals("") || null == request.getAssignmentRegisterId()){
             throw new CustomException("Not found value request param ", "en");
         }
-        SingleResponseDto<AssignmentRegisterDto.AssignmentRegisterSelectInfoResponse> selectObject = new SingleResponseDto<>();
-        AssignmentStudentRegister dataFileMetadata = assignmentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
-        AssignmentRegisterDto.AssignmentRegisterSelectInfoResponse objectResponse= new AssignmentRegisterDto.AssignmentRegisterSelectInfoResponse();
+        SingleResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse> selectObject = new SingleResponseDto<>();
+        AssignmentStudentRegisterDTO dataFileMetadata = assignmentRegisterRepository.findByFileId(request.getAssignmentRegisterId());
+        AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse objectResponse= new AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse();
         if(null ==dataFileMetadata){
             objectResponse = null;
         }else{
@@ -253,18 +258,18 @@ public class AssignmentRegisterServiceImpl {
         return userInfo.get().getId();
     }
 
-    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> findListAssignmentRegisterIsApprove(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>> findListAssignmentRegisterIsApprove(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         String userIdRegister = CommonUtil.getUsernameByToken();
         //Find the customer by token
         Long valueId = getIdByUserName(userIdRegister);
         //Only find the list student upload in file
         request.setRegUser(userIdRegister);
-        PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
-        Page<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findListAssignmentRegisterIsApprove(request, pageable);
+        Page<AssignmentStudentRegisterDTO> listDataFileMetadata = assignmentRegisterRepository.findListAssignmentRegisterIsApprove(request, pageable);
         pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
@@ -346,14 +351,14 @@ public class AssignmentRegisterServiceImpl {
     }
 
 
-    public SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>> findListAllAssignmentRegisterIsApprove(){
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>> findListAllAssignmentRegisterIsApprove(){
         SingleResponseDto objectResponse = new SingleResponseDto();
         String userIdRegister = CommonUtil.getUsernameByToken();
         //Find the customer by token
         Long valueId = getIdByUserName(userIdRegister);
-        PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         //Select list file upload
-        List<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findListAllAssignmentRegisterIsApprove();
+        List<AssignmentStudentRegisterDTO> listDataFileMetadata = assignmentRegisterRepository.findListAllAssignmentRegisterIsApprove();
         pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata, Long.valueOf(listDataFileMetadata.size()));
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
@@ -445,5 +450,64 @@ public class AssignmentRegisterServiceImpl {
             throw new Exception("Could not save file:" +fileName);
         }
         return objectUpdate;
+    }
+
+    public void handleCaseInsertToStudentMapInstructor(User studentInfo, String statusAutoMap, Long instructorId,String updateUser, LocalDate nowDate){
+        //Check if mapping auto -> insert to table student map instructor
+        List<StudentMapInstructor> listStudentByStudentId = studentMapInstructorRepository.getStudentMapInstructorIdActiveByStudentId(studentInfo.getId());
+        if(!CommonUtil.YES_VALUE.equals(statusAutoMap) && listStudentByStudentId.size() == 0){
+            logger.info("Gia tri map la N va khong co trong danh sach insert truocs do:");
+            StudentMapInstructor studentMapInstructor = new StudentMapInstructor();
+            studentMapInstructor.setStudentInfo(studentInfo);
+            studentMapInstructor.setCreateUser(updateUser);
+            studentMapInstructor.setCreateAt(nowDate);
+            studentMapInstructor.setStatus(CommonUtil.STATUS_USE);
+            studentMapInstructorRepository.save(studentMapInstructor);
+        }
+        //Check if user not mapping auto + value instructorId not null -> update to table student map instructor
+        if(CommonUtil.YES_VALUE.equals(statusAutoMap) && !StringUtils.isEmpty(instructorId)){
+            //Find the value information of instructor
+            User instructorInfo = getInfoInstructorById(instructorId);
+            StudentMapInstructor studentMapInstructor = new StudentMapInstructor();
+            if(ObjectUtils.isEmpty(instructorInfo)){
+                logger.info("Not found instructor info with instructorId: "+instructorId.toString());
+                throw new CustomException(CommonUtil.NOT_ACCEPT_EMPTY_VALUE, "en");
+            }else{
+                studentMapInstructor.setStudentInfo(studentInfo);
+                studentMapInstructor.setCreateUser(updateUser);
+                studentMapInstructor.setCreateAt(nowDate);
+                studentMapInstructor.setInstructorInfo(instructorInfo);
+                studentMapInstructor.setStatus(CommonUtil.STATUS_USE);
+                //Check not exist data with studentID-> insert studentId and instructorId otherwise update instructorId by studentId
+                if(listStudentByStudentId.size() == 0){
+                    logger.info("Them moi vi khong tim thay thong tin student");
+                    studentMapInstructorRepository.save(studentMapInstructor);
+                }else{
+                    logger.info("Cap nhat vi tim thay thong tin student");
+                    studentMapInstructorRepository.updateStudentMapInstructorByStudentId(studentMapInstructor);
+                }
+            }
+        }else if(CommonUtil.YES_VALUE.equals(statusAutoMap) && StringUtils.isEmpty(instructorId)){
+            logger.info("Not found instructor info with instructorId: "+instructorId.toString());
+            throw new CustomException(CommonUtil.NOT_ACCEPT_EMPTY_VALUE, "en");
+        }
+    }
+
+    public User getInfoInstructorById(Long userid){
+        User userInfo = userRepository.getValueUserByIdAndRole(userid, ERole.ROLE_INSTRUCTOR.toString());
+        if(ObjectUtils.isEmpty(userInfo)){
+            logger.info("Not found instructor info with userId: "+userid);
+            throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
+        }
+        return userInfo;
+    }
+
+    public User getInfoStudentById(Long userid){
+        User userInfo = userRepository.getValueUserByIdAndRole(userid, ERole.ROLE_USER.toString());
+        if(ObjectUtils.isEmpty(userInfo)){
+            logger.info("Not found student info with userId: "+userid);
+            throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
+        }
+        return userInfo;
     }
 }

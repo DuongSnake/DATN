@@ -4,6 +4,7 @@ import com.example.bloodbankmanagement.dto.common.JwtResponseDto;
 import com.example.bloodbankmanagement.dto.common.LoginRequestDto;
 import com.example.bloodbankmanagement.dto.common.SignupRequestDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.service.UserDto;
 import com.example.bloodbankmanagement.service.AuthServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,14 @@ public class AuthController {
     public ResponseEntity<SingleResponseDto<SignupRequestDto.SignupDataRequest>> registerUser(@Valid @RequestBody SignupRequestDto.SignupDataRequest signupRequestDto, @RequestHeader("lang") String lang) throws Exception {
         return new ResponseEntity<>(
                 authService.registerUser(signupRequestDto, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/findId")
+    public ResponseEntity<SingleResponseDto<UserDto.UserSelectInfo>> getUserIdByUserName(@Valid @RequestBody LoginRequestDto.FindIdByUserNameDataRequest request){
+        return new ResponseEntity<>(
+                authService.getUserIdByUserName(request),
                 HttpStatus.OK
         );
     }

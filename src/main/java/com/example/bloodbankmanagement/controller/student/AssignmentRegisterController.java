@@ -4,6 +4,7 @@ import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.ListResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.dto.service.UploadFileDto;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegisterDto;
 import com.example.bloodbankmanagement.service.student.AssignmentRegisterServiceImpl;
@@ -37,7 +38,7 @@ public class AssignmentRegisterController {
     }
 
     @PostMapping("/selectList")
-    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>>> selectListAssignmentStudentRegister(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectListInfo request) {
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>>> selectListAssignmentStudentRegister(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectListInfo request) {
         return new ResponseEntity<>(
                 assignmentRegisterService.selectListAssignmentRegister(request),
                 HttpStatus.OK
@@ -61,7 +62,7 @@ public class AssignmentRegisterController {
     }
 
     @GetMapping("/select")
-    public ResponseEntity<SingleResponseDto<AssignmentRegisterDto.AssignmentRegisterSelectInfoResponse>> selectAssignmentStudentRegister(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectInfo request, @RequestHeader("lang") String lang){
+    public ResponseEntity<SingleResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse>> selectAssignmentStudentRegister(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectInfo request, @RequestHeader("lang") String lang){
         return new ResponseEntity<>(
                 assignmentRegisterService.selectAssignmentRegister(request, lang),
                 HttpStatus.OK
@@ -77,7 +78,7 @@ public class AssignmentRegisterController {
     }
 
     @PostMapping("/selectListWaitingSend")
-    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>>> selectListAssignmentStudentWaitingSend(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectListInfo request) {
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>>> selectListAssignmentStudentWaitingSend(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectListInfo request) {
         return new ResponseEntity<>(
                 assignmentRegisterService.selectListAssignmentWaitingSend(request),
                 HttpStatus.OK
@@ -85,7 +86,7 @@ public class AssignmentRegisterController {
     }
 
     @PostMapping("/selectListAssApprove")
-    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>>> selectListAssignmentRegisterApprove(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectListInfo request) {
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>>> selectListAssignmentRegisterApprove(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectListInfo request) {
         return new ResponseEntity<>(
                 assignmentRegisterService.findListAssignmentRegisterIsApprove(request),
                 HttpStatus.OK
@@ -117,7 +118,7 @@ public class AssignmentRegisterController {
     }
 
     @PostMapping("/selectListAllAssApprove")
-    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentRegisterDto.AssignmentRegisterListInfo>>> selectListAssignmentRegisterApprove() {
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>>> selectListAssignmentRegisterApprove() {
         return new ResponseEntity<>(
                 assignmentRegisterService.findListAllAssignmentRegisterIsApprove(),
                 HttpStatus.OK

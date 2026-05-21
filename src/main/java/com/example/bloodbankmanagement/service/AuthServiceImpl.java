@@ -10,6 +10,7 @@ import com.example.bloodbankmanagement.dto.common.JwtResponseDto;
 import com.example.bloodbankmanagement.dto.common.LoginRequestDto;
 import com.example.bloodbankmanagement.dto.common.SignupRequestDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.service.UserDto;
 import com.example.bloodbankmanagement.entity.Role;
 import com.example.bloodbankmanagement.entity.User;
 import com.example.bloodbankmanagement.repository.RoleRepository;
@@ -32,10 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -123,5 +121,18 @@ public class AuthServiceImpl {
 
     public String getUsernameByToken(String token){
         return jwtUtils.getUserNameFromJwtToken(token);
+    }
+
+    public SingleResponseDto<UserDto.UserSelectInfo> getUserIdByUserName(LoginRequestDto.FindIdByUserNameDataRequest request){
+        SingleResponseDto dataResponse;
+        //Check user have exist or not
+        Optional<User> selectUser = userRepository.findByUsername(request.getUserName());
+        if(ObjectUtils.isEmpty(selectUser)){
+            return responseCommon.getSingleFailResult(CommonUtil.NOT_FOUND_DATA_USER, "en");
+        }
+        UserDto.UserSelectInfo objectRespone = new UserDto.UserSelectInfo();
+        objectRespone.setId(selectUser.get().getId());
+        dataResponse = responseCommon.getSingleResponse(objectRespone, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return dataResponse;
     }
 }

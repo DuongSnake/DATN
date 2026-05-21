@@ -25,7 +25,9 @@ public class AssignmentRegisterDto {
     public static class AssignmentRegisterListInfo {
         private long assignmentRegisterId;
         private String assignmentRegisterName;
-        private Long studentMapInstructorId;
+        private String statusAutoMap;
+        private String isApprovedDisplayName;
+        private String statusAutoMapDisplayName;
         private Long periodAssignmentId;
         private String periodAssignmentName;
         private LocalDate expirePeriodDate;
@@ -48,7 +50,9 @@ public class AssignmentRegisterDto {
     public static class AssignmentRegisterSelectInfoResponse {
         private Long assignmentRegisterId;
         private String assignmentRegisterName;
-        private Long studentMapInstructorId;
+        private String statusAutoMap;
+        private String isApprovedDisplayName;
+        private String statusAutoMapDisplayName;
         private Long periodAssignmentId;
         private String periodAssignmentName;
         private LocalDate expirePeriodDate;
@@ -67,6 +71,9 @@ public class AssignmentRegisterDto {
         private String assignmentRegisterName;
         private Long periodAssignmentId;
         private MultipartFile fileUpload;
+        private String statusAutoMap;
+        private Long instructorId;
+        private Long studentId;
     }
 
     @Data
@@ -75,6 +82,9 @@ public class AssignmentRegisterDto {
         private Long periodAssignmentId;
         private MultipartFile fileUpload;
         private String assignmentRegisterName;
+        private Long studentId;
+        private Long instructorId;
+        private String statusAutoMap;
     }
 
     @Data
