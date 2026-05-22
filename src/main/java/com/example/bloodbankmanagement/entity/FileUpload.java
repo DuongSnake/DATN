@@ -83,7 +83,8 @@ public class FileUpload extends EntityCommon {
         return objectDtoResponse;
     }
 
-    public static List<UploadFileDto.UploadFileListInfo> convertListObjectToDtoUserSite(List<FileUpload> listData){
+    public static PageAmtListResponseDto<UploadFileDto.UploadFileListInfo>  convertListObjectToDtoUserSite(List<FileUpload> listData){
+        PageAmtListResponseDto<UploadFileDto.UploadFileListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
         if(null == listData || listData.size() == 0){
             return null;
         }
@@ -106,6 +107,8 @@ public class FileUpload extends EntityCommon {
             newObject.setInstructorName(instructorName);
             listObject.add(newObject);
         }
-        return listObject;
+        objectDtoResponse.setData(listObject);
+        objectDtoResponse.setTotalRecord((int) listData.size());
+        return objectDtoResponse;
     }
 }

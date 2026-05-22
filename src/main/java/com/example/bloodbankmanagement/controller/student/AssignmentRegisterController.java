@@ -11,8 +11,12 @@ import com.example.bloodbankmanagement.service.student.AssignmentRegisterService
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/assignmentRegister")
@@ -94,7 +98,7 @@ public class AssignmentRegisterController {
     }
 
     @PostMapping("/selectListFileAss")
-    public ResponseEntity<ListResponseDto<UploadFileDto.UploadFileListInfo>> selectListFileAssignmentRegisterApprove(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectInfo request) {
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<UploadFileDto.UploadFileListInfo>>> selectListFileAssignmentRegisterApprove(@RequestBody AssignmentRegisterDto.AssignmentRegisterSelectInfo request) {
         return new ResponseEntity<>(
                 assignmentRegisterService.findListFileUploadByAssignmentIdApprove(request),
                 HttpStatus.OK
@@ -109,10 +113,20 @@ public class AssignmentRegisterController {
         );
     }
 
-    @PostMapping("/updateListFileAssignment")
-    public ResponseEntity<BasicResponseDto> updateListFileAssignment(@ModelAttribute @Valid AssignmentRegisterDto.AssignmentFileUploadInfo request, @RequestHeader("lang") String lang) throws Exception {
+    @PostMapping(value = "/updateListFileAssignment", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BasicResponseDto> updateListFileAssignment(            @RequestParam("assignmentStudentRegisterId")
+                                                                                             Long assignmentStudentRegisterId,
+
+                                                                                 @RequestParam(value = "deletedFileIds", required = false)
+                                                                                             String deletedFileIdsJson,
+
+                                                                                 @RequestParam(value = "listFile", required = false)
+                                                                                             List<MultipartFile> listFile,
+
+                                                                                 @RequestParam(value = "fileIds", required = false)
+                                                                                             List<Long> fileIds, @RequestHeader("lang") String lang) throws Exception {
         return new ResponseEntity<>(
-                assignmentRegisterService.updateFileAssignmentRegister(request, lang),
+                assignmentRegisterService.updateFileAssignmentRegister(assignmentStudentRegisterId, deletedFileIdsJson, listFile, fileIds, lang),
                 HttpStatus.OK
         );
     }

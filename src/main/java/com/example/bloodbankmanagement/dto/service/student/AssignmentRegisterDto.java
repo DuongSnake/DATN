@@ -110,11 +110,11 @@ public class AssignmentRegisterDto {
 
     @Data
     public static class AssignmentFileUploadInfo {
-        private List<Long> listIdUpdate;
-        private List<Long> listIdDelete;
-        private MultipartFile listFileInsert[];
-        private MultipartFile listFileUpdate[];
         private Long assignmentStudentRegisterId;
+        private List<Long> deletedFileIds;
+        private List<MultipartFile> listFile;
+        private List<String> fileTypes;
+        private List<Long> fileId;
     }
 
     @Data
