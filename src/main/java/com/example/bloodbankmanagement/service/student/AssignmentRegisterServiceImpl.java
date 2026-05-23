@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -553,5 +555,15 @@ public class AssignmentRegisterServiceImpl {
             throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
         }
         return userInfo;
+    }
+
+    public FileUpload downloadFile(Long fileId) throws Exception {
+        FileUpload fileObject =  fileMetadataRepository.findByFileIdToDownload(fileId);
+        if(null ==fileObject){
+            throw new CustomException("Not found object by fileId", "en");
+        }
+        InputStream inputStream = fileObject.getData().getBinaryStream();
+
+        return fileObject;
     }
 }

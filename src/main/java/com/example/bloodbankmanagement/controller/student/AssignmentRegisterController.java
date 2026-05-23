@@ -7,15 +7,20 @@ import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.dto.service.UploadFileDto;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegisterDto;
+import com.example.bloodbankmanagement.entity.FileUpload;
 import com.example.bloodbankmanagement.service.student.AssignmentRegisterServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -137,6 +142,18 @@ public class AssignmentRegisterController {
                 assignmentRegisterService.findListAllAssignmentRegisterIsApprove(),
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("/download")
+    public ResponseEntity<InputStreamResource> downloadFile2(@RequestParam Long fileId) throws Exception {
+
+        FileUpload file = assignmentRegisterService.downloadFile(fileId);
+        InputStream inputStream = file.getData().getBinaryStream();
+        InputStreamResource resource = new InputStreamResource(inputStream);
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(file.getFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"" + file.getFileName() + "\"")
+                .contentLength(file.getData().length())
+                .body(resource);
     }
 
 }
