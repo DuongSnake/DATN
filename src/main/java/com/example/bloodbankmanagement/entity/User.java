@@ -5,6 +5,7 @@ package com.example.bloodbankmanagement.entity;
 import com.example.bloodbankmanagement.common.untils.AbstractEntity;
 import com.example.bloodbankmanagement.common.untils.EntityCommon;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
+import com.example.bloodbankmanagement.dto.objectRepository.UserInfoDto;
 import com.example.bloodbankmanagement.dto.service.UserDto;
 import com.example.bloodbankmanagement.dto.service.student.StudentDto;
 import jakarta.persistence.*;
@@ -127,25 +128,20 @@ public class User extends EntityCommon {
 
 
 
-    public static StudentDto.StudentSelectInfoResponse convertToDtoStudent(User request){
-        StudentDto.StudentSelectInfoResponse objectDtoResponse = new StudentDto.StudentSelectInfoResponse();
+    public static PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo> convertListStudentByInstructor(List<UserInfoDto> request){
+        PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo> objectDtoResponse = new PageAmtListResponseDto<>();
+        List<UserDto.AllStudentByInstructorInfo> listUserDto = new ArrayList<UserDto.AllStudentByInstructorInfo>();
         //Get information
-        Long admissionPeriodId = null;
-        String admissionPeriodName ="";
-        if(request != null){
-            objectDtoResponse.setId(request.getId());
-            objectDtoResponse.setUsername(request.getUsername());
-            objectDtoResponse.setEmail(request.getEmail());
-            objectDtoResponse.setPhone(request.getPhone());
-            objectDtoResponse.setFullName(request.getFullName());
-            objectDtoResponse.setIdentityCard(request.getIdentityCard());
-            objectDtoResponse.setAddress(request.getAddress());
-            objectDtoResponse.setStatus(request.getStatus());
-            objectDtoResponse.setNote(request.getNote());
-            objectDtoResponse.setCreateAt(request.getCreateAt());
-            objectDtoResponse.setUpdateAt(request.getUpdateAt());
-            objectDtoResponse.setRoles(request.getRoleInfo());
+        if(request.size() >0 ){
+            for (int i=0;i<request.size();i++){
+                UserDto.AllStudentByInstructorInfo newObject = new UserDto.AllStudentByInstructorInfo();
+                newObject.setId(request.get(i).getId());
+                newObject.setFullName(request.get(i).getFullName());
+                listUserDto.add(newObject);
+            }
         }
+        objectDtoResponse.setData(listUserDto);
+        objectDtoResponse.setTotalRecord(request.size());
         return objectDtoResponse;
     }
 

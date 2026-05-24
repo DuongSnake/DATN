@@ -20,6 +20,17 @@ public class AssignmentRegisterDto {
         private String regUser;
         private PageRequestDto pageRequestDto;
     }
+    @Data
+    public static class AssignmentRegisterSelectListOfInstructorIdInfo {
+        private long assignmentStudentRegisterId;
+        private String assignmentStudentRegisterName;
+        private Long periodAssignmentId;
+        private Date fromDate;
+        private Date toDate;
+        private String status;
+        private Long intructorId;
+        private PageRequestDto pageRequestDto;
+    }
 
     @Data
     public static class AssignmentRegisterListInfo {

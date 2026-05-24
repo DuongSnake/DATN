@@ -88,6 +88,8 @@ public class AssignmentRegister {
                 return CommonUtil.STATUS_NOT_ACCEPT_DISPLAY_TEXT;
             case 1:
                 return CommonUtil.STATUS_SEND_REQUEST_DISPLAY_TEXT;
+            case 2:
+                return CommonUtil.STATUS_PROCESS_DISPLAY_TEXT;
             case 3:
                 return CommonUtil.STATUS_RESERVE_DISPLAY_TEXT;
             default:

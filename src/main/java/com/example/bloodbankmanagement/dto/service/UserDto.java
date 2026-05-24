@@ -120,6 +120,13 @@ public class UserDto {
     }
 
     @Data
+    public static class ChangePasswordNoAuthInfo {
+        private String userName;
+        private String currentPassword;
+        private String newPassword;
+    }
+
+    @Data
     public static class MailForgotPasswordInfo {
         private String email;
     }
@@ -158,6 +165,12 @@ public class UserDto {
         private String name;
     }
 
+
+    @Data
+    public static class AllStudentByInstructorInfo {
+        private long id;
+        private String fullName;
+    }
 
 
     @Data

@@ -42,4 +42,12 @@ public class AuthController {
                 HttpStatus.OK
         );
     }
+
+    @PostMapping("/changePass")
+    public ResponseEntity<SingleResponseDto<UserDto.ChangePasswordNoAuthInfo>> changePasswordUser(@RequestBody UserDto.ChangePasswordNoAuthInfo request, @RequestHeader("lang") String lang){
+        return new ResponseEntity<>(
+                authService.changePasswordUser(request, lang),
+                HttpStatus.OK
+        );
+    }
 }

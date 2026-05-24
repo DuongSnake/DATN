@@ -1,6 +1,7 @@
 package com.example.bloodbankmanagement.repository;
 
 
+import com.example.bloodbankmanagement.dto.objectRepository.UserInfoDto;
 import com.example.bloodbankmanagement.dto.service.InstructorDto;
 import com.example.bloodbankmanagement.dto.service.StudentManagementDto;
 import com.example.bloodbankmanagement.dto.service.UserDto;
@@ -50,6 +51,55 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "join roles r on r.id = u.role_id " +
             "where r.name = ?1 and u.status ='1' ", nativeQuery = true)
     List<User> getListUserByRoleName(String valueRole);
+
+    @Query(value = "with StudentCTE AS(" +
+            "select u.id, u.full_name  from users u " +
+            "join roles r on r.id = u.role_id " +
+            "where r.name = ?1 and u.status ='1') " +
+            "         select" +
+            "          smi.student_id as id," +
+            "          case when smi.instructor_id is null then '' " +
+            "          when smi.instructor_id is not null then scte.full_name " +
+            "          else '' end as fullName "+
+            "  from student_map_instructor smi " +
+            " join StudentCTE scte  on scte.id = smi.student_id " +
+            "where smi.instructor_id = ?2 and smi.status ='1' ", nativeQuery = true)
+    List<UserInfoDto> getListUserByRoleNameMapWithInstructorId(String valueRole, Long intructorId);
+
+    @Query(value = "with StudentCTE AS(" +
+            "select u.id, u.full_name  from users u " +
+            "join roles r on r.id = u.role_id " +
+            "where r.name = ?1 and u.status ='1') " +
+            "         select" +
+            "          smi.student_id as id," +
+            "          case when smi.instructor_id is null then '' " +
+            "          when smi.instructor_id is not null then scte.full_name " +
+            "          else '' end as fullName "+
+            "  from student_map_instructor smi " +
+            " join StudentCTE scte  on scte.id = smi.student_id " +
+            "where smi.instructor_id = ?2 and smi.status ='1' " +
+            "and scte.id not in (select student_id from assignment_student_register where is_approved <> ?3 or status <> ?4 ) ", nativeQuery = true)
+    List<UserInfoDto> getListStudentMapWithInstructorButNotRegisterAssignment(String valueRole, Long intructorId, Integer isApproveIsReserve, String statusDelete);
+
+    @Query(value = "select u.id as id, u.full_name as fullName from users u " +
+            "join roles r on r.id = u.role_id " +
+            "where r.name = ?1 and u.status ='1' " +
+            "and u.id not in (select student_id from student_map_instructor where instructor_id = ?2)", nativeQuery = true)
+    List<UserInfoDto> getListUserNotMapInstructor(String valueRole, Long intructorId);
+
+
+    @Query(value = "select u.id as id, u.full_name as fullName from users u " +
+            "join roles r on r.id = u.role_id " +
+            "where r.name = ?1 and u.status ='1' " +
+            "and u.id not in (select student_id from assignment_student_register where student_id = ?2 and  (is_approved <> ?3 or status <> ?4 ))", nativeQuery = true)
+    List<UserInfoDto> getListUserNotRegisterAssignment(String valueRole, Long studentId, Integer isApproveIsReserve, String statusDelete);
+
+
+    @Query(value = "select u.id as id, u.full_name as fullName from users u " +
+            "join roles r on r.id = u.role_id " +
+            "where r.name = ?1 and u.status ='1' " +
+            "and u.id in (select student_id from assignment_student_register where student_id = ?2 and  (is_approved <> ?3 or status <> ?4 ))", nativeQuery = true)
+    List<UserInfoDto> getListUserRegisterAssignment(String valueRole, Long studentId, Integer isApproveIsReserve, String statusDelete);
 
     @Query("select u from User u where u.email = ?1 order by u.createAt desc")
     List<User> getByEmail(String email);

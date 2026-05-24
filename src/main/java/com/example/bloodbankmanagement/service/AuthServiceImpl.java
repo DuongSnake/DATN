@@ -119,6 +119,30 @@ public class AuthServiceImpl {
         return dataResponse;
     }
 
+
+    @Transactional
+    public SingleResponseDto<UserDto.ChangePasswordNoAuthInfo> changePasswordUser(@RequestBody UserDto.ChangePasswordNoAuthInfo changePasswordInfoRequest, @RequestHeader("lang") String lang){
+        SingleResponseDto<UserDto.ChangePasswordNoAuthInfo> objectResponse = new SingleResponseDto<>();
+        //Check user have exist or not
+        User updateUser = userRepository.findByUsername(changePasswordInfoRequest.getUserName()).get();
+        if(ObjectUtils.isEmpty(updateUser)){
+            return responseCommon.getSingleFailResult(CommonUtil.NOT_FOUND_DATA_USER, lang);
+        }
+        String newPasswordEncoded = encoder.encode(changePasswordInfoRequest.getNewPassword());
+        if (!encoder.matches(changePasswordInfoRequest.getCurrentPassword(), updateUser.getPassword())) {
+            return responseCommon.getSingleFailResult("CurrentPasswordNotMatch", lang);
+        }
+        if (encoder.matches(changePasswordInfoRequest.getNewPassword(), updateUser.getPassword())) {
+            return responseCommon.getSingleFailResult("OldPasswordMatched", lang);
+        }
+        //Update data password
+        updateUser.setPassword(newPasswordEncoded);
+        updateUser.setUpdateUser("chinh chu reset tai khoan");
+        updateUser.setUpdateAt(LocalDate.now());
+        userRepository.changePassword(updateUser);
+        objectResponse = responseCommon.getSingleResponse(changePasswordInfoRequest, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.updateSuccess);
+        return objectResponse;
+    }
     public String getUsernameByToken(String token){
         return jwtUtils.getUserNameFromJwtToken(token);
     }

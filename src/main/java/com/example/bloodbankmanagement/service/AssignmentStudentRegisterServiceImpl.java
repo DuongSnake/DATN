@@ -10,6 +10,7 @@ import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.objectRepository.AssignmentStudentRegisterDTO;
+import com.example.bloodbankmanagement.dto.objectRepository.UserInfoDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.entity.*;
@@ -56,6 +57,11 @@ public class AssignmentStudentRegisterServiceImpl {
         }
         if(null != studentInfo){
             objectUpdate.setStudentInfo(studentInfo);
+        }
+        //Check information studentId register exist assignment(have status not equal expire or status isApprove not equal reserve) before or not
+        List<UserInfoDto> checkStudentRegisterAssignmentBefore = userRepository.getListUserRegisterAssignment(ERole.ROLE_USER.toString(), studentInfo.getId(), CommonUtil.STATUS_RESERVE, CommonUtil.STATUS_EXPIRE);
+        if(checkStudentRegisterAssignmentBefore.size() > 0){
+            throw new Exception("Have exist assignment register by user before,don't exist more than assignment register with same student id");
         }
         //Tim thong tin ky han
         PeriodAssignment periodAssignment = periodAssignmentRepository.findByFileId(request.getPeriodAssignmentId());
@@ -143,6 +149,12 @@ public class AssignmentStudentRegisterServiceImpl {
         if(ObjectUtils.isEmpty(studentInfo)){
              logger.info("Not found assignment student register info with studentId: "+request.getStudentId());
              throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
+        }
+
+        //Check information studentId register exist assignment(have status not equal expire or status isApprove not equal reserve) before or not
+        List<UserInfoDto> checkStudentRegisterAssignmentBefore = userRepository.getListUserRegisterAssignment(ERole.ROLE_USER.toString(), studentInfo.getId(), CommonUtil.STATUS_RESERVE, CommonUtil.STATUS_EXPIRE);
+        if(checkStudentRegisterAssignmentBefore.size() > 0){
+             throw new Exception("Have exist assignment register by user before,don't exist more than assignment register with same student id");
         }
         AssignmentStudentRegister objectUpdate = new AssignmentStudentRegister();
         objectUpdate.setId(request.getAssignmentStudentRegisterId());
@@ -255,7 +267,7 @@ public class AssignmentStudentRegisterServiceImpl {
     public void handleCaseInsertToStudentMapInstructor(User studentInfo, String statusAutoMap, Long instructorId,String updateUser, LocalDate nowDate){
         //Check if mapping auto -> insert to table student map instructor
         List<StudentMapInstructor> listStudentByStudentId = studentMapInstructorRepository.getStudentMapInstructorIdActiveByStudentId(studentInfo.getId());
-        if(!CommonUtil.YES_VALUE.equals(statusAutoMap) && listStudentByStudentId.size() == 0){
+        if(!CommonUtil.YES_VALUE.equals(statusAutoMap) && (null == listStudentByStudentId || listStudentByStudentId.size() == 0)){
             logger.info("Gia tri map la N va khong co trong danh sach insert truocs do:");
             StudentMapInstructor studentMapInstructor = new StudentMapInstructor();
             studentMapInstructor.setStudentInfo(studentInfo);
@@ -298,9 +310,9 @@ public class AssignmentStudentRegisterServiceImpl {
             return;
         }
         //Check studentId already insert in table student map instructor
-        StudentMapInstructor existInDbBefore = studentMapInstructorRepository.findByStudentMapStudentId(studentInfo.getId());
+        List<StudentMapInstructor> listStudentByStudentId = studentMapInstructorRepository.getStudentMapInstructorIdActiveByStudentId(studentInfo.getId());
         //Check if mapping auto -> insert to table student map instructor(update new value)
-        if(!CommonUtil.YES_VALUE.equals(statusAutoMap)){
+        if(!CommonUtil.YES_VALUE.equals(statusAutoMap) && (null == listStudentByStudentId || listStudentByStudentId.size() == 0)){
             StudentMapInstructor studentMapInstructor = new StudentMapInstructor();
             studentMapInstructor.setStudentInfo(studentInfo);
             studentMapInstructor.setUpdateUser(updateUser);
@@ -309,7 +321,7 @@ public class AssignmentStudentRegisterServiceImpl {
             studentMapInstructorRepository.save(studentMapInstructor);
         }
         //Check if user not mapping auto + value instructorId not null -> update to table student map instructor
-        if(CommonUtil.YES_VALUE.equals(statusAutoMap) && StringUtils.isEmpty(instructorId)){
+        if(CommonUtil.YES_VALUE.equals(statusAutoMap) && !StringUtils.isEmpty(instructorId)){
             //Find the value information of instructor
             User instructorInfo = getInfoInstructorById(instructorId);
             StudentMapInstructor studentMapInstructor = new StudentMapInstructor();
@@ -326,6 +338,9 @@ public class AssignmentStudentRegisterServiceImpl {
                 //Update information by studentId
                 studentMapInstructorRepository.updateStudentMapInstructorByStudentId(studentMapInstructor);
             }
+        }else if(CommonUtil.YES_VALUE.equals(statusAutoMap) && StringUtils.isEmpty(instructorId)){
+            logger.info("Not found instructor info with instructorId: "+instructorId.toString());
+            throw new CustomException(CommonUtil.NOT_ACCEPT_EMPTY_VALUE, "en");
         }
         //Will update old value -> remove value instructorId
         String messageNote = "change value instructor by have request change from studentId:"+valueOldId +" to new value studentId:"+studentInfo.getId();
