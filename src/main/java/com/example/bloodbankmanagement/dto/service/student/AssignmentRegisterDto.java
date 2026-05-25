@@ -101,6 +101,7 @@ public class AssignmentRegisterDto {
     @Data
     public static class AssignmentRegisterDeleteInfo {
         private List<Long> listData;
+        private String reasonReject;
     }
 
     @Data

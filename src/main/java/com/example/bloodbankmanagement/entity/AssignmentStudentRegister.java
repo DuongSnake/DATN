@@ -37,6 +37,9 @@ public class AssignmentStudentRegister extends EntityCommon {
     @JoinColumn(name = "student_id")
     private User studentInfo;//student choose to map with teacher
     private Long oldValueId;
+    private String commentReasonResever;//Comment reason why student want "bảo lưu"
+    private String commentRejectApproveRegister;//Comment reason why not approve for register assignment
+    private String commentRejectApproveFinal;//Comment reason why not approve for student "bảo vệ"
 
     public static AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse convertToDto(AssignmentStudentRegisterDTO request){
         AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse objectDtoResponse = new AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse();
@@ -112,6 +115,14 @@ public class AssignmentStudentRegister extends EntityCommon {
                 return CommonUtil.STATUS_SEND_REQUEST_DISPLAY_TEXT;
             case 3:
                 return CommonUtil.STATUS_RESERVE_DISPLAY_TEXT;
+            case 4:
+                return CommonUtil.STATUS_REJECT_SEND_REGISTER_ASSIGNMENT_DISPLAY_TEXT;
+            case 5:
+                return CommonUtil.STATUS_WAITING_FINAL_DISPLAY_TEXT;
+            case 6:
+                return CommonUtil.STATUS_REJECT_APPROVE_FINAL_ASSIGNMENT_DISPLAY_TEXT;
+            case 7:
+                return CommonUtil.STATUS_APPROVE_FINAL_DISPLAY_TEXT;
             default:
                 return CommonUtil.STATUS_NOT_ACCEPT_DISPLAY_TEXT;
         }

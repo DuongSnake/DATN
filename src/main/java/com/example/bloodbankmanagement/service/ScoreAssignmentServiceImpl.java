@@ -8,13 +8,16 @@ import com.example.bloodbankmanagement.common.untils.CommonUtil;
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.objectRepository.AssignmentStudentRegisterDTO;
+import com.example.bloodbankmanagement.dto.objectRepository.ScoreSelectListAssignmentDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
+import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.dto.service.ScoreAssignmentDto;
-import com.example.bloodbankmanagement.entity.AssignmentStudentRegister;
-import com.example.bloodbankmanagement.entity.ScoreAssignment;
-import com.example.bloodbankmanagement.entity.Role;
-import com.example.bloodbankmanagement.entity.User;
+import com.example.bloodbankmanagement.dto.service.student.AssignmentRegister;
+import com.example.bloodbankmanagement.dto.service.student.AssignmentRegisterDto;
+import com.example.bloodbankmanagement.entity.*;
 import com.example.bloodbankmanagement.repository.AssignmentStudentRegisterRepository;
+import com.example.bloodbankmanagement.repository.CalculateAverageScoreRepository;
 import com.example.bloodbankmanagement.repository.ScoreAssignmentRepository;
 import com.example.bloodbankmanagement.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,10 +40,19 @@ public class ScoreAssignmentServiceImpl {
     private final UserRepository userRepository;
     private final AssignmentStudentRegisterRepository assignmentStudentRegisterRepository;
     private final ResponseCommon responseService;
+    private final CalculateAverageScoreRepository calculateAverageScoreRepository;
 
     @Transactional
     public BasicResponseDto insertScoreAssignment(ScoreAssignmentDto.ScoreAssignmentInsertInfo request, String lang) {
         BasicResponseDto result;
+        if(null == request){
+            throw new CustomException("the object send request not null ", "en");
+        }
+        //Check status assignment to set score
+        AssignmentStudentRegister checkExist = assignmentStudentRegisterRepository.assignmentHaveTypeFinalApproveOrNot(request.getAssignmentRegisterId(), CommonUtil.STATUS_APPROVE_FINAL);
+        if(ObjectUtils.isEmpty(checkExist)){
+            throw new CustomException("The assignment status approve not final approve->Please choose another assignment and try again ", lang);
+        }
         String userIdCreate = CommonUtil.getUsernameByToken();
         String userIdRegister = checkExistUser(userIdCreate);
         ScoreAssignment objectUpdate = new ScoreAssignment();
@@ -95,6 +108,11 @@ public class ScoreAssignmentServiceImpl {
         if(null == request){
             throw new CustomException("the object send request not null ", "en");
         }
+        //Check status assignment to set score
+        AssignmentStudentRegister checkExist = assignmentStudentRegisterRepository.assignmentHaveTypeFinalApproveOrNot(request.getAssignmentRegisterId(), CommonUtil.STATUS_APPROVE_FINAL);
+        if(ObjectUtils.isEmpty(checkExist)){
+            throw new CustomException("The assignment status approve not final approve->Please choose another assignment and try again ", lang);
+        }
         ScoreAssignment objectUpdate = new ScoreAssignment();
         objectUpdate.setId(request.getScoreAssignmentId());
         objectUpdate.setScoreExaminer(request.getScoreExaminer());
@@ -149,5 +167,45 @@ public class ScoreAssignmentServiceImpl {
             throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
         }
         return userInfo.get().getUsername();
+    }
+
+
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>> selectListAssignmentReadyToAddScore(ScoreAssignmentDto.ListAssignmentRegisterIsFinalApproveByPeriodIdInfo request){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        //Set default value of attribute approve type status to final approve
+        request.setTypeApprove(CommonUtil.STATUS_APPROVE_FINAL);
+        PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        //Select list file upload
+        List<AssignmentStudentRegisterDTO> listDataFileMetadata = scoreAssignmentRepository.findListAssignmentRegisterIsFinalApproveByPeriodId(request);
+        pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata, Long.valueOf(listDataFileMetadata.size()));
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
+    public SingleResponseDto<PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListInfo>> selectListNewScoreAssignment(ScoreAssignmentDto.ScoreAssignmentNewSelectListInfo request){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        if(null == request){
+            throw new CustomException("the object send request not null ", "en");
+        }
+        CalculateAverageScore rateCalculateAverage = new CalculateAverageScore();
+        rateCalculateAverage.setRateExam(4.0);
+        rateCalculateAverage.setRateExam(6.0);
+        rateCalculateAverage.setTotalRate(10.0);
+        PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListNewInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
+        Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
+        //Select list file upload
+        Page<ScoreSelectListAssignmentDto> listDataFileMetadata = scoreAssignmentRepository.findListNewScoreManagement(request, pageable);
+        if(null != request && null != request.getAdmissionPeriodId()){
+            rateCalculateAverage = calculateAverageScoreRepository.findByPeriodAssignmentId(request.getAdmissionPeriodId());
+            if(null != rateCalculateAverage && null != rateCalculateAverage.getRateExam() && null != rateCalculateAverage.getRateInstructor() && null != rateCalculateAverage.getTotalRate()){
+                rateCalculateAverage.setRateExam(rateCalculateAverage.getRateExam());
+                rateCalculateAverage.setRateExam(rateCalculateAverage.getRateInstructor());
+                rateCalculateAverage.setTotalRate(rateCalculateAverage.getTotalRate());
+            }
+        }
+        pageAmtObject = ScoreAssignment.convertListObjectNewToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements(), rateCalculateAverage);
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
     }
 }

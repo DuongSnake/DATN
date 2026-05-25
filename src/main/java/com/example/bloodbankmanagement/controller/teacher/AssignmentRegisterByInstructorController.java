@@ -178,4 +178,20 @@ public class AssignmentRegisterByInstructorController {
                 HttpStatus.OK
         );
     }
+
+    @PostMapping("/rejectAssignmentStudentRegister")
+    public ResponseEntity<BasicResponseDto> rejectAssignmentStudentRegister(@RequestBody @Valid AssignmentRegisterDto.AssignmentRegisterDeleteInfo request, @RequestHeader("lang") String lang) {
+        return new ResponseEntity<>(
+                assignmentRegisterByInstructorService.rejectAssignmentStudentRegister(request, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/rejectApproveFinalAssignmentStudentRegister")
+    public ResponseEntity<BasicResponseDto> rejectApproveFinalAssignmentStudentRegister(@RequestBody @Valid AssignmentRegisterDto.AssignmentRegisterDeleteInfo request, @RequestHeader("lang") String lang) {
+        return new ResponseEntity<>(
+                assignmentRegisterByInstructorService.rejectApproveFinalAssignmentStudentRegister(request, lang),
+                HttpStatus.OK
+        );
+    }
 }

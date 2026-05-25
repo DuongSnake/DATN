@@ -106,4 +106,8 @@ public interface AssignmentStudentRegisterRepository extends JpaRepository<Assig
     @Transactional
     @Query(value = "update assignment_student_register set is_approved =:#{#request.isApproved},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id in :ids",nativeQuery = true)
     void reserveAssignmentStudentRegister(@Param("request") AssignmentStudentRegister request, @Param("ids") List<Long> ids);
+
+
+    @Query(value = "select * from assignment_student_register where id = ?1 and is_approved = ?2 ",nativeQuery = true)
+    AssignmentStudentRegister assignmentHaveTypeFinalApproveOrNot(Long assignmentStudentId, Integer statusFinalApprove);
 }

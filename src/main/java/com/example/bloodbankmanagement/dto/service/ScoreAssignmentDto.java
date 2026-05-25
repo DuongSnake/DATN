@@ -68,4 +68,34 @@ public class ScoreAssignmentDto {
     public static class ScoreAssignmentDeleteInfo {
         private List<Long> listData;
     }
+
+    @Data
+    public static class ScoreAssignmentNewSelectListInfo {
+        private Long scoreAssignmentId;
+        private Long admissionPeriodId;
+        private String status;
+        private PageRequestDto pageRequestDto;
+    }
+
+    @Data
+    public static class ListAssignmentRegisterIsFinalApproveByPeriodIdInfo {
+        private Long admissionPeriodId;
+        private Integer typeApprove;
+    }
+
+    @Data
+    public static class ScoreAssignmentListNewInfo {
+        private Long scoreAssignmentId;
+        private Long assignmentRegisterId;
+        private String assignmentRegisterName;
+        private Long admissionPeriodId;
+        private String admissionPeriodName;
+        private String studentName;
+        private Double scoreAverage;
+        private Double scoreInstructor;
+        private Double scoreExaminer;
+        private Double scoreCritical;
+        private String status;
+        private LocalDate createAt;
+    }
 }

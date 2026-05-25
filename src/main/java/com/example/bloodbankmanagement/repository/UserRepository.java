@@ -91,6 +91,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select u.id as id, u.full_name as fullName from users u " +
             "join roles r on r.id = u.role_id " +
             "where r.name = ?1 and u.status ='1' " +
+            "and u.id not in (select instructor_id from student_map_instructor where student_id = ?2)", nativeQuery = true)
+    List<UserInfoDto> getListCriticalByStudentId(String valueRole, Long studentId);
+
+
+    @Query(value = "select u.id as id, u.full_name as fullName from users u " +
+            "join roles r on r.id = u.role_id " +
+            "where r.name = ?1 and u.status ='1' " +
             "and u.id not in (select student_id from assignment_student_register where student_id = ?2 and  (is_approved <> ?3 or status <> ?4 ))", nativeQuery = true)
     List<UserInfoDto> getListUserNotRegisterAssignment(String valueRole, Long studentId, Integer isApproveIsReserve, String statusDelete);
 

@@ -3,6 +3,7 @@ package com.example.bloodbankmanagement.controller;
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.dto.service.ScoreAssignmentDto;
 import com.example.bloodbankmanagement.service.ScoreAssignmentServiceImpl;
 import jakarta.validation.Valid;
@@ -54,6 +55,23 @@ public class ScoreAssignmentController {
     public ResponseEntity<SingleResponseDto<ScoreAssignmentDto.ScoreAssignmentSelectInfoResponse>> selectScoreAssignment(@RequestBody ScoreAssignmentDto.ScoreAssignmentSelectInfo request, @RequestHeader("lang") String lang){
         return new ResponseEntity<>(
                 scoreAssignmentService.selectScoreAssignment(request, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/selectListAssignmentReadyToAddScore")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>>> selectListAssignmentReadyToAddScore(@RequestBody ScoreAssignmentDto.ListAssignmentRegisterIsFinalApproveByPeriodIdInfo request) {
+        return new ResponseEntity<>(
+                scoreAssignmentService.selectListAssignmentReadyToAddScore(request),
+                HttpStatus.OK
+        );
+    }
+
+
+    @PostMapping("/selectListNewScoreAssignment")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListInfo>>> selectListNewScoreAssignment(@RequestBody ScoreAssignmentDto.ScoreAssignmentNewSelectListInfo request) {
+        return new ResponseEntity<>(
+                scoreAssignmentService.selectListNewScoreAssignment(request),
                 HttpStatus.OK
         );
     }

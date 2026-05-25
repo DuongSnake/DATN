@@ -92,6 +92,14 @@ public class AssignmentRegister {
                 return CommonUtil.STATUS_PROCESS_DISPLAY_TEXT;
             case 3:
                 return CommonUtil.STATUS_RESERVE_DISPLAY_TEXT;
+            case 4:
+                return CommonUtil.STATUS_REJECT_SEND_REGISTER_ASSIGNMENT_DISPLAY_TEXT;
+            case 5:
+                return CommonUtil.STATUS_WAITING_FINAL_DISPLAY_TEXT;
+            case 6:
+                return CommonUtil.STATUS_REJECT_APPROVE_FINAL_ASSIGNMENT_DISPLAY_TEXT;
+            case 7:
+                return CommonUtil.STATUS_APPROVE_FINAL_DISPLAY_TEXT;
             default:
                 return CommonUtil.STATUS_NOT_ACCEPT_DISPLAY_TEXT;
         }

@@ -218,10 +218,45 @@ public class AssignmentRegisterByInstructorService {
         BasicResponseDto objectResponse;
         AssignmentStudentRegister objectDelete = new AssignmentStudentRegister();
         objectDelete.setIsApproved(CommonUtil.STATUS_RESERVE);
+        objectDelete.setCommentReasonResever(listFileId.getReasonReject());
         objectDelete.setUpdateAt(LocalDate.now());
         objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
         assignmentRegisterRepository.changeStatusAssignmentRegister(objectDelete, listFileId.getListData());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
+        return objectResponse;
+    }
+    @Transactional
+    public BasicResponseDto rejectAssignmentStudentRegister(AssignmentRegisterDto.AssignmentRegisterDeleteInfo listFileId, String lang){
+        //De do an o trang thai bao luu
+        BasicResponseDto objectResponse;
+        List<AssignmentStudentRegister> listObjectWaitingForApprove = assignmentRegisterRepository.findListWaitingApproveAssignment(listFileId.getListData());
+        if(null != listObjectWaitingForApprove && null != listFileId && listObjectWaitingForApprove.size() != listFileId.getListData().size()){
+            throw new CustomException("Exist one or more than record not type approve not equal waiting send request");
+        }
+        AssignmentStudentRegister objectDelete = new AssignmentStudentRegister();
+        objectDelete.setIsApproved(CommonUtil.STATUS_REJECT_SEND_REGISTER_ASSIGNMENT);
+        objectDelete.setCommentRejectApproveRegister(listFileId.getReasonReject());
+        objectDelete.setUpdateAt(LocalDate.now());
+        objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
+        assignmentRegisterRepository.changeStatusAssignmentRegister(objectDelete, listFileId.getListData());
+        objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
+        return objectResponse;
+    }
+    @Transactional
+    public BasicResponseDto rejectApproveFinalAssignmentStudentRegister(AssignmentRegisterDto.AssignmentRegisterDeleteInfo listFileId, String lang){
+        //De do an o trang thai bao luu
+        BasicResponseDto objectResponse;
+        List<AssignmentStudentRegister> listObjectWaitingForApprove = assignmentRegisterRepository.findListWaitingFinalApproveAssignment(listFileId.getListData());
+        if(null != listObjectWaitingForApprove && null != listFileId && listObjectWaitingForApprove.size() != listFileId.getListData().size()){
+            throw new CustomException("Exist one or more than record not type approve not equal waiting final request");
+        }
+        AssignmentStudentRegister objectDelete = new AssignmentStudentRegister();
+        objectDelete.setIsApproved(CommonUtil.STATUS_REJECT_APPROVE_FINAL_ASSIGNMENT);
+        objectDelete.setCommentRejectApproveRegister(listFileId.getReasonReject());
+        objectDelete.setUpdateAt(LocalDate.now());
+        objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
+        assignmentRegisterRepository.changeStatusAssignmentRegister(objectDelete, listFileId.getListData());
+        objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
         return objectResponse;
     }
     @Transactional

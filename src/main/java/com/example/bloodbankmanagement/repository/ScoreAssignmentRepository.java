@@ -1,5 +1,7 @@
 package com.example.bloodbankmanagement.repository;
 
+import com.example.bloodbankmanagement.dto.objectRepository.AssignmentStudentRegisterDTO;
+import com.example.bloodbankmanagement.dto.objectRepository.ScoreSelectListAssignmentDto;
 import com.example.bloodbankmanagement.dto.service.ScoreAssignmentDto;
 import com.example.bloodbankmanagement.entity.ScoreAssignment;
 import jakarta.transaction.Transactional;
@@ -40,4 +42,52 @@ public interface ScoreAssignmentRepository extends JpaRepository<ScoreAssignment
     @Transactional
     @Query(value = "update score_assignment set status =:#{#request.status},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id in :ids",nativeQuery = true)
     void deleteScoreAssignment(@Param("request") ScoreAssignment request, @Param("ids") List<Long> ids);
+
+    @Query(value = "select  " +
+            "        asr.id as assignmentStudentRegisterId," +
+            "        asr.assignment_name as assignmentStudentRegisterName," +
+            "        ap.id as periodAssignmentId," +
+            "        ap.admission_period_name as periodAssignmentName," +
+            "        pa.end_period as expirePeriodDate," +
+            "        asr.student_id as studentId," +
+            "        (select full_name from users where id = asr.student_id and status = '1') as studentName," +
+            "         case " +
+            "          when smi.instructor_id is null then '' " +
+            "          when smi.instructor_id is not null then(select full_name from users where id = smi.instructor_id and status = '1') " +
+            "          else '' end as instructorName,"+
+            "        asr.file_name as fileName," +
+            "        asr.file_type as fileType," +
+            "        asr.is_approved as isApproved," +
+            "        asr.status_auto_map as statusAutoMap," +
+            "        asr.status as status," +
+            "        asr.create_user as createUser," +
+            "        asr.create_at as createAt," +
+            "        asr.old_value_id as oldValueId " +
+            " from assignment_student_register asr " +
+            " join period_assignment pa on asr.period_assignment_id = pa.id " +
+            " join admission_period ap on pa.admission_period_id = ap.id " +
+            " join student_map_instructor smi on asr.student_id = smi.student_id " +
+            " and (:#{#request.admissionPeriodId} is null or ''  = :#{#request.admissionPeriodId} or ap.id = :#{#request.admissionPeriodId}) " +
+            "  and (:#{#request.typeApprove} is null or ''  = :#{#request.typeApprove} or asr.is_approved = :#{#request.typeApprove}) " +
+            " order by asr.create_at DESC, asr.update_at DESC ",
+            nativeQuery = true)
+    List<AssignmentStudentRegisterDTO> findListAssignmentRegisterIsFinalApproveByPeriodId(ScoreAssignmentDto.ListAssignmentRegisterIsFinalApproveByPeriodIdInfo request);
+
+    @Query(value = "select  " +
+            "         sa.id as scoreAssignmentId, asr.id as assignmentRegisterId,asr.assignment_name as assignmentRegisterName, " +
+            "        us.full_name as studentName,ap.id as admissionPeriodId, " +
+            "        sa.score_critical as scoreCritical, sa.score_examiner as scoreExaminer, sa.score_instructor as scoreInstructor, " +
+            "        ap.admission_period_name as admissionPeriodName, sa.status as status, sa.create_at as createAt " +
+            " from score_assignment sa " +
+            " join assignment_student_register asr on sa.assignment_register_info_id = asr.id " +
+            " join period_assignment pa on pa.id = asr.period_assignment_id " +
+            " join admission_period ap on ap.id = pa.admission_period_id " +
+            " join users us on us.id = asr.student_id " +
+            " where (:#{#request.scoreAssignmentId} is null or ''  = :#{#request.scoreAssignmentId} or sa.id like :#{#request.scoreAssignmentId})" +
+            "and (:#{#request.status} is null or ''  = :#{#request.status} or sa.status = :#{#request.status})" +
+            "and (:#{#request.admissionPeriodId} is null or ''  = :#{#request.admissionPeriodId} or ap.id = :#{#request.admissionPeriodId})" +
+            " order by sa.create_at DESC, sa.update_at DESC ",
+            nativeQuery = true)
+    Page<ScoreSelectListAssignmentDto> findListNewScoreManagement(ScoreAssignmentDto.ScoreAssignmentNewSelectListInfo request, Pageable pageable);
+
 }

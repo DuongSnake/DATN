@@ -64,6 +64,18 @@ public class StudentMapInstructorDto {
     }
 
     @Data
+    public static class FindCriticalTeacherByStudentIdInfo {
+        private Long studentId;
+    }
+
+    @Data
+    public static class StudentMapCriticalTeacherInfo {
+        private Long studentMapInstructorId;
+        private Long criticalId;
+        private Long studentId;
+    }
+
+    @Data
     public static class StudentMapInstructorDeleteInfo {
         private List<Long> listData;
     }

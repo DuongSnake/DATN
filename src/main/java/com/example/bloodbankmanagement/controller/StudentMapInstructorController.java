@@ -3,6 +3,7 @@ import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.service.StudentMapInstructorDto;
+import com.example.bloodbankmanagement.dto.service.UserDto;
 import com.example.bloodbankmanagement.service.StudentMapInstructorServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -77,6 +78,22 @@ public class StudentMapInstructorController {
     public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo>>> selectListStudentMapInstructor() {
         return new ResponseEntity<>(
                 studentMapInstructorService.selectListStudentMapInstructorAll(),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/mapCritical")
+    public ResponseEntity<BasicResponseDto> mapCriticalTeacher(@RequestBody @Valid StudentMapInstructorDto.StudentMapCriticalTeacherInfo request, @RequestHeader("lang") String lang){
+        return new ResponseEntity<>(
+                studentMapInstructorService.updateStudentMapCriticalTeacher(request, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/selectListCriticalByStudentId")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo>>> selectListCriticalTeacherByStudentId(@RequestBody StudentMapInstructorDto.FindCriticalTeacherByStudentIdInfo request) {
+        return new ResponseEntity<>(
+                studentMapInstructorService.selectListCriticalTeacherByStudentId(request),
                 HttpStatus.OK
         );
     }

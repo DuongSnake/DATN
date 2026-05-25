@@ -47,7 +47,7 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
             " and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or asr.create_at >= :#{#request.fromDate}) " +
             " and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or asr.create_at <= :#{#request.toDate}) " +
             "and (:#{#request.regUser} is null or ''  = :#{#request.regUser} or asr.create_user = :#{#request.regUser}) " +
-            "and asr.is_approved in (0,1,2,3) " +
+            "and asr.is_approved in (0,1,2,3,4,5,6,7) " +
             " order by asr.create_at DESC, asr.update_at DESC ",
             nativeQuery = true)
     Page<AssignmentStudentRegisterDTO> findListAssignmentRegister(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request, Pageable pageable);
@@ -76,7 +76,7 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
             " join period_assignment pa on asr.period_assignment_id = pa.id " +
             " join admission_period ap on pa.admission_period_id = ap.id " +
             " join student_map_instructor smi on asr.student_id = smi.student_id " +
-            " where asr.id = ?1 and asr.is_approved in (0,1,2,3) ",nativeQuery = true)
+            " where asr.id = ?1 and asr.is_approved in (0,1,2,3,4,5,6,7) ",nativeQuery = true)
     AssignmentStudentRegisterDTO findByFileId(Long id);
 
 
@@ -94,18 +94,18 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
     @Modifying
     @Transactional
     @Query(value = "update assignment_student_register set assignment_name =:#{#request.assignmentName},file_name =:#{#request.fileName},file_type =:#{#request.fileType},content_assignment =:#{#request.contentAssignment}" +
-            ",period_assignment_id = :#{#request.periodAssignmentInfo.id} ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id} and is_approved in (0,1,2,3) ",nativeQuery = true)
+            ",period_assignment_id = :#{#request.periodAssignmentInfo.id} ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id} and is_approved in (0,1,2,3,4,5,6,7) ",nativeQuery = true)
     void updateAssignmentRegister(@Param("request") AssignmentStudentRegister request);
 
     @Modifying
     @Transactional
     @Query(value = "update assignment_student_register set assignment_name =:#{#request.assignmentName}" +
-            ",period_assignment_id = :#{#request.periodAssignmentInfo.id} ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id} and is_approved in (0,1,2,3) ",nativeQuery = true)
+            ",period_assignment_id = :#{#request.periodAssignmentInfo.id} ,update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id} and is_approved in (0,1,2,3,4,5,6,7) ",nativeQuery = true)
     void updateAssignmentRegisterNoFile(@Param("request") AssignmentStudentRegister request);
 
     @Modifying
     @Transactional
-    @Query(value = "update assignment_student_register set status =:#{#request.status},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id in :ids and is_approved in (0,1,2,3) ",nativeQuery = true)
+    @Query(value = "update assignment_student_register set status =:#{#request.status},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id in :ids and is_approved in (0,1,2,3,4,5,6,7) ",nativeQuery = true)
     void deleteAssignmentRegister(@Param("request") AssignmentStudentRegister request, @Param("ids") List<Long> ids);
 
     @Modifying
@@ -250,7 +250,7 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
             " and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or asr.create_at >= :#{#request.fromDate}) " +
             " and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or asr.create_at <= :#{#request.toDate}) " +
             "and (:#{#request.intructorId} is null or ''  = :#{#request.intructorId} or smi.instructor_id = :#{#request.intructorId}) " +
-            "and asr.is_approved in (0,1,2,3) " +
+            "and asr.is_approved in (0,1,2,3,4,5,6,7) " +
             " order by asr.create_at DESC, asr.update_at DESC ",
             nativeQuery = true)
     Page<AssignmentStudentRegisterDTO> findListAssignmentRegisterByInstructorId(AssignmentRegisterDto.AssignmentRegisterSelectListOfInstructorIdInfo request, Pageable pageable);
@@ -330,5 +330,14 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
             nativeQuery = true)
     Page<AssignmentStudentRegisterDTO> findListAssignmentWaitingsendByInstructor(AssignmentRegisterDto.AssignmentRegisterSelectListOfInstructorIdInfo request, Pageable pageable);
 
+    @Query(value = "select * from assignment_student_register where is_approved in (1) and id in :ids ",nativeQuery = true)
+    List<AssignmentStudentRegister> findListWaitingApproveAssignment(@Param("ids") List<Long> ids);
 
+
+    @Query(value = "select * from assignment_student_register where is_approved in (5) and id in :ids ",nativeQuery = true)
+    List<AssignmentStudentRegister> findListWaitingFinalApproveAssignment(@Param("ids") List<Long> ids);
+
+
+    @Query(value = "select * from assignment_student_register where is_approved in (7) and id in :ids ",nativeQuery = true)
+    List<AssignmentStudentRegister> findListFinalApproveAssignment(@Param("ids") List<Long> ids);
 }

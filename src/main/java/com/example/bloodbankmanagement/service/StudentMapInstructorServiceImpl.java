@@ -9,8 +9,10 @@ import com.example.bloodbankmanagement.common.untils.ERole;
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.objectRepository.UserInfoDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.StudentMapInstructorDto;
+import com.example.bloodbankmanagement.dto.service.UserDto;
 import com.example.bloodbankmanagement.entity.StudentMapInstructor;
 import com.example.bloodbankmanagement.entity.Role;
 import com.example.bloodbankmanagement.entity.User;
@@ -174,6 +176,40 @@ public class StudentMapInstructorServiceImpl {
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.insertSuccess);
 
         return objectResponse;
+    }
+
+
+    public SingleResponseDto<PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo>> selectListCriticalTeacherByStudentId(StudentMapInstructorDto.FindCriticalTeacherByStudentIdInfo request){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        //Select list file upload
+        PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        List<UserInfoDto> listDataFileMetadata = userRepository.getListCriticalByStudentId(ERole.ROLE_INSTRUCTOR.toString(), request.getStudentId());
+        pageAmtObject = User.convertListStudentByInstructor(listDataFileMetadata);
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
+
+    @Transactional
+    public BasicResponseDto updateStudentMapCriticalTeacher(StudentMapInstructorDto.StudentMapCriticalTeacherInfo request, String lang){
+        String userIdUpdate = CommonUtil.getUsernameByToken();
+        BasicResponseDto messageResponse;
+        if(null == request){
+            throw new CustomException("the object send request not null ", "en");
+        }
+        //Find the value information of user
+        User studentInfo = getInfoStudentById(request.getStudentId());
+        //Find the value information of instructor
+        User instructorInfo = getInfoInstructorById(request.getCriticalId());
+        StudentMapInstructor objectUpdate = new StudentMapInstructor();
+        objectUpdate.setId(request.getStudentMapInstructorId());
+        objectUpdate.setCriticalTeacherInfo(instructorInfo);
+        objectUpdate.setStudentInfo(studentInfo);
+        objectUpdate.setUpdateUser(userIdUpdate);
+        objectUpdate.setUpdateAt(LocalDate.now());
+        studentMapInstructorRepository.updateStudentMapCritical(objectUpdate);
+        messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
+        return messageResponse;
     }
 
     public SingleResponseDto<PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo>> selectListStudentMapInstructorAll(){

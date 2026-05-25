@@ -47,6 +47,11 @@ public interface StudentMapInstructorRepository extends JpaRepository<StudentMap
 
     @Modifying
     @Transactional
+    @Query(value = "update student_map_instructor set critical_teacher_id =:#{#request.criticalTeacherInfo.id}, student_id =:#{#request.studentInfo.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE id = :#{#request.id}",nativeQuery = true)
+    void updateStudentMapCritical(@Param("request") StudentMapInstructor request);
+
+    @Modifying
+    @Transactional
     @Query(value = "update student_map_instructor set instructor_id =:#{#request.instructorInfo.id}, student_id =:#{#request.studentInfo.id},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} WHERE student_id =:#{#request.studentInfo.id}",nativeQuery = true)
     void updateStudentMapInstructorByStudentId(@Param("request") StudentMapInstructor request);
 

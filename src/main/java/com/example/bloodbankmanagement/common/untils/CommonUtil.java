@@ -50,11 +50,19 @@ public class CommonUtil {
     public static final Integer STATUS_SEND_REQUEST = 1;
     public static final Integer STATUS_APPROVE = 2;
     public static final Integer STATUS_RESERVE = 3;
+    public static final Integer STATUS_REJECT_SEND_REGISTER_ASSIGNMENT = 4;
+    public static final Integer STATUS_WAITING_FINAL = 5;
+    public static final Integer STATUS_REJECT_APPROVE_FINAL_ASSIGNMENT = 6;
+    public static final Integer STATUS_APPROVE_FINAL = 7;
     public static final String STATUS_NOT_ACCEPT_DISPLAY_TEXT = "Chưa phê duyệt đăng ký";
     public static final String STATUS_SEND_REQUEST_DISPLAY_TEXT = "Chờ phê duyệt đăng ký";
     public static final String STATUS_RESERVE_DISPLAY_TEXT = "Duyệt bảo lưu xong";
     public static final String STATUS_PROCESS_DISPLAY_TEXT = "Duyệt đăng ký xong";
     public static final String AUTO_MAP_INSTRUCTOR_DISPLAY_TEXT = "Sử dụng";
+    public static final String STATUS_REJECT_SEND_REGISTER_ASSIGNMENT_DISPLAY_TEXT = "Từ chối duyệt đăng ký đồ án";
+    public static final String STATUS_WAITING_FINAL_DISPLAY_TEXT = "Chờ duyệt bảo vệ";
+    public static final String STATUS_REJECT_APPROVE_FINAL_ASSIGNMENT_DISPLAY_TEXT = "Từ chối duyệt bảo vệ";
+    public static final String STATUS_APPROVE_FINAL_DISPLAY_TEXT = "Duyệt bảo vệ xong";
     public static final String MANUAL_MAP_INSTRUCTOR_DISPLAY_TEXT = "Không sử dụng";
 
     private CommonUtil() {
