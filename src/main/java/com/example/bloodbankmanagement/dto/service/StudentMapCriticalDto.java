@@ -90,4 +90,15 @@ public class StudentMapCriticalDto {
         private Long criticalId;
         private List<Long> listStudentId;
     }
+
+    @Data
+    public static class SelectListStudentByCriticalIdInfo {
+        private Long criticalId;
+        private PageRequestDto pageRequestDto;
+    }
+
+    @Data
+    public static class SelectListCriticalByStudentIdInfo {
+        private Long studentId;
+    }
 }

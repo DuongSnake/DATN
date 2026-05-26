@@ -8,15 +8,21 @@ import com.example.bloodbankmanagement.common.untils.ERole;
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.objectRepository.AssignmentStudentRegisterDTO;
 import com.example.bloodbankmanagement.dto.objectRepository.UserInfoDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
+import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.dto.service.StudentMapCriticalDto;
 import com.example.bloodbankmanagement.dto.service.StudentMapCriticalDto;
 import com.example.bloodbankmanagement.dto.service.UserDto;
+import com.example.bloodbankmanagement.dto.service.student.AssignmentRegister;
+import com.example.bloodbankmanagement.dto.service.student.AssignmentRegisterDto;
+import com.example.bloodbankmanagement.entity.AssignmentStudentRegister;
 import com.example.bloodbankmanagement.entity.StudentMapCritical;
 import com.example.bloodbankmanagement.entity.StudentMapCritical;
 import com.example.bloodbankmanagement.entity.User;
 import com.example.bloodbankmanagement.repository.*;
+import com.example.bloodbankmanagement.repository.student.AssignmentRegisterRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
@@ -24,6 +30,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,6 +41,7 @@ import java.util.Optional;
 public class StudentMapCriticalServiceImpl {
     private static final Logger logger = (Logger) LoggerFactory.getLogger(StudentMapCriticalServiceImpl.class);
     private final StudentMapCriticalRepository studentMapCriticalRepository;
+    private final AssignmentRegisterRepository assignmentRegisterRepository;
     private final UserRepository userRepository;
     private final ResponseCommon responseService;
 
@@ -132,7 +140,7 @@ public class StudentMapCriticalServiceImpl {
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.deleteSuccess);
         return objectResponse;
     }
-    //Critical
+    //This API use for case get list critical by student id(for screen student map crititcal)
     public SingleResponseDto<PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo>> selectListCriticalTeacherByStudentId(StudentMapCriticalDto.FindCriticalTeacherByStudentIdInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         //Select list file upload
@@ -143,6 +151,8 @@ public class StudentMapCriticalServiceImpl {
         return objectResponse;
     }
 
+    //This API use for case get list user to map with critical
+    //Get list student with not register in table student map critical
     public SingleResponseDto<PageAmtListResponseDto<UserDto.UserSelectListInfo>> selectListStudentHaveStatusAssignmentIsWaitingFinalApprove() {
         //For case map student with instructor
         SingleResponseDto objectResponse = new SingleResponseDto();
@@ -153,6 +163,71 @@ public class StudentMapCriticalServiceImpl {
         return objectResponse;
     }
 //Critical
+
+
+    public SingleResponseDto<List<UserDto.UserSelectListInfo>> selectListStudentMapWithCriticalId(StudentMapCriticalDto.SelectListStudentByCriticalIdInfo request)  throws Exception{
+        if(ObjectUtils.isEmpty(request)){
+            throw new Exception("Request data not null");
+        }
+        if(StringUtils.isEmpty(request.getCriticalId())){
+            throw new Exception("InstructorId not null");
+        }
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
+        Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
+        Page<StudentMapCritical> listDataUser = studentMapCriticalRepository.getListStudentByCriticalId(request, pageable);
+        pageAmtObject = StudentMapCritical.convertListStudentByInstructor(listDataUser.getContent());
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
+
+    //API select list assignment register from waiting final to final approve
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>> selectListWaitngFinalApprove(AssignmentRegisterDto.AssignmentRegisterSelectListOfInstructorIdInfo request){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
+        Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
+        //Select list file upload
+        Page<AssignmentStudentRegisterDTO> listDataFileMetadata = studentMapCriticalRepository.findListAssignmentWaitingFinalApproveByInstructor(request, pageable);
+        pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
+
+    //API approve assignment register from waiting final to final approve
+    @Transactional
+    public BasicResponseDto approveFinalAssignmentStudentRegister(AssignmentRegisterDto.SendListRequestAssignmentInfo listFileId, String lang){
+        BasicResponseDto objectResponse;
+        List<AssignmentStudentRegister> listObjectWaitingForApprove = assignmentRegisterRepository.findListWaitingFinalApproveAssignment(listFileId.getListData());
+        if(null != listObjectWaitingForApprove && null != listFileId && listObjectWaitingForApprove.size() != listFileId.getListData().size()){
+            throw new CustomException("Exist one or more than record not type approve not equal waiting final request");
+        }
+        AssignmentStudentRegister objectDelete = new AssignmentStudentRegister();
+        objectDelete.setIsApproved(CommonUtil.STATUS_APPROVE_FINAL);
+        objectDelete.setUpdateAt(LocalDate.now());
+        objectDelete.setUpdateUser(CommonUtil.getUsernameByToken());
+        assignmentRegisterRepository.changeStatusAssignmentRegister(objectDelete, listFileId.getListData());
+        objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
+        return objectResponse;
+    }
+
+    public SingleResponseDto<List<UserDto.UserSelectListInfo>> selectListCriticalByStudentId(StudentMapCriticalDto.SelectListCriticalByStudentIdInfo request)  throws Exception{
+        if(ObjectUtils.isEmpty(request)){
+            throw new Exception("Request data not null");
+        }
+        if(StringUtils.isEmpty(request.getStudentId())){
+            throw new Exception("InstructorId not null");
+        }
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        List<StudentMapCritical> listDataUser = studentMapCriticalRepository.getListCriticalByStudentId(request);
+        pageAmtObject = StudentMapCritical.convertListStudentByInstructor(listDataUser);
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
 
     public String isUserHaveRoleAdmin(String userName){
         boolean isTypeAdmin = false;

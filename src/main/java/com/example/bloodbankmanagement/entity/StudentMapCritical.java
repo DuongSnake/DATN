@@ -2,10 +2,13 @@ package com.example.bloodbankmanagement.entity;
 
 import com.example.bloodbankmanagement.common.untils.EntityCommon;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
+import com.example.bloodbankmanagement.dto.objectRepository.UserInfoDto;
 import com.example.bloodbankmanagement.dto.service.StudentMapCriticalDto;
+import com.example.bloodbankmanagement.dto.service.UserDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,4 +81,23 @@ public class StudentMapCritical extends EntityCommon {
         return objectDtoResponse;
     }
 
+    public static PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo> convertListStudentByInstructor(List<StudentMapCritical> request){
+        PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo> objectDtoResponse = new PageAmtListResponseDto<>();
+        List<UserDto.AllStudentByInstructorInfo> listUserDto = new ArrayList<UserDto.AllStudentByInstructorInfo>();
+        //Get information
+        if(request.size() >0 ){
+            for (int i=0;i<request.size();i++){
+                User studentInfo = request.get(i).getStudentInfo();
+                if(!ObjectUtils.isEmpty(studentInfo)){
+                    UserDto.AllStudentByInstructorInfo newObject = new UserDto.AllStudentByInstructorInfo();
+                    newObject.setId(studentInfo.getId());
+                    newObject.setFullName(studentInfo.getFullName());
+                    listUserDto.add(newObject);
+                }
+            }
+        }
+        objectDtoResponse.setData(listUserDto);
+        objectDtoResponse.setTotalRecord(request.size());
+        return objectDtoResponse;
+    }
 }
