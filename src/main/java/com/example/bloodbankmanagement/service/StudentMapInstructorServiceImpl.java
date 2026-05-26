@@ -180,7 +180,7 @@ public class StudentMapInstructorServiceImpl {
         return objectResponse;
     }
 
-
+//Critical
     public SingleResponseDto<PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo>> selectListCriticalTeacherByStudentId(StudentMapInstructorDto.FindCriticalTeacherByStudentIdInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         //Select list file upload
@@ -223,6 +223,8 @@ public class StudentMapInstructorServiceImpl {
         messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
         return messageResponse;
     }
+
+//Critical
 
     public SingleResponseDto<PageAmtListResponseDto<StudentMapInstructorDto.StudentMapInstructorListInfo>> selectListStudentMapInstructorAll(){
         SingleResponseDto objectResponse = new SingleResponseDto();

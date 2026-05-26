@@ -116,10 +116,10 @@ public interface AssignmentStudentRegisterRepository extends JpaRepository<Assig
             "select u.id, u.full_name  from users u " +
             "join roles r on r.id = u.role_id " +
             "where r.name = ?1 and u.status ='1') "+
-            "select asr.student_id as id " +
+            "select asr.student_id as id,scte.full_name as fullName " +
             " from assignment_student_register asr " +
             " join StudentCTE scte on asr.student_id = scte.id " +
             " where asr.status <> ?2 and asr.is_approved = ?3 " +
-            " and scte.student_id not in (select student_id from student_map_instructor where (critical_teacher_id <> null && status <> ?2) )",nativeQuery = true)
+            " and scte.id not in (select student_id from student_map_instructor where (critical_teacher_id <> null and status <> ?2) )",nativeQuery = true)
     List<UserInfoDto> getListUserHaveApproveTypeAssignment(String valueRole, String statusDelete, Integer statusWaitingFinalApprove);
 }

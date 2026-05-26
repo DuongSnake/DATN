@@ -81,12 +81,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "and scte.id not in (select student_id from assignment_student_register where is_approved <> ?3 or status <> ?4 ) ", nativeQuery = true)
     List<UserInfoDto> getListStudentMapWithInstructorButNotRegisterAssignment(String valueRole, Long intructorId, Integer isApproveIsReserve, String statusDelete);
 
-    @Query(value = "select u.id as id, u.full_name as fullName from users u " +
-            "join roles r on r.id = u.role_id " +
-            "where r.name = ?1 and u.status ='1' " +
-            "and u.id not in (select student_id from student_map_instructor where instructor_id = ?2)", nativeQuery = true)
-    List<UserInfoDto> getListUserNotMapInstructor(String valueRole, Long intructorId);
-
 
     @Query(value = "select u.id as id, u.full_name as fullName from users u " +
             "join roles r on r.id = u.role_id " +
