@@ -16,6 +16,7 @@ import com.example.bloodbankmanagement.dto.service.UserDto;
 import com.example.bloodbankmanagement.entity.StudentMapInstructor;
 import com.example.bloodbankmanagement.entity.Role;
 import com.example.bloodbankmanagement.entity.User;
+import com.example.bloodbankmanagement.repository.AssignmentStudentRegisterRepository;
 import com.example.bloodbankmanagement.repository.StudentMapInstructorRepository;
 import com.example.bloodbankmanagement.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -35,6 +36,7 @@ import java.util.Optional;
 public class StudentMapInstructorServiceImpl {
     private static final Logger logger = (Logger) LoggerFactory.getLogger(AuthTokenFilter.class);
     private final StudentMapInstructorRepository studentMapInstructorRepository;
+    private final AssignmentStudentRegisterRepository assignmentStudentRegisterRepository;
     private final UserRepository userRepository;
     private final ResponseCommon responseService;
 
@@ -189,9 +191,19 @@ public class StudentMapInstructorServiceImpl {
         return objectResponse;
     }
 
+    public SingleResponseDto<PageAmtListResponseDto<UserDto.UserSelectListInfo>> selectListStudentHaveStatusAssignmentIsWaitingFinalApprove() {
+        //For case map student with instructor
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        List<UserInfoDto> listDataUser = assignmentStudentRegisterRepository.getListUserHaveApproveTypeAssignment(ERole.ROLE_USER.toString(), CommonUtil.STATUS_EXPIRE, CommonUtil.STATUS_WAITING_FINAL);
+        pageAmtObject = User.convertListStudentByInstructor(listDataUser);
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
 
     @Transactional
     public BasicResponseDto updateStudentMapCriticalTeacher(StudentMapInstructorDto.StudentMapCriticalTeacherInfo request, String lang){
+        //For case map student with instructor
         String userIdUpdate = CommonUtil.getUsernameByToken();
         BasicResponseDto messageResponse;
         if(null == request){

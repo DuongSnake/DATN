@@ -46,7 +46,7 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
             " and (:#{#request.periodAssignmentId} is null or ''  = :#{#request.periodAssignmentId} or asr.period_assignment_id = :#{#request.periodAssignmentId})" +
             " and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or asr.create_at >= :#{#request.fromDate}) " +
             " and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or asr.create_at <= :#{#request.toDate}) " +
-            "and (:#{#request.regUser} is null or ''  = :#{#request.regUser} or asr.create_user = :#{#request.regUser}) " +
+            "and (:#{#request.studentId} is null or ''  = :#{#request.regUser} or asr.student_id = :#{#request.studentId}) " +
             "and asr.is_approved in (0,1,2,3,4,5,6,7) " +
             " order by asr.create_at DESC, asr.update_at DESC ",
             nativeQuery = true)
@@ -88,8 +88,16 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
             " join period_assignment pa on asr.period_assignment_id = pa.id " +
             " join admission_period ap on pa.admission_period_id = ap.id " +
             " join student_map_instructor smi on asr.student_id = smi.student_id " +
-            " where asr.id = ?1 and asr.is_approved = 0 and asr.status <> '99' ",nativeQuery = true)
-    Long findAssignmentByInstructorId(Long id);
+            " where asr.id = ?1 and asr.is_approved = ?2 and asr.status <> ?3 ",nativeQuery = true)
+    Long findAssignmentByInstructorId(Long id, Integer statusInitial, String statusDelete);
+    @Query(value = "select" +
+            "        smi.instructor_id as instructorId " +
+            " from assignment_student_register asr " +
+            " join period_assignment pa on asr.period_assignment_id = pa.id " +
+            " join admission_period ap on pa.admission_period_id = ap.id " +
+            " join student_map_instructor smi on asr.student_id = smi.student_id " +
+            " where asr.id = ?1 and asr.is_approved = ?2 and asr.status <> ?3 ",nativeQuery = true)
+    Long findAssignmentApproveTypeById(Long id, Integer statusWaitingApprove, String statusDelete);
 
     @Modifying
     @Transactional
@@ -146,7 +154,7 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
             "and (:#{#request.assignmentStudentRegisterName} is null or ''  = :#{#request.assignmentStudentRegisterName} or asr.assignment_name like '%'+:#{#request.assignmentStudentRegisterName}+'%')" +
             "and (:#{#request.status} is null or ''  = :#{#request.status} or asr.status = :#{#request.status})" +
             "and (:#{#request.fromDate} is null or ''  = :#{#request.fromDate} or asr.create_at >= :#{#request.fromDate}) " +
-            "and (:#{#request.regUser} is null or ''  = :#{#request.regUser} or asr.create_user = :#{#request.regUser}) " +
+            "and (:#{#request.studentId} is null or ''  = :#{#request.studentId} or asr.student_id = :#{#request.studentId}) " +
             "and (:#{#request.toDate} is null or ''  = :#{#request.toDate} or asr.create_at <= :#{#request.toDate}) " +
             "and asr.is_approved = 2 " +
             " order by asr.create_at DESC, asr.update_at DESC ",
@@ -332,6 +340,14 @@ public interface AssignmentRegisterRepository extends JpaRepository<AssignmentSt
 
     @Query(value = "select * from assignment_student_register where is_approved in (1) and id in :ids ",nativeQuery = true)
     List<AssignmentStudentRegister> findListWaitingApproveAssignment(@Param("ids") List<Long> ids);
+
+
+    @Query(value = "select * from assignment_student_register where is_approved = 0 and id in :ids ",nativeQuery = true)
+    List<AssignmentStudentRegister> findListInitialApproveAssignment(@Param("ids") List<Long> ids);
+
+
+    @Query(value = "select * from assignment_student_register where is_approved = 2 and id in :ids ",nativeQuery = true)
+    List<AssignmentStudentRegister> findListProcessApproveAssignment(@Param("ids") List<Long> ids);
 
 
     @Query(value = "select * from assignment_student_register where is_approved in (5) and id in :ids ",nativeQuery = true)

@@ -1,6 +1,7 @@
 package com.example.bloodbankmanagement.repository;
 
 import com.example.bloodbankmanagement.dto.objectRepository.AssignmentStudentRegisterDTO;
+import com.example.bloodbankmanagement.dto.objectRepository.UserInfoDto;
 import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.entity.AssignmentStudentRegister;
 import jakarta.transaction.Transactional;
@@ -110,4 +111,15 @@ public interface AssignmentStudentRegisterRepository extends JpaRepository<Assig
 
     @Query(value = "select * from assignment_student_register where id = ?1 and is_approved = ?2 ",nativeQuery = true)
     AssignmentStudentRegister assignmentHaveTypeFinalApproveOrNot(Long assignmentStudentId, Integer statusFinalApprove);
+
+    @Query(value = "with StudentCTE AS(" +
+            "select u.id, u.full_name  from users u " +
+            "join roles r on r.id = u.role_id " +
+            "where r.name = ?1 and u.status ='1') "+
+            "select asr.student_id as id " +
+            " from assignment_student_register asr " +
+            " join StudentCTE scte on asr.student_id = scte.id " +
+            " where asr.status <> ?2 and asr.is_approved = ?3 " +
+            " and scte.student_id not in (select student_id from student_map_instructor where (critical_teacher_id <> null && status <> ?2) )",nativeQuery = true)
+    List<UserInfoDto> getListUserHaveApproveTypeAssignment(String valueRole, String statusDelete, Integer statusWaitingFinalApprove);
 }

@@ -18,6 +18,7 @@ public class AssignmentRegisterDto {
         private Date toDate;
         private String status;
         private String regUser;
+        private Long studentId;
         private PageRequestDto pageRequestDto;
     }
     @Data
@@ -107,6 +108,11 @@ public class AssignmentRegisterDto {
     @Data
     public static class SendRequestAssignmentInfo {
         private Long requestId;
+    }
+
+    @Data
+    public static class SendListRequestAssignmentInfo {
+        private List<Long> listData;
     }
     @Data
     public static class AssignmentInsertListFileUploadInsertInfo {

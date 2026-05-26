@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/studentMapInstructor")
 @RequiredArgsConstructor
@@ -94,6 +96,14 @@ public class StudentMapInstructorController {
     public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo>>> selectListCriticalTeacherByStudentId(@RequestBody StudentMapInstructorDto.FindCriticalTeacherByStudentIdInfo request) {
         return new ResponseEntity<>(
                 studentMapInstructorService.selectListCriticalTeacherByStudentId(request),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/selectListUserToMapCritical")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<UserDto.UserSelectListInfo>>> selectListStudentHaveStatusAssignmentIsWaitingFinalApprove() {
+        return new ResponseEntity<>(
+                studentMapInstructorService.selectListStudentHaveStatusAssignmentIsWaitingFinalApprove(),
                 HttpStatus.OK
         );
     }

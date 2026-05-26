@@ -273,22 +273,39 @@ public class AssignmentRegisterByInstructorService {
     }
 
     @Transactional
-    public BasicResponseDto sendRequestAssignmentRegister(AssignmentRegisterDto.SendRequestAssignmentInfo idSendRequest, String lang){
+    public BasicResponseDto sendRequestAssignmentRegister(AssignmentRegisterDto.SendListRequestAssignmentInfo listFileId, String lang){
         BasicResponseDto objectResponse;
         String userIdSendRequest = CommonUtil.getUsernameByToken();
         User valueId = getIdByUserInfo(userIdSendRequest);
         //Check instructor id before send request(only accept student already map with instructor before send request)
-        Long infoInstructor  = assignmentRegisterRepository.findAssignmentByInstructorId(idSendRequest.getRequestId());
-        logger.info("Find instructorId:"+infoInstructor+" by request assignment id:"+idSendRequest.getRequestId());
-        if(StringUtils.isEmpty(infoInstructor)|| !valueId.getId().equals(infoInstructor)){
-            throw new CustomException("Not found the  instructor before send request,please call to admin assign the instructor", "en");
+        List<AssignmentStudentRegister> listObjectWaitingForApprove = assignmentRegisterRepository.findListInitialApproveAssignment(listFileId.getListData());
+        if(null != listObjectWaitingForApprove && null != listFileId && listObjectWaitingForApprove.size() != listFileId.getListData().size()){
+            throw new CustomException("Exist one or more than record not type approve not equal waiting send request");
         }
         AssignmentStudentRegister objectSendRequest = new AssignmentStudentRegister();
-        objectSendRequest.setId(idSendRequest.getRequestId());
         objectSendRequest.setIsApproved(CommonUtil.STATUS_SEND_REQUEST);
         objectSendRequest.setUpdateAt(LocalDate.now());
         objectSendRequest.setUpdateUser(CommonUtil.getUsernameByToken());
-        assignmentRegisterRepository.sendRequestAssignmentRegister(objectSendRequest);
+        assignmentRegisterRepository.changeStatusAssignmentRegister(objectSendRequest ,listFileId.getListData());
+        objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
+        return objectResponse;
+    }
+
+    @Transactional
+    public BasicResponseDto sendRequestFinalApproveAssignment(AssignmentRegisterDto.SendListRequestAssignmentInfo listFileId, String lang){
+        BasicResponseDto objectResponse;
+        String userIdSendRequest = CommonUtil.getUsernameByToken();
+        User valueId = getIdByUserInfo(userIdSendRequest);
+        //Check instructor id before send request(only accept student already map with instructor before send request)
+        List<AssignmentStudentRegister> listObjectWaitingForApprove = assignmentRegisterRepository.findListProcessApproveAssignment(listFileId.getListData());
+        if(null != listObjectWaitingForApprove && null != listFileId && listObjectWaitingForApprove.size() != listFileId.getListData().size()){
+            throw new CustomException("Exist one or more than record not type approve not equal waiting send request");
+        }
+        AssignmentStudentRegister objectSendRequest = new AssignmentStudentRegister();
+        objectSendRequest.setIsApproved(CommonUtil.STATUS_WAITING_FINAL);
+        objectSendRequest.setUpdateAt(LocalDate.now());
+        objectSendRequest.setUpdateUser(CommonUtil.getUsernameByToken());
+        assignmentRegisterRepository.changeStatusAssignmentRegister(objectSendRequest, listFileId.getListData());
         objectResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
         return objectResponse;
     }

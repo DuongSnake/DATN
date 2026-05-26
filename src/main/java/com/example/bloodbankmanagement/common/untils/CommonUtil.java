@@ -137,6 +137,10 @@ public class CommonUtil {
         UserDetailsImpl user = CommonUtil.getThisUser();
         return user.getUsername();
     }
+    public static UserDetailsImpl getUserInfoByToken(){
+        UserDetailsImpl user = CommonUtil.getThisUser();
+        return user;
+    }
 
     public static String getJsonStringFromObject(Object obj) {
         ObjectMapper mapper = new ObjectMapper();

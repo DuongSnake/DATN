@@ -86,9 +86,17 @@ public class AssignmentRegisterByInstructorController {
     }
 
     @PostMapping("/sendRequestAssignment")
-    public ResponseEntity<BasicResponseDto> sendRequestAssignment(@RequestBody @Valid AssignmentRegisterDto.SendRequestAssignmentInfo request, @RequestHeader("lang") String lang) {
+    public ResponseEntity<BasicResponseDto> sendRequestAssignment(@RequestBody @Valid AssignmentRegisterDto.SendListRequestAssignmentInfo request, @RequestHeader("lang") String lang) {
         return new ResponseEntity<>(
                 assignmentRegisterByInstructorService.sendRequestAssignmentRegister(request, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/sendRequestFinalApproveAssignment")
+    public ResponseEntity<BasicResponseDto> sendRequestFinalApproveAssignment(@RequestBody @Valid AssignmentRegisterDto.SendListRequestAssignmentInfo request, @RequestHeader("lang") String lang) {
+        return new ResponseEntity<>(
+                assignmentRegisterByInstructorService.sendRequestFinalApproveAssignment(request, lang),
                 HttpStatus.OK
         );
     }

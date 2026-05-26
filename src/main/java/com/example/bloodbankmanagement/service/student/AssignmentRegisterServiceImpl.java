@@ -23,6 +23,7 @@ import com.example.bloodbankmanagement.repository.PeriodAssignmentRepository;
 import com.example.bloodbankmanagement.repository.StudentMapInstructorRepository;
 import com.example.bloodbankmanagement.repository.UserRepository;
 import com.example.bloodbankmanagement.repository.student.AssignmentRegisterRepository;
+import com.example.bloodbankmanagement.service.authorization.UserDetailsImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -112,9 +113,9 @@ public class AssignmentRegisterServiceImpl {
 
     public SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>> selectListAssignmentRegister(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
-        String userIdRegister = CommonUtil.getUsernameByToken();
+        UserDetailsImpl userIdRegister = CommonUtil.getUserInfoByToken();
         //Only find the list student upload in file
-        request.setRegUser(userIdRegister);
+        request.setStudentId(userIdRegister.getId());
         PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
@@ -270,6 +271,7 @@ public class AssignmentRegisterServiceImpl {
         Long valueId = getIdByUserName(userIdRegister);
         //Only find the list student upload in file
         request.setRegUser(userIdRegister);
+        request.setStudentId(valueId);
         PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
