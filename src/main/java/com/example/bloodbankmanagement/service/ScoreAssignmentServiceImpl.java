@@ -64,6 +64,11 @@ public class ScoreAssignmentServiceImpl {
         if(null == assignmentStudentRegisterInfo){
             throw new CustomException("Not found value request param assignmentRegisterId ", lang);
         }
+        //Check assignment have storage value before or not
+        ScoreAssignment checkExistScoreAssignment = scoreAssignmentRepository.findInfoScoreActive(checkExist.getId(), CommonUtil.STATUS_USE);
+        if(null != checkExistScoreAssignment){
+            throw new CustomException("Don't have exist 2 record score with same assignment", lang);
+        }
         objectUpdate.setAssignmentRegisterInfo(assignmentStudentRegisterInfo);
         objectUpdate.setCreateUser(userIdRegister);
         objectUpdate.setStatus(CommonUtil.STATUS_USE);
@@ -109,8 +114,8 @@ public class ScoreAssignmentServiceImpl {
             throw new CustomException("the object send request not null ", "en");
         }
         //Check status assignment to set score
-        AssignmentStudentRegister checkExist = assignmentStudentRegisterRepository.assignmentHaveTypeFinalApproveOrNot(request.getAssignmentRegisterId(), CommonUtil.STATUS_APPROVE_FINAL);
-        if(ObjectUtils.isEmpty(checkExist)){
+        AssignmentStudentRegister assignmentStudentRegisterInfo = assignmentStudentRegisterRepository.assignmentHaveTypeFinalApproveOrNot(request.getAssignmentRegisterId(), CommonUtil.STATUS_APPROVE_FINAL);
+        if(ObjectUtils.isEmpty(assignmentStudentRegisterInfo)){
             throw new CustomException("The assignment status approve not final approve->Please choose another assignment and try again ", lang);
         }
         ScoreAssignment objectUpdate = new ScoreAssignment();
@@ -118,10 +123,10 @@ public class ScoreAssignmentServiceImpl {
         objectUpdate.setScoreExaminer(request.getScoreExaminer());
         objectUpdate.setScoreCritical(request.getScoreCritical());
         objectUpdate.setScoreInstructor(request.getScoreInstructor());
-        //Find the Assignment register
-        AssignmentStudentRegister assignmentStudentRegisterInfo = assignmentStudentRegisterRepository.findByFileId2(request.getAssignmentRegisterId());
-        if(null == assignmentStudentRegisterInfo){
-            throw new CustomException("Not found value request param assignmentRegisterId ", lang);
+        //Check assignment have storage value before or not
+        ScoreAssignment checkExistScoreAssignment = scoreAssignmentRepository.findInfoScoreActive(assignmentStudentRegisterInfo.getId(), CommonUtil.STATUS_USE);
+        if(null != checkExistScoreAssignment){
+            throw new CustomException("Don't have exist 2 record score with same assignment", lang);
         }
         objectUpdate.setAssignmentRegisterInfo(assignmentStudentRegisterInfo);
         objectUpdate.setUpdateUser(userIdUpdate);
@@ -189,7 +194,7 @@ public class ScoreAssignmentServiceImpl {
         }
         CalculateAverageScore rateCalculateAverage = new CalculateAverageScore();
         rateCalculateAverage.setRateExam(4.0);
-        rateCalculateAverage.setRateExam(6.0);
+        rateCalculateAverage.setRateInstructor(6.0);
         rateCalculateAverage.setTotalRate(10.0);
         PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListNewInfo> pageAmtObject = new PageAmtListResponseDto<>();
         request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));

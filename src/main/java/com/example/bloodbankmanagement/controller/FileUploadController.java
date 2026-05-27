@@ -3,6 +3,7 @@ package com.example.bloodbankmanagement.controller;
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.dto.service.UploadFileDto;
 import com.example.bloodbankmanagement.service.FileMetadataServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -76,5 +77,21 @@ public class FileUploadController {
     @GetMapping("/download2")
     public void downloadFile2(@RequestParam("id") Long fileId, HttpServletResponse response) throws Exception {
         fileMetadataService.downloadFile2(fileId, response);
+    }
+
+    @PostMapping("/selectList2")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<UploadFileDto.UploadFileNewListInfo>>> selectListFileUploadNew(@RequestBody UploadFileDto.UploadFileSelectListNewInfo request) {
+        return new ResponseEntity<>(
+                fileMetadataService.selectListFileUploadNew(request),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/selectListAssignmentByAdmissionTime")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>>> selectListAssignmentByAdmissionTime(@RequestBody UploadFileDto.ListAssignmentRegisterByAdmissionPeriodInfo request) {
+        return new ResponseEntity<>(
+                fileMetadataService.selectListAssignmentReadyToAddScore(request),
+                HttpStatus.OK
+        );
     }
 }

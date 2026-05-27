@@ -3,6 +3,7 @@ package com.example.bloodbankmanagement.entity;
 import com.example.bloodbankmanagement.common.untils.EntityCommon;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.objectRepository.FileMetadataDto;
+import com.example.bloodbankmanagement.dto.objectRepository.SelectListFileUploadDto;
 import com.example.bloodbankmanagement.dto.service.UploadFileDto;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -111,4 +112,29 @@ public class FileUpload extends EntityCommon {
         objectDtoResponse.setTotalRecord((int) listData.size());
         return objectDtoResponse;
     }
+
+    public static PageAmtListResponseDto<UploadFileDto.UploadFileNewListInfo> convertListNewObjectToDto(List<SelectListFileUploadDto> listData){
+        if(null == listData || listData.size() == 0){
+            return null;
+        }
+        PageAmtListResponseDto<UploadFileDto.UploadFileNewListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
+        List<UploadFileDto.UploadFileNewListInfo> listObject = new ArrayList<>();
+        for (int i=0;i< listData.size();i++){
+            UploadFileDto.UploadFileNewListInfo newObject = new UploadFileDto.UploadFileNewListInfo();
+            newObject.setFileId(listData.get(i).getFileId());
+            newObject.setFileName(listData.get(i).getFileName());
+            newObject.setFileType(listData.get(i).getFileType());
+            newObject.setStatus(listData.get(i).getStatus());
+            newObject.setAssignmentRegisterId(listData.get(i).getAssignmentRegisterId());
+            newObject.setAssignmentName(listData.get(i).getAssignmentName());
+            newObject.setStudentName(listData.get(i).getStudentName());
+            newObject.setAdmissionPeriodId(listData.get(i).getAdmissionPeriodId());
+            newObject.setAdmissionPeriodName(listData.get(i).getAdmissionPeriodName());
+            listObject.add(newObject);
+        }
+        objectDtoResponse.setData(listObject);
+        objectDtoResponse.setTotalRecord(listData.size());
+        return objectDtoResponse;
+    }
+
 }

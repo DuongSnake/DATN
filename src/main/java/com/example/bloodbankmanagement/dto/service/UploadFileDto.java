@@ -73,4 +73,37 @@ public class UploadFileDto {
         private MultipartFile listFile[];
         private Long assignmentRegisterId;
     }
+
+
+    @Data
+    public static class UploadFileSelectListNewInfo {
+        private Long fileId;
+        private String fileName;
+        private String fileType;
+        private Long admissionPeriodId;
+        private String fromDate;
+        private String toDate;
+        private String status;
+        private String userUpload;
+        private PageRequestDto pageRequestDto;
+    }
+
+    @Data
+    public static class UploadFileNewListInfo {
+        private long fileId;
+        private String fileName;
+        private String fileType;
+        private long fileSize;
+        private Long assignmentRegisterId;
+        private String assignmentName;
+        private Long admissionPeriodId;
+        private String admissionPeriodName;
+        private String studentName;
+        private String status;
+    }
+
+    @Data
+    public static class ListAssignmentRegisterByAdmissionPeriodInfo {
+        private Long admissionPeriodId;
+    }
 }

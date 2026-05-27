@@ -8,9 +8,14 @@ import com.example.bloodbankmanagement.common.untils.CommonUtil;
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.objectRepository.AssignmentStudentRegisterDTO;
 import com.example.bloodbankmanagement.dto.objectRepository.FileMetadataDto;
+import com.example.bloodbankmanagement.dto.objectRepository.SelectListFileUploadDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
+import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
+import com.example.bloodbankmanagement.dto.service.ScoreAssignmentDto;
 import com.example.bloodbankmanagement.dto.service.UploadFileDto;
+import com.example.bloodbankmanagement.dto.service.student.AssignmentRegister;
 import com.example.bloodbankmanagement.entity.*;
 import com.example.bloodbankmanagement.repository.AssignmentStudentRegisterRepository;
 import com.example.bloodbankmanagement.repository.FileMetadataRepository;
@@ -224,34 +229,30 @@ public class FileMetadataServiceImpl {
         return messageResponse;
     }
 
-    @Transactional
-    public BasicResponseDto updateFileUploadSimple(String fileId, MultipartFile file){
-        String userIdUpdate = CommonUtil.getUsernameByToken();
-        BasicResponseDto messageResponse;
-        if(null == fileId){
-            throw new CustomException("fileId must not be blank or null ", "en");
-        }
-        //Check
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        String tailFile = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
-        try {
-            Blob blob = new SerialBlob(file.getBytes());
-            FileUpload objectUpdate = new FileUpload();
-            objectUpdate.setId(Long.valueOf(fileId));
-            objectUpdate.setData(blob);
-            objectUpdate.setFileType(tailFile);
-            objectUpdate.setFileName(fileName);
-            objectUpdate.setFileSize(file.getSize());
-            objectUpdate.setUpdateUser(userIdUpdate);
-            objectUpdate.setUpdateAt(LocalDate.now());
-            fileMetadataRepository.updateFileUpload(objectUpdate);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        messageResponse = responseService.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.updateSuccess);
-        return messageResponse;
+
+    public SingleResponseDto<PageAmtListResponseDto<UploadFileDto.UploadFileNewListInfo>> selectListFileUploadNew(UploadFileDto.UploadFileSelectListNewInfo request){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
+        //Set value userId
+        String userId = isUserHaveRoleAdmin(request.getUserUpload());
+        request.setUserUpload(userId);
+        PageAmtListResponseDto<UploadFileDto.UploadFileNewListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
+        //Select list file upload
+        Page<SelectListFileUploadDto> listDataFileMetadata = fileMetadataRepository.findListFileUploadResponseObjectInterfaceObject(request, pageable);
+        pageAmtObject = FileUpload.convertListNewObjectToDto(listDataFileMetadata.getContent());
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>> selectListAssignmentReadyToAddScore(UploadFileDto.ListAssignmentRegisterByAdmissionPeriodInfo request){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
+        //Select list file upload
+        List<AssignmentStudentRegisterDTO> listDataFileMetadata = fileMetadataRepository.findListAssignmentRegisterIsFinalApproveByPeriodId(request);
+        pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata, Long.valueOf(listDataFileMetadata.size()));
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
     }
 
     @Transactional

@@ -29,6 +29,9 @@ public interface ScoreAssignmentRepository extends JpaRepository<ScoreAssignment
     @Query(value = "select * from score_assignment where id = ?1",nativeQuery = true)
     ScoreAssignment findByFileId(Long id);
 
+    @Query(value = "select * from score_assignment where assignment_register_info_id = ?1 and status  = ?2 ",nativeQuery = true)
+    ScoreAssignment findInfoScoreActive(Long id, String activeStatus);
+
     @Modifying
     @Transactional
     @Query(value = "update score_assignment set " +
