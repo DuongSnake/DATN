@@ -11,6 +11,8 @@ public interface ScoreSelectListAssignmentDto {
     String getAssignmentRegisterName();
     Long getAdmissionPeriodId();
     String getAdmissionPeriodName();
+    Long getMajorId();
+    String getMajorName();
     String getStudentName();
     String getStatus();
     LocalDate getCreateAt();

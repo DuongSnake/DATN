@@ -100,4 +100,24 @@ public class StudentMapCritical extends EntityCommon {
         objectDtoResponse.setTotalRecord(request.size());
         return objectDtoResponse;
     }
+
+    public static PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo> convertListInstructorByStudent(List<StudentMapCritical> request){
+        PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo> objectDtoResponse = new PageAmtListResponseDto<>();
+        List<UserDto.AllStudentByInstructorInfo> listUserDto = new ArrayList<UserDto.AllStudentByInstructorInfo>();
+        //Get information
+        if(request.size() >0 ){
+            for (int i=0;i<request.size();i++){
+                User studentInfo = request.get(i).getCriticalTeacherInfo();
+                if(!ObjectUtils.isEmpty(studentInfo)){
+                    UserDto.AllStudentByInstructorInfo newObject = new UserDto.AllStudentByInstructorInfo();
+                    newObject.setId(studentInfo.getId());
+                    newObject.setFullName(studentInfo.getFullName());
+                    listUserDto.add(newObject);
+                }
+            }
+        }
+        objectDtoResponse.setData(listUserDto);
+        objectDtoResponse.setTotalRecord(request.size());
+        return objectDtoResponse;
+    }
 }

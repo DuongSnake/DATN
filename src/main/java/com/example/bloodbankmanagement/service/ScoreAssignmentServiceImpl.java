@@ -123,11 +123,6 @@ public class ScoreAssignmentServiceImpl {
         objectUpdate.setScoreExaminer(request.getScoreExaminer());
         objectUpdate.setScoreCritical(request.getScoreCritical());
         objectUpdate.setScoreInstructor(request.getScoreInstructor());
-        //Check assignment have storage value before or not
-        ScoreAssignment checkExistScoreAssignment = scoreAssignmentRepository.findInfoScoreActive(assignmentStudentRegisterInfo.getId(), CommonUtil.STATUS_USE);
-        if(null != checkExistScoreAssignment){
-            throw new CustomException("Don't have exist 2 record score with same assignment", lang);
-        }
         objectUpdate.setAssignmentRegisterInfo(assignmentStudentRegisterInfo);
         objectUpdate.setUpdateUser(userIdUpdate);
         objectUpdate.setUpdateAt(LocalDate.now());

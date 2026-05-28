@@ -30,6 +30,10 @@ public class ScoreAssignment extends EntityCommon {
         if(request != null){
             Long assignmentRegisterId = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getId() : null;
             String assignmentRegisterName = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getAssignmentName() : null;
+            Long majorId = (null != request.getAssignmentRegisterInfo() && null != request.getAssignmentRegisterInfo().getPeriodAssignmentInfo()
+                    && null != request.getAssignmentRegisterInfo().getPeriodAssignmentInfo().getMajorInfo()) ? request.getAssignmentRegisterInfo().getPeriodAssignmentInfo().getMajorInfo().getId() : null;
+            String majorName = (null != request.getAssignmentRegisterInfo() && null != request.getAssignmentRegisterInfo().getPeriodAssignmentInfo()
+                    && null != request.getAssignmentRegisterInfo().getPeriodAssignmentInfo().getMajorInfo()) ? request.getAssignmentRegisterInfo().getPeriodAssignmentInfo().getMajorInfo().getMajorName() : null;
             objectDtoResponse.setScoreAssignmentId(request.getId());                //Check caculate average score
             objectDtoResponse.setScoreExaminer(request.getScoreExaminer());
             objectDtoResponse.setScoreInstructor(request.getScoreInstructor());
@@ -41,11 +45,13 @@ public class ScoreAssignment extends EntityCommon {
                 valueAverage +=request.getScoreInstructor();
                 valueAverage +=request.getScoreExaminer();
                 valueAverage = valueAverage/3;
-                objectDtoResponse.setScoreAverage(null);
+                objectDtoResponse.setScoreAverage(valueAverage);
             }else{
                 objectDtoResponse.setScoreAverage(null);
             }
             objectDtoResponse.setAssignmentRegisterId(assignmentRegisterId);
+            objectDtoResponse.setMajorId(majorId);
+            objectDtoResponse.setMajorName(majorName);
             objectDtoResponse.setAssignmentRegisterName(assignmentRegisterName);
             objectDtoResponse.setStatus(request.getStatus());
             objectDtoResponse.setCreateAt(request.getCreateAt());
@@ -61,6 +67,11 @@ public class ScoreAssignment extends EntityCommon {
                 Long assignmentRegisterId = null != listRequestUser.get(i).getAssignmentRegisterInfo() ? listRequestUser.get(i).getAssignmentRegisterInfo().getId() : null;
                 String assignmentRegisterName = null != listRequestUser.get(i).getAssignmentRegisterInfo() ? listRequestUser.get(i).getAssignmentRegisterInfo().getAssignmentName() : null;
                 ScoreAssignmentDto.ScoreAssignmentListInfo newObject = new ScoreAssignmentDto.ScoreAssignmentListInfo();
+
+                Long majorId = (null != listRequestUser.get(i).getAssignmentRegisterInfo() && null != listRequestUser.get(i).getAssignmentRegisterInfo().getPeriodAssignmentInfo()
+                        && null != listRequestUser.get(i).getAssignmentRegisterInfo().getPeriodAssignmentInfo().getMajorInfo()) ? listRequestUser.get(i).getAssignmentRegisterInfo().getPeriodAssignmentInfo().getMajorInfo().getId() : null;
+                String majorName = (null != listRequestUser.get(i).getAssignmentRegisterInfo() && null != listRequestUser.get(i).getAssignmentRegisterInfo().getPeriodAssignmentInfo()
+                        && null != listRequestUser.get(i).getAssignmentRegisterInfo().getPeriodAssignmentInfo().getMajorInfo()) ? listRequestUser.get(i).getAssignmentRegisterInfo().getPeriodAssignmentInfo().getMajorInfo().getMajorName() : null;
                 newObject.setScoreAssignmentId(listRequestUser.get(i).getId());
                 newObject.setScoreExaminer(listRequestUser.get(i).getScoreExaminer());
                 newObject.setScoreInstructor(listRequestUser.get(i).getScoreInstructor());
@@ -79,6 +90,8 @@ public class ScoreAssignment extends EntityCommon {
                 }
                 newObject.setAssignmentRegisterId(assignmentRegisterId);
                 newObject.setAssignmentRegisterName(assignmentRegisterName);
+                newObject.setMajorId(majorId);
+                newObject.setMajorName(majorName);
                 newObject.setStatus(listRequestUser.get(i).getStatus());
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
                 listScoreAssignmentDto.add(newObject);
@@ -118,6 +131,8 @@ public class ScoreAssignment extends EntityCommon {
                 newObject.setStudentName(listRequestUser.get(i).getStudentName());
                 newObject.setAdmissionPeriodId(listRequestUser.get(i).getAdmissionPeriodId());
                 newObject.setAdmissionPeriodName(listRequestUser.get(i).getAdmissionPeriodName());
+                newObject.setMajorId(listRequestUser.get(i).getMajorId());
+                newObject.setMajorName(listRequestUser.get(i).getMajorName());
                 newObject.setStatus(listRequestUser.get(i).getStatus());
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
                 listScoreAssignmentDto.add(newObject);

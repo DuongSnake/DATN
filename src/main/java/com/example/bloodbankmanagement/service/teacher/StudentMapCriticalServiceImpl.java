@@ -13,12 +13,10 @@ import com.example.bloodbankmanagement.dto.objectRepository.UserInfoDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.dto.service.StudentMapCriticalDto;
-import com.example.bloodbankmanagement.dto.service.StudentMapCriticalDto;
 import com.example.bloodbankmanagement.dto.service.UserDto;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegister;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegisterDto;
 import com.example.bloodbankmanagement.entity.AssignmentStudentRegister;
-import com.example.bloodbankmanagement.entity.StudentMapCritical;
 import com.example.bloodbankmanagement.entity.StudentMapCritical;
 import com.example.bloodbankmanagement.entity.User;
 import com.example.bloodbankmanagement.repository.*;
@@ -31,7 +29,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -224,7 +221,7 @@ public class StudentMapCriticalServiceImpl {
         SingleResponseDto objectResponse = new SingleResponseDto();
         PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo> pageAmtObject = new PageAmtListResponseDto<>();
         List<StudentMapCritical> listDataUser = studentMapCriticalRepository.getListCriticalByStudentId(request);
-        pageAmtObject = StudentMapCritical.convertListStudentByInstructor(listDataUser);
+        pageAmtObject = StudentMapCritical.convertListInstructorByStudent(listDataUser);
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }

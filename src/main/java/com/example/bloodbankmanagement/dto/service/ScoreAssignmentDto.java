@@ -25,6 +25,8 @@ public class ScoreAssignmentDto {
         private Double scoreExaminer;
         private Double scoreCritical;
         private String assignmentRegisterName;
+        private Long majorId;
+        private String majorName;
         private String status;
         private LocalDate createAt;
     }
@@ -43,6 +45,8 @@ public class ScoreAssignmentDto {
         private Double scoreExaminer;
         private Double scoreCritical;
         private String assignmentRegisterName;
+        private Long majorId;
+        private String majorName;
         private String status;
         private LocalDate createAt;
     }
@@ -84,12 +88,21 @@ public class ScoreAssignmentDto {
     }
 
     @Data
+    public static class ListAssignmentRegisterByPeriodIdInstructorSiteInfo {
+        private Long admissionPeriodId;
+        private Long instructorId;
+        private Integer typeApprove;
+    }
+
+    @Data
     public static class ScoreAssignmentListNewInfo {
         private Long scoreAssignmentId;
         private Long assignmentRegisterId;
         private String assignmentRegisterName;
         private Long admissionPeriodId;
         private String admissionPeriodName;
+        private Long majorId;
+        private String majorName;
         private String studentName;
         private Double scoreAverage;
         private Double scoreInstructor;
@@ -97,5 +110,45 @@ public class ScoreAssignmentDto {
         private Double scoreCritical;
         private String status;
         private LocalDate createAt;
+    }
+
+    @Data
+    public static class ScoreAssignmentMajorSelectListInfo {
+        private Long scoreAssignmentId;
+        private Long majorId;
+        private String status;
+        private PageRequestDto pageRequestDto;
+    }
+
+    @Data
+    public static class ScoreAssignmentStudentSelectListInfo {
+        private Long scoreAssignmentId;
+        private Long studentId;
+        private String status;
+        private PageRequestDto pageRequestDto;
+    }
+
+    @Data
+    public static class ScoreAssignmentInstructorSelectListInfo {
+        private Long scoreAssignmentId;
+        private Long instructorId;
+        private Long admissionPeriodId;
+        private String status;
+        private PageRequestDto pageRequestDto;
+    }
+
+    @Data
+    public static class AssignmentInstructorSelectListNoPaginationInfo {
+        private Long instructorId;
+        private Long admissionPeriodId;
+        private Integer typeApprove;
+    }
+
+    @Data
+    public static class ListAssignmentRegisterHeadRoomSiteInfo {
+        private Long admissionPeriodId;
+        private Long majorId;
+        private Long instructorId;
+        private Integer typeApprove;
     }
 }
