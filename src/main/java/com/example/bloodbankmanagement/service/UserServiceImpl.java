@@ -379,8 +379,8 @@ public class UserServiceImpl {
             while (rowIterator.hasNext()) {
                 List<String> listError = new ArrayList<>();
                 Row row = rowIterator.next();
-                //Not get value in 3 row first
-                if (rowNum++ < 3) {
+                //Not get value in 5 row first
+                if (rowNum++ < 5) {
                     continue;
                 }
                 //Not get value when data in row is empty
