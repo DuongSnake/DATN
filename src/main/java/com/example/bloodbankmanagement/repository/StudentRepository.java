@@ -34,8 +34,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query(value = "select * from student where status = '1'", nativeQuery = true)
     List<Student> getAllStudentActive();
 
-    @Query(value = "select * from student where id in :ids", nativeQuery = true)
-    List<Student> findStudentInListId(@Param("ids") List<Long> ids);
+    @Query(value = "select * from student where status = ?1 and status_have_account_login = ?2", nativeQuery = true)
+    List<Student> getAllStudentActiveDontHaveAccountLogin(String statusActive, String statusDontHaveAccountLogin);
 
     @Modifying
     @Transactional
@@ -56,4 +56,10 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query(value = "update student set status =:#{#request.status}, update_user =:#{#request.updateUser}, update_at =:#{#request.updateAt} where id in :ids",
             nativeQuery = true)
     void deleteStudent(@Param("request") Student request, @Param("ids") List<Long> ids);
+
+
+    @Modifying
+    @Transactional
+    @Query(value = "update student set status_have_account_login = ?1  where id in ?2",nativeQuery = true)
+    void updateListAccountStatusSendMailSuccess(String statusSendMailSuccess, List<Long> userId);
 }

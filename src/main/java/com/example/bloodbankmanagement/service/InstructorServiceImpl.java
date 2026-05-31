@@ -68,7 +68,7 @@ public class InstructorServiceImpl {
         //Create account with role instructor
         User objectInstructorInsert = new User();
         //Set value default when create new user (0:not paid, 1:paid success)
-        String defaultPassword = "ktx2024";
+        String defaultPassword = CommonUtil.DEFAULT_PASSWORD;
         objectInstructorInsert.setPassword(encoder.encode(defaultPassword));
         objectInstructorInsert.setStatus(CommonUtil.STATUS_USE);
         objectInstructorInsert.setCreateAt(LocalDate.now());

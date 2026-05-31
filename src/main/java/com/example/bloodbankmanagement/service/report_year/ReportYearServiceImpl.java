@@ -75,8 +75,8 @@ public class ReportYearServiceImpl {
             contentRow.createCell(0).setCellValue(userValue.getId());
             contentRow.createCell(1).setCellValue(userValue.getUsername());
             contentRow.createCell(2).setCellValue(userValue.getEmail());
-            contentRow.createCell(3).setCellValue(userValue.getIdentityCard());
-            contentRow.createCell(4).setCellValue(userValue.getNote());
+            contentRow.createCell(3).setCellValue("gia tri mac dinh");
+            contentRow.createCell(4).setCellValue("gia tri mac dinh");
         }
         final ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);
@@ -108,9 +108,9 @@ public class ReportYearServiceImpl {
             objectData.setEmail(listDataUSer.get(i).getEmail());
             objectData.setPhone(listDataUSer.get(i).getPhone());
             objectData.setFullName(listDataUSer.get(i).getFullName());
-            objectData.setIdentityCard(listDataUSer.get(i).getIdentityCard());
-            objectData.setAddress(listDataUSer.get(i).getAddress());
-            objectData.setNote(listDataUSer.get(i).getNote());
+            objectData.setIdentityCard("gia tri mac dinh");
+            objectData.setAddress("gia tri mac dinh");
+            objectData.setNote("gia tri mac dinh");
             objectData.setStatus(listDataUSer.get(i).getStatus());
             listDataResponse.add(objectData);
         }

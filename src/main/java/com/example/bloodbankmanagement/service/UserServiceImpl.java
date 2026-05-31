@@ -90,7 +90,7 @@ public class UserServiceImpl {
         //Convert dto to entity
         User objectInsert = UserDto.UserInsertInfo.convertToEntity(request);
         //Set value default when create new user (0:not paid, 1:paid success)
-        String defaultPassword = "ktx2024";
+        String defaultPassword = CommonUtil.DEFAULT_PASSWORD;
         objectInsert.setPassword(encoder.encode(defaultPassword));
         objectInsert.setStatus(CommonUtil.STATUS_USE);
         objectInsert.setCreateAt(LocalDate.now());
@@ -163,6 +163,11 @@ public class UserServiceImpl {
         BasicResponseDto objectResponse;
         //Check user have exist or not
         User objectEnity = UserDto.StudentInsertInfo.convertToEntity(request);
+        //Check user have exist or not
+        Optional<User> updateUser = userRepository.findByUsername(objectEnity.getUsername());
+        if(!ObjectUtils.isEmpty(updateUser.get())){
+            throw new CustomException("Already username in database,please change another username and try again");
+        }
         //update data date time and userId
         objectEnity.setStatus(CommonUtil.STATUS_USE);
         //Set role
@@ -170,7 +175,7 @@ public class UserServiceImpl {
         Role userRole = roles.stream().findFirst().get();//Get first role
         objectEnity.setRoleInfo(userRole);
         objectEnity.setUpdateAt(LocalDate.now());
-        String defaultPassword = "ktx2024";
+        String defaultPassword = CommonUtil.DEFAULT_PASSWORD;
         objectEnity.setPassword(encoder.encode(defaultPassword));
         objectEnity.setUpdateUser(CommonUtil.getUsernameByToken());
         userRepository.save(objectEnity);
@@ -182,8 +187,12 @@ public class UserServiceImpl {
         params.put("urlLogin", urlLogin);
         boolean sendSuccess = mailService.sendEmailByTemplate(params, EmailTemplate.REG_NEW.getName(), EmailTemplate.REG_NEW.getSubject());
         if (!sendSuccess) {
+            //Update status fail send mail at account by userId
+            userRepository.updateStatusSendMailSuccess(CommonUtil.NO_VALUE, objectEnity.getId());
             return responseCommon.getSingleFailResult("EmailSendFail", lang);
         }
+        userRepository.updateStatusSendMailSuccess(CommonUtil.YES_VALUE, objectEnity.getId());
+        logger.info("Update success send mail");
         objectResponse = responseCommon.getSuccessResultHaveValueMessage(CommonUtil.successValue, CommonUtil.insertSuccess);
         return objectResponse;
     }
@@ -281,7 +290,7 @@ public class UserServiceImpl {
             //Handle send announcement to list email (asynchronous with @Async or a task executor)
             //Send mail announcement register new user
             logger.info("Vao insert thong tin");
-            String defaultPassword = "ktx2024";
+            String defaultPassword = CommonUtil.DEFAULT_PASSWORD;
             for(int i = 0; i < listPosPayerFromExcel.size(); i++){
                 Map<String, String> params = new HashMap<>();
                 params.put("userNm", listPosPayerFromExcel.get(i).getFullName());
@@ -390,22 +399,12 @@ public class UserServiceImpl {
                 pos.setEmail(ExcelUtils.getCellValue(row.getCell(2)));
                 pos.setPhone(ExcelUtils.getCellValue(row.getCell(3)));
                 pos.setFullName(ExcelUtils.getCellValue(row.getCell(4)));
-                pos.setIdentityCard(ExcelUtils.getCellValue(row.getCell(5)));
-                pos.setAddress(ExcelUtils.getCellValue(row.getCell(6)));
                 //Handle value column convert to long
                 Long valueColumnRoleId = (StringUtils.isEmpty(ExcelUtils.getCellValue(row.getCell(9))) ||
                         !matches(ExcelUtils.getCellValue(row.getCell(9)), "^[0-9]*$",
                                 ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, listError) ) ? null : Long.valueOf(ExcelUtils.getCellValue(row.getCell(9)));
-                Long valueColumnMajorId = (StringUtils.isEmpty(ExcelUtils.getCellValue(row.getCell(7))) ||
-                        !matches(ExcelUtils.getCellValue(row.getCell(7)), "^[0-9]*$",
-                                ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, listError) ) ? null : Long.valueOf(ExcelUtils.getCellValue(row.getCell(7)));
-                Long valueColumnAdmissionPeriodId = (StringUtils.isEmpty(ExcelUtils.getCellValue(row.getCell(8))) ||
-                        !matches(ExcelUtils.getCellValue(row.getCell(8)), "^[0-9]*$",
-                                ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, listError) )  ? null : Long.valueOf(ExcelUtils.getCellValue(row.getCell(8)));
-                pos.setMajorId(valueColumnMajorId);
-                pos.setAdmissionPeriodId(valueColumnAdmissionPeriodId);
+
                 pos.setRoleId(valueColumnRoleId);
-                pos.setNote(ExcelUtils.getCellValue(row.getCell(10)));
                 batchList.add(pos);
             }
         } catch (IOException e) {
@@ -436,33 +435,11 @@ public class UserServiceImpl {
             }
              return excelData;
         }
-        Map<Long, AdmissionPeriod> admissionPeriodMap = admissionPeriodRepository.selectListAdmissionPeriodActiveInNowYear().stream()
-                .collect(Collectors.toMap(AdmissionPeriod::getId, c -> c));
-        Map<Long, Major> majorMap = majorRepository.getAllMajorActive().stream()
-                .collect(Collectors.toMap(Major::getId, c -> c));
+
         Map<Long, Role> roleMap = roleRepository.getAllRole().stream()
                 .collect(Collectors.toMap(Role::getId, c -> c));
         excelData.forEach(item -> {
             List<String> errors = new ArrayList<>();
-            //Check format value input full name
-            matches(item.getFullName(), "^[a-zA-Z0-9]*$",
-                    ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_INVALID_FORMAT, errors);
-            // ===== ADMISSION_PERIOD =====
-            validateField(String.valueOf(item.getAdmissionPeriodId()), 20,
-                    ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_NOT_BLANK,
-                    ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_LENGTH, errors);
-            //Check value input exist in database or not
-            if (!admissionPeriodMap.containsKey(item.getAdmissionPeriodId())) {
-                addErrorMessage(ExcelUtils.UserExcelCode.ADMISSION_PERIOD_MAP_NOT_FOUND, errors);
-            }
-            // ===== MAJOR =====
-            validateField(String.valueOf(item.getMajorId()), 10,
-                    ExcelUtils.UserExcelCode.MAJOR_ID_NOT_BLANK,
-                    ExcelUtils.UserExcelCode.MAJOR_ID_LENGTH, errors);
-            //Check value input exist in database or not
-            if (!majorMap.containsKey(item.getMajorId())) {
-                addErrorMessage(ExcelUtils.UserExcelCode.MAJOR_ID_NOT_FOUND, errors);
-            }
             // ===== ROLE =====
             validateField(String.valueOf(item.getRoleId()), 10,
                     ExcelUtils.UserExcelCode.ROLE_ID_NOT_BLANK,

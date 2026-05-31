@@ -150,12 +150,6 @@ public class AssignmentStudentRegisterServiceImpl {
              logger.info("Not found assignment student register info with studentId: "+request.getStudentId());
              throw new CustomException(CommonUtil.NOT_FOUND_DATA_USER, "en");
         }
-
-        //Check information studentId register exist assignment(have status not equal expire or status isApprove not equal reserve) before or not
-        List<UserInfoDto> checkStudentRegisterAssignmentBefore = userRepository.getListUserRegisterAssignment(ERole.ROLE_USER.toString(), studentInfo.getId(), CommonUtil.STATUS_RESERVE, CommonUtil.STATUS_EXPIRE);
-        if(checkStudentRegisterAssignmentBefore.size() > 0){
-             throw new Exception("Have exist assignment register by user before,don't exist more than assignment register with same student id");
-        }
         AssignmentStudentRegister objectUpdate = new AssignmentStudentRegister();
         objectUpdate.setId(request.getAssignmentStudentRegisterId());
         objectUpdate.setStudentInfo(studentInfo);

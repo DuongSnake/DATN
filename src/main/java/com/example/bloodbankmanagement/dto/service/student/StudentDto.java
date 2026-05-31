@@ -74,9 +74,6 @@ public class StudentDto {
             objectEntity.setEmail(userUpdateInfo.getEmail());
             objectEntity.setPhone(userUpdateInfo.getPhone());
             objectEntity.setFullName(userUpdateInfo.getFullName());
-            objectEntity.setIdentityCard(userUpdateInfo.getIdentityCard());
-            objectEntity.setAddress(userUpdateInfo.getAddress());
-            objectEntity.setNote(userUpdateInfo.getNote());
             objectEntity.setUpdateUser(userId);
             return objectEntity;
         }
@@ -98,9 +95,6 @@ public class StudentDto {
             objectEntity.setEmail(userInsertInfo.getEmail());
             objectEntity.setPhone(userInsertInfo.getPhone());
             objectEntity.setFullName(userInsertInfo.getFullName());
-            objectEntity.setIdentityCard(userInsertInfo.getIdentityCard());
-            objectEntity.setAddress(userInsertInfo.getAddress());
-            objectEntity.setNote(userInsertInfo.getNote());
             return objectEntity;
         }
     }
@@ -147,8 +141,11 @@ public class StudentDto {
         private String fullName;
         private String identityCard;
         private String address;
+        private String majorName;
+        private String totalLessonDebtStringValue;
+        private Integer totalLessonDebt;
+        private String statusLessonDebt;
         private String note;
-        private Long roleId;
         private List<String> errors;
     }
 

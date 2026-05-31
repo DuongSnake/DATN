@@ -31,10 +31,7 @@ public class UserDto {
         private String email;
         private String phone;
         private String fullName;
-        private String identityCard;
-        private String address;
         private String status;
-        private String note;
         private Long majorId;
         private String majorName;
         private LocalDate createAt;
@@ -49,10 +46,6 @@ public class UserDto {
         private String email;
         private String phone;
         private String fullName;
-        private String identityCard;
-        private String address;
-        private String status;
-        private String note;
         private LocalDate createAt;
         private LocalDate updateAt;
         private Role roles;
@@ -65,9 +58,6 @@ public class UserDto {
         private String email;
         private String phone;
         private String fullName;
-        private String identityCard;
-        private String address;
-        private String note;
         public static User convertToEntity(UserUpdateInfo userUpdateInfo, String userId){
             User objectEntity = new User();
             objectEntity.setId(userUpdateInfo.getId());
@@ -75,9 +65,6 @@ public class UserDto {
             objectEntity.setEmail(userUpdateInfo.getEmail());
             objectEntity.setPhone(userUpdateInfo.getPhone());
             objectEntity.setFullName(userUpdateInfo.getFullName());
-            objectEntity.setIdentityCard(userUpdateInfo.getIdentityCard());
-            objectEntity.setAddress(userUpdateInfo.getAddress());
-            objectEntity.setNote(userUpdateInfo.getNote());
             objectEntity.setUpdateUser(userId);
             return objectEntity;
         }
@@ -89,9 +76,6 @@ public class UserDto {
         private String email;
         private String phone;
         private String fullName;
-        private String identityCard;
-        private String address;
-        private String note;
         private String roles;
 
         public static User convertToEntity(UserInsertInfo userInsertInfo) {
@@ -100,9 +84,6 @@ public class UserDto {
             objectEntity.setEmail(userInsertInfo.getEmail());
             objectEntity.setPhone(userInsertInfo.getPhone());
             objectEntity.setFullName(userInsertInfo.getFullName());
-            objectEntity.setIdentityCard(userInsertInfo.getIdentityCard());
-            objectEntity.setAddress(userInsertInfo.getAddress());
-            objectEntity.setNote(userInsertInfo.getNote());
             return objectEntity;
         }
     }
@@ -153,8 +134,6 @@ public class UserDto {
             objectEntity.setUsername(userInsertInfo.getUsername());
             objectEntity.setEmail(userInsertInfo.getEmail());
             objectEntity.setFullName(userInsertInfo.getFullName());
-            objectEntity.setIdentityCard(userInsertInfo.getIdentityCard());
-            objectEntity.setNote(userInsertInfo.getNote());
             return objectEntity;
         }
     }
@@ -189,10 +168,6 @@ public class UserDto {
         private String email;
         private String phone;
         private String fullName;
-        private String identityCard;
-        private String address;
-        private String note;
-        private Long majorId;
         private Long admissionPeriodId;
         private Long roleId;
         private List<String> errors;

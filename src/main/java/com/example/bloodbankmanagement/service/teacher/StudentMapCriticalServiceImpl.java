@@ -211,7 +211,7 @@ public class StudentMapCriticalServiceImpl {
         return objectResponse;
     }
 
-    public SingleResponseDto<List<UserDto.UserSelectListInfo>> selectListCriticalByStudentId(StudentMapCriticalDto.SelectListCriticalByStudentIdInfo request)  throws Exception{
+    public SingleResponseDto<PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo>> selectListCriticalByStudentId(StudentMapCriticalDto.SelectListCriticalByStudentIdInfo request)  throws Exception{
         if(ObjectUtils.isEmpty(request)){
             throw new Exception("Request data not null");
         }
@@ -220,8 +220,8 @@ public class StudentMapCriticalServiceImpl {
         }
         SingleResponseDto objectResponse = new SingleResponseDto();
         PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo> pageAmtObject = new PageAmtListResponseDto<>();
-        List<StudentMapCritical> listDataUser = studentMapCriticalRepository.getListCriticalByStudentId(request);
-        pageAmtObject = StudentMapCritical.convertListInstructorByStudent(listDataUser);
+        List<UserInfoDto> listDataFileMetadata = userRepository.getListCriticalByStudentId(ERole.ROLE_INSTRUCTOR.toString(), request.getStudentId());
+        pageAmtObject = User.convertListStudentByInstructor(listDataFileMetadata);
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }

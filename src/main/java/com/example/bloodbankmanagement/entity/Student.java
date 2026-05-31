@@ -21,8 +21,14 @@ public class Student extends EntityCommon {
     private String email;
     private String phone;
     private String fullName;
+    private String majorName;
     private Integer totalLessonDebt;//Tong so tin chi bi no
     private String statusDoneDebt;// Trang thai tra no mon thanh cong
+    private String identityCard;
+    private String address;
+    private String note;
+    private String status;
+    private String statusHaveAccountLogin;//Mac dinh la N(chua co tai khoan dang nhap), Y(da co tai khoan dang nhap)
 
     public static StudentManagementDto.StudentSelectInfoResponse convertToDto(Student request){
         StudentManagementDto.StudentSelectInfoResponse objectDtoResponse = new StudentManagementDto.StudentSelectInfoResponse();
@@ -34,6 +40,10 @@ public class Student extends EntityCommon {
             objectDtoResponse.setTotalLessonDebt(request.getTotalLessonDebt());
             objectDtoResponse.setStatusDoneDebt(request.getStatusDoneDebt());
             objectDtoResponse.setStatus(request.getStatus());
+            objectDtoResponse.setIdentityCard(request.getIdentityCard());
+            objectDtoResponse.setAddress(request.getAddress());
+            objectDtoResponse.setStatus(request.getStatus());
+            objectDtoResponse.setNote(request.getNote());
             objectDtoResponse.setCreateAt(request.getCreateAt());
             objectDtoResponse.setUpdateAt(request.getUpdateAt());
         }
@@ -52,6 +62,9 @@ public class Student extends EntityCommon {
                 newObject.setFullName(listRequestStudent.get(i).getFullName());
                 newObject.setStatus(listRequestStudent.get(i).getStatus());
                 newObject.setCreateAt(listRequestStudent.get(i).getCreateAt());
+                newObject.setNote(listRequestStudent.get(i).getNote());
+                newObject.setIdentityCard(listRequestStudent.get(i).getIdentityCard());
+                newObject.setAddress(listRequestStudent.get(i).getAddress());
                 listStudentDto.add(newObject);
             }
         }

@@ -1,13 +1,16 @@
 package com.example.bloodbankmanagement.service.authorization;
 
 
+import com.example.bloodbankmanagement.common.exception.CustomException;
 import com.example.bloodbankmanagement.common.untils.ERole;
 import com.example.bloodbankmanagement.entity.Role;
 import com.example.bloodbankmanagement.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -47,5 +50,13 @@ public class RoleServiceImpl {
             }
         }
         return roles;
+    }
+
+    public Role getRoleByName(ERole roleRequest){
+        Optional<Role> roleInfo = roleRepository.findByName(roleRequest);
+        if(ObjectUtils.isEmpty(roleInfo.get())){
+            throw new CustomException("Not found role by role request", "en");
+        }
+        return roleInfo.get();
     }
 }

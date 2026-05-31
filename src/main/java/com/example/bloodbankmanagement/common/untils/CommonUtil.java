@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 public class CommonUtil {
 
     public static final String YES_VALUE = "Y";
+    public static final String DEFAULT_PASSWORD = "ktx2024";
     public static final String NO_VALUE = "N";
     public static final String USER_NAME = "username";
     public static final String STATUS_USE = "1";

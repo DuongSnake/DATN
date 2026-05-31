@@ -93,7 +93,7 @@ public class AuthServiceImpl {
         if (userRepository.existsByUsername(signupRequestDto.getUsername())){
             throw new ValidateException(ExceptionEntity.FieldError.of(CommonUtil.USER_NAME, signupRequestDto.getUsername(), "DuplicateUserAccount"), lang);
         }
-        String defaultPassword = "ktx2024";
+        String defaultPassword = CommonUtil.DEFAULT_PASSWORD;
         //Crate new user's account
         User user = new User(signupRequestDto.getUsername(), encoder.encode(defaultPassword), signupRequestDto.getEmail(), signupRequestDto.getPhone(), signupRequestDto.getFullName());
         user.setStatus(CommonUtil.STATUS_USE);

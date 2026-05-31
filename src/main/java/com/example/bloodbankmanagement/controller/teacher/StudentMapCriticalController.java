@@ -79,7 +79,7 @@ public class StudentMapCriticalController {
         );
     }
     @PostMapping("/selectListCriticalByStudentId")
-    public ResponseEntity<SingleResponseDto<List<UserDto.UserSelectListInfo>>> selectListCriticalByStudentId(@RequestBody StudentMapCriticalDto.SelectListCriticalByStudentIdInfo request) throws Exception {
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<UserDto.AllStudentByInstructorInfo>>> selectListCriticalByStudentId(@RequestBody StudentMapCriticalDto.SelectListCriticalByStudentIdInfo request) throws Exception {
         return new ResponseEntity<>(
                 studentMapCriticalService.selectListCriticalByStudentId(request),
                 HttpStatus.OK

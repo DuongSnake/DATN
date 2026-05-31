@@ -38,10 +38,7 @@ public class User extends EntityCommon {
     private String email;
     private String phone;
     private String fullName;
-    private String identityCard;
-    private String address;
-    private String status;
-    private String note;
+    private String statusSendMail;//Trang thai gui mail Y(gui thanh cong) N(gui that bai)
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -68,10 +65,6 @@ public class User extends EntityCommon {
             objectDtoResponse.setEmail(request.getEmail());
             objectDtoResponse.setPhone(request.getPhone());
             objectDtoResponse.setFullName(request.getFullName());
-            objectDtoResponse.setIdentityCard(request.getIdentityCard());
-            objectDtoResponse.setAddress(request.getAddress());
-            objectDtoResponse.setStatus(request.getStatus());
-            objectDtoResponse.setNote(request.getNote());
             objectDtoResponse.setCreateAt(request.getCreateAt());
             objectDtoResponse.setUpdateAt(request.getUpdateAt());
             objectDtoResponse.setRoles(request.getRoleInfo());
@@ -90,12 +83,9 @@ public class User extends EntityCommon {
                 newObject.setEmail(listRequestUser.get(i).getEmail());
                 newObject.setPhone(listRequestUser.get(i).getPhone());
                 newObject.setFullName(listRequestUser.get(i).getFullName());
-                newObject.setIdentityCard(listRequestUser.get(i).getIdentityCard());
-                newObject.setAddress(listRequestUser.get(i).getAddress());
                 newObject.setStatus(listRequestUser.get(i).getStatus());
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
                 newObject.setUpdateAt(listRequestUser.get(i).getUpdateAt());
-                newObject.setNote(listRequestUser.get(i).getNote());
                 listUserDto.add(newObject);
             }
         }
@@ -114,12 +104,9 @@ public class User extends EntityCommon {
                 newObject.setEmail(listRequestUser.get(i).getEmail());
                 newObject.setPhone(listRequestUser.get(i).getPhone());
                 newObject.setFullName(listRequestUser.get(i).getFullName());
-                newObject.setIdentityCard(listRequestUser.get(i).getIdentityCard());
-                newObject.setAddress(listRequestUser.get(i).getAddress());
                 newObject.setStatus(listRequestUser.get(i).getStatus());
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
                 newObject.setUpdateAt(listRequestUser.get(i).getUpdateAt());
-                newObject.setNote(listRequestUser.get(i).getNote());
                 listUserDto.add(newObject);
             }
         }
@@ -156,12 +143,9 @@ public class User extends EntityCommon {
                 newObject.setEmail(listRequestUser.get(i).getEmail());
                 newObject.setPhone(listRequestUser.get(i).getPhone());
                 newObject.setFullName(listRequestUser.get(i).getFullName());
-                newObject.setIdentityCard(listRequestUser.get(i).getIdentityCard());
-                newObject.setAddress(listRequestUser.get(i).getAddress());
                 newObject.setStatus(listRequestUser.get(i).getStatus());
                 newObject.setCreateAt(listRequestUser.get(i).getCreateAt());
                 newObject.setUpdateAt(listRequestUser.get(i).getUpdateAt());
-                newObject.setNote(listRequestUser.get(i).getNote());
                 newObject.setRoles(listRequestUser.get(i).getRoleInfo());
                 listUserDto.add(newObject);
             }

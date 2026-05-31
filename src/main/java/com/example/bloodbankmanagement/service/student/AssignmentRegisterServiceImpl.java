@@ -266,12 +266,6 @@ public class AssignmentRegisterServiceImpl {
 
     public SingleResponseDto<PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo>> findListAssignmentRegisterIsApprove(AssignmentRegisterDto.AssignmentRegisterSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
-        String userIdRegister = CommonUtil.getUsernameByToken();
-        //Find the customer by token
-        Long valueId = getIdByUserName(userIdRegister);
-        //Only find the list student upload in file
-        request.setRegUser(userIdRegister);
-        request.setStudentId(valueId);
         PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());

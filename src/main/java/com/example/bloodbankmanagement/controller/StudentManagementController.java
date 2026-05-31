@@ -57,4 +57,12 @@ public class StudentManagementController {
                 HttpStatus.OK
         );
     }
+
+    @PostMapping("/insertListStudent")
+    public ResponseEntity<BasicResponseDto> insertListStudent(@ModelAttribute @Valid StudentManagementDto.UploadBatchFileRegisterUserInfo request, @RequestHeader("lang") String lang) {
+        return new ResponseEntity<>(
+                studentManagementService.uploadFileRegisterListStudent(request, lang),
+                HttpStatus.OK
+        );
+    }
 }

@@ -4,6 +4,7 @@ import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +30,9 @@ public class StudentManagementDto {
         private String phone;
         private String fullName;
         private String status;
+        private String identityCard;
+        private String address;
+        private String note;
         private LocalDate createAt;
     }
 
@@ -46,6 +50,9 @@ public class StudentManagementDto {
         private Integer totalLessonDebt;
         private String statusDoneDebt;
         private String status;
+        private String identityCard;
+        private String address;
+        private String note;
         private LocalDate createAt;
         private LocalDate updateAt;
     }
@@ -58,8 +65,11 @@ public class StudentManagementDto {
         
         @NotBlank(message = "Full name is required")
         private String fullName;
-        
         private String phone;
+        private String identityCard;
+        private String address;
+        private String note;
+        private Integer totalLessonDebt;
     }
 
     @Data
@@ -68,13 +78,21 @@ public class StudentManagementDto {
         
         @Email(message = "Email should be valid")
         private String email;
-        
         private String phone;
         private String fullName;
+        private String identityCard;
+        private String address;
+        private String note;
+        private Integer totalLessonDebt;
     }
 
     @Data
     public static class StudentDeleteInfo {
         private List<Long> listData;
+    }
+
+    @Data
+    public static class UploadBatchFileRegisterUserInfo {
+        private MultipartFile fileUploadContent;
     }
 }

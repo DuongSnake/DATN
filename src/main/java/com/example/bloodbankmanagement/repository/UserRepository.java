@@ -105,6 +105,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.email = ?1 order by u.createAt desc")
     List<User> getByEmail(String email);
 
+
+    @Query("select u from User u where u.status = ?1 and u.statusSendMail = ?2 ")
+    List<User> getListAccountNotSendMailBefore(String statusActiveAccount, String isSendMailSuccess);
+
     @Modifying
     @Transactional
     @Query(value = "update Users set  username =:#{#request.username}, email =:#{#request.email}, phone =:#{#request.phone},full_name =:#{#request.fullName},identity_card =:#{#request.identityCard},address =:#{#request.address}," +
@@ -116,6 +120,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Query(value = "update Users set password =:#{#request.password},update_user =:#{#request.updateUser},update_at =:#{#request.updateAt} where id =:#{#request.id}",nativeQuery = true)
     void changePassword(@Param("request") User request);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update users set status_send_mail = ?1  where id = ?2",nativeQuery = true)
+    void updateStatusSendMailSuccess(String statusSendMailSuccess, Long valueUserId);
+
+
+    @Modifying
+    @Transactional
+    @Query(value = "update users set status_send_mail = ?1  where id in ?2",nativeQuery = true)
+    void updateListAccountStatusSendMailSuccess(String statusSendMailSuccess, List<Long> userId);
 
     List<User> findAllByIdIn(ArrayList<Long> userId);
 
