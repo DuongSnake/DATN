@@ -3,6 +3,7 @@ package com.example.bloodbankmanagement.repository;
 
 import com.example.bloodbankmanagement.dto.objectRepository.AssignmentTotalByAdmissionPeriodDto;
 import com.example.bloodbankmanagement.dto.objectRepository.CountTotalRecordDto;
+import com.example.bloodbankmanagement.dto.objectRepository.InstructorTotalByYearDto;
 import com.example.bloodbankmanagement.dto.objectRepository.UserInfoDto;
 import com.example.bloodbankmanagement.dto.service.InstructorDto;
 import com.example.bloodbankmanagement.dto.service.StudentManagementDto;
@@ -222,8 +223,24 @@ public interface UserRepository extends JpaRepository<User, Long> {
             " join period_assignment pa on asr.period_assignment_id = pa.id " +
             " join admission_period ap on pa.admission_period_id = ap.id " +
             " group by ap.id) " +
-            " select ap.id as admissionPeriodId, ap.admission_period_name as admissionPeriodName ,tat.totalAssignment from admission_period ap " +
+            " select ap.id as admissionPeriodId, ap.admission_period_name as admissionPeriodName ,tat.totalAssignemnt as totalAssignment from admission_period ap " +
             " left join totalAssignmentAdmission tat on ap.id = tat.admissionId " +
             " order by tat.totalAssignemnt DESC ", nativeQuery = true)
     List<AssignmentTotalByAdmissionPeriodDto> getTop5PeriodHaveModeAssignmentRegister();
+
+
+
+
+    @Query(value = "with totalInstructorHaveMaxStudentByYear as ( " +
+            " select instructor_id, count(instructor_id) as totalStudent  " +
+            " from student_map_instructor " +
+            " where instructor_id is not null " +
+            " and create_at > ?1 " +
+            " and create_at < ?2" +
+            " group by instructor_id) " +
+            " select tat.instructor_id as instructorId, user_info.full_name as instructorName ,tat.totalStudent as totalStudent " +
+            " from totalInstructorHaveMaxStudentByYear tat " +
+            " left join users user_info on tat.instructor_id = user_info.id " +
+            " order by tat.totalStudent DESC ", nativeQuery = true)
+    List<InstructorTotalByYearDto> getTop5InstructorHaveMaxStudentAssignByYear(String startDate, String endDate);
 }

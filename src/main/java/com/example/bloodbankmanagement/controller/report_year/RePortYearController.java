@@ -5,8 +5,11 @@ import com.example.bloodbankmanagement.common.exception.ExcelException;
 import com.example.bloodbankmanagement.common.untils.DateUtil;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.objectRepository.AssignmentTotalByAdmissionPeriodDto;
 import com.example.bloodbankmanagement.dto.objectRepository.CountTotalRecordDto;
+import com.example.bloodbankmanagement.dto.objectRepository.InstructorTotalByYearDto;
 import com.example.bloodbankmanagement.dto.service.AdmissionPeriodDto;
+import com.example.bloodbankmanagement.dto.service.report_year.ReportDto;
 import com.example.bloodbankmanagement.service.report_year.ReportYearServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,24 @@ public class RePortYearController {
     public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<CountTotalRecordDto>>> selectAllTotalRecrod() {
         return new ResponseEntity<>(
                 reportYearService.selectAllTotalData(),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/selectTop5Period")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AssignmentTotalByAdmissionPeriodDto>>> selectTop5PeriodHaveMaxAssignmentRegister() {
+        return new ResponseEntity<>(
+                reportYearService.selectTop5PeriodHaveMaxAssignmentRegister(),
+                HttpStatus.OK
+        );
+    }
+
+
+
+    @PostMapping("/selectTop5Instructor")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<InstructorTotalByYearDto>>> getTop5InstructorHaveMaxStudentAssignByYear(@RequestBody ReportDto.InstructorHaveMaxStudentAssignByYearRequest request) {
+        return new ResponseEntity<>(
+                reportYearService.getTop5InstructorHaveMaxStudentAssignByYear(request),
                 HttpStatus.OK
         );
     }

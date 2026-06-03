@@ -11,9 +11,12 @@ import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.excelObject.StudentExcel;
 import com.example.bloodbankmanagement.dto.mapper.StudentExportMapper;
+import com.example.bloodbankmanagement.dto.objectRepository.AssignmentTotalByAdmissionPeriodDto;
 import com.example.bloodbankmanagement.dto.objectRepository.CountTotalRecordDto;
+import com.example.bloodbankmanagement.dto.objectRepository.InstructorTotalByYearDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.AdmissionPeriodDto;
+import com.example.bloodbankmanagement.dto.service.report_year.ReportDto;
 import com.example.bloodbankmanagement.dto.service.student.StudentDto;
 import com.example.bloodbankmanagement.entity.AssignmentStudentRegister;
 import com.example.bloodbankmanagement.entity.User;
@@ -32,6 +35,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -64,6 +68,38 @@ public class ReportYearServiceImpl {
         PageAmtListResponseDto<CountTotalRecordDto> pageAmtObject = new PageAmtListResponseDto<>();
         //Select list file upload
         List<CountTotalRecordDto> listDataFileMetadata = userRepository.findAllRecordRelateStudent();
+        pageAmtObject.setData(listDataFileMetadata);
+        pageAmtObject.setTotalRecord(listDataFileMetadata.size());
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
+    public SingleResponseDto<PageAmtListResponseDto<AssignmentTotalByAdmissionPeriodDto>> selectTop5PeriodHaveMaxAssignmentRegister(){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<AssignmentTotalByAdmissionPeriodDto> pageAmtObject = new PageAmtListResponseDto<>();
+        //Select list file upload
+        List<AssignmentTotalByAdmissionPeriodDto> listDataFileMetadata = userRepository.getTop5PeriodHaveModeAssignmentRegister();
+        pageAmtObject.setData(listDataFileMetadata);
+        pageAmtObject.setTotalRecord(listDataFileMetadata.size());
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
+    public SingleResponseDto<PageAmtListResponseDto<InstructorTotalByYearDto>> getTop5InstructorHaveMaxStudentAssignByYear(ReportDto.InstructorHaveMaxStudentAssignByYearRequest request){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<InstructorTotalByYearDto> pageAmtObject = new PageAmtListResponseDto<>();
+        //Select list file upload
+        logger.info("Request getTop5InstructorHaveMaxStudentAssignByYear: {}", request.getYearQuery());
+        int year = Integer.parseInt(request.getYearQuery());
+        // First day of the given year
+        LocalDate firstDayOfYear = LocalDate.of(year, 1, 1);
+
+        // First day of the next year
+        LocalDate firstDayOfNextYear = LocalDate.of(year + 1, 1, 1);
+        String nowYearDate = firstDayOfYear.toString();
+        String nextYearDate = firstDayOfNextYear.toString();
+        logger.info("Value start date of year {} and the start date of next year {}", nowYearDate, nextYearDate);
+        List<InstructorTotalByYearDto> listDataFileMetadata = userRepository.getTop5InstructorHaveMaxStudentAssignByYear(nowYearDate, nextYearDate);
         pageAmtObject.setData(listDataFileMetadata);
         pageAmtObject.setTotalRecord(listDataFileMetadata.size());
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
