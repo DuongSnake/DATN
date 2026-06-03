@@ -5,6 +5,7 @@ import com.example.bloodbankmanagement.common.exception.ExcelException;
 import com.example.bloodbankmanagement.common.untils.DateUtil;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
+import com.example.bloodbankmanagement.dto.objectRepository.CountTotalRecordDto;
 import com.example.bloodbankmanagement.dto.service.AdmissionPeriodDto;
 import com.example.bloodbankmanagement.service.report_year.ReportYearServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,6 +25,15 @@ import java.io.IOException;
 public class RePortYearController {
 
     private final ReportYearServiceImpl reportYearService;
+
+    @PostMapping("/selectAllTotalRecrod")
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<CountTotalRecordDto>>> selectAllTotalRecrod() {
+        return new ResponseEntity<>(
+                reportYearService.selectAllTotalData(),
+                HttpStatus.OK
+        );
+    }
+
     @PostMapping("/selectList")
     public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo>>> selectListAdmissionPeriod(@RequestBody AdmissionPeriodDto.AdmissionPeriodSelectListInfo request) {
         return new ResponseEntity<>(

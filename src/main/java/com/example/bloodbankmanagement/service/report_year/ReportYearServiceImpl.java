@@ -11,6 +11,7 @@ import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.excelObject.StudentExcel;
 import com.example.bloodbankmanagement.dto.mapper.StudentExportMapper;
+import com.example.bloodbankmanagement.dto.objectRepository.CountTotalRecordDto;
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.AdmissionPeriodDto;
 import com.example.bloodbankmanagement.dto.service.student.StudentDto;
@@ -55,6 +56,17 @@ public class ReportYearServiceImpl {
 //        List<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findAll();
 //        pageAmtObject = AssignmentStudentRegister.convertListObjectToDto(listDataFileMetadata, Long.valueOf("1000"));
 //        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
+    public SingleResponseDto<PageAmtListResponseDto<CountTotalRecordDto>> selectAllTotalData(){
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        PageAmtListResponseDto<CountTotalRecordDto> pageAmtObject = new PageAmtListResponseDto<>();
+        //Select list file upload
+        List<CountTotalRecordDto> listDataFileMetadata = userRepository.findAllRecordRelateStudent();
+        pageAmtObject.setData(listDataFileMetadata);
+        pageAmtObject.setTotalRecord(listDataFileMetadata.size());
+        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }
 
