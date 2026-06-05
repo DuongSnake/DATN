@@ -45,8 +45,6 @@ public class RePortYearController {
         );
     }
 
-
-
     @PostMapping("/selectTop5Instructor")
     public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<InstructorTotalByYearDto>>> getTop5InstructorHaveMaxStudentAssignByYear(@RequestBody ReportDto.InstructorHaveMaxStudentAssignByYearRequest request) {
         return new ResponseEntity<>(
@@ -55,18 +53,12 @@ public class RePortYearController {
         );
     }
 
-    @PostMapping("/selectList")
-    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo>>> selectListAdmissionPeriod(@RequestBody AdmissionPeriodDto.AdmissionPeriodSelectListInfo request) {
-        return new ResponseEntity<>(
-                reportYearService.selectListAdmissionPeriod(request),
-                HttpStatus.OK
-        );
-    }
     @PostMapping("/exportExcel")
     public void exportExcel(HttpServletResponse response) throws IOException {
         response.setHeader("Content-Disposition", String.format("attachment; filename=\"Danh_sach_toan_bo_sinh_vien"+ DateUtil.strNowDate()+DateUtil.strNowTime()+".xlsx\""));
         this.reportYearService.exportExcel(response);
     }
+
     @PostMapping("/exportExcel2")
     public void exportExcelDynamic(HttpServletResponse response) throws Exception {
         try {

@@ -51,18 +51,6 @@ public class ReportYearServiceImpl {
     private final ResponseCommon responseService;
     private final MessageSource messageSource;
 
-    public SingleResponseDto<PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo>> selectListAdmissionPeriod(AdmissionPeriodDto.AdmissionPeriodSelectListInfo request){
-        SingleResponseDto objectResponse = new SingleResponseDto();
-//        PageAmtListResponseDto<AdmissionPeriodDto.AdmissionPeriodListInfo> pageAmtObject = new PageAmtListResponseDto<>();
-//        request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
-//        Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
-//        //Select list file upload
-//        List<AssignmentStudentRegister> listDataFileMetadata = assignmentRegisterRepository.findAll();
-//        pageAmtObject = AssignmentStudentRegister.convertListObjectToDto(listDataFileMetadata, Long.valueOf("1000"));
-//        objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
-        return objectResponse;
-    }
-
     public SingleResponseDto<PageAmtListResponseDto<CountTotalRecordDto>> selectAllTotalData(){
         SingleResponseDto objectResponse = new SingleResponseDto();
         PageAmtListResponseDto<CountTotalRecordDto> pageAmtObject = new PageAmtListResponseDto<>();

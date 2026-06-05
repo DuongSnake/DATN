@@ -225,6 +225,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             " group by ap.id) " +
             " select ap.id as admissionPeriodId, ap.admission_period_name as admissionPeriodName ,tat.totalAssignemnt as totalAssignment from admission_period ap " +
             " left join totalAssignmentAdmission tat on ap.id = tat.admissionId " +
+            " where tat.totalAssignemnt is not null and tat.totalAssignemnt > 0 " +
             " order by tat.totalAssignemnt DESC ", nativeQuery = true)
     List<AssignmentTotalByAdmissionPeriodDto> getTop5PeriodHaveModeAssignmentRegister();
 
