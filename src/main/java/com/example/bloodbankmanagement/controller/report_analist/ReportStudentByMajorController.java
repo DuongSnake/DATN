@@ -4,11 +4,13 @@ import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.objectRepository.CountTotalRecordDto;
 import com.example.bloodbankmanagement.dto.objectRepository.StudentMappingDto;
+import com.example.bloodbankmanagement.dto.service.report_month_analist.MajorAnalystDto;
 import com.example.bloodbankmanagement.service.report_student_major.ReportStudentMajorServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,9 +22,9 @@ public class ReportStudentByMajorController {
     private final ReportStudentMajorServiceImpl reportStudentByMajorService;
 
     @PostMapping("/selectAllTotalRecrod")
-    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<StudentMappingDto>>> selectAllTotalRecrod() {
+    public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<StudentMappingDto>>> selectAllTotalRecrod(@RequestBody MajorAnalystDto.MajorAnalystSelectListRequest request) {
         return new ResponseEntity<>(
-                reportStudentByMajorService.selectAllTotalData(),
+                reportStudentByMajorService.selectAllTotalData(request),
                 HttpStatus.OK
         );
     }

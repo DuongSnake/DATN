@@ -3,6 +3,9 @@ package com.example.bloodbankmanagement.dto.objectRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 public class StudentMappingDto {
@@ -21,12 +24,14 @@ public class StudentMappingDto {
     // Instructor Info
     private String instructorName;
     private String instructorEmail;
+    private Date createAt;
 
     // Create a constructor matching the exact selection order in your SQL query
     public StudentMappingDto(Long studentId, Long criticalId, Long instructorId,
                              String studentName, String studentEmail,
                              String criticalName, String criticalEmail,
-                             String instructorName, String instructorEmail) {
+                             String instructorName, String instructorEmail
+                            , Date createAt) {
         this.studentId = studentId;
         this.criticalId = criticalId;
         this.instructorId = instructorId;
@@ -36,5 +41,6 @@ public class StudentMappingDto {
         this.criticalEmail = criticalEmail;
         this.instructorName = instructorName;
         this.instructorEmail = instructorEmail;
+        this.createAt = createAt;
     }
 }
