@@ -5,7 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-public class MajorAnalystDto {
+public class StudentAnalystDto {
 
     @Data
     public static class MajorAnalystSelectListRequest {

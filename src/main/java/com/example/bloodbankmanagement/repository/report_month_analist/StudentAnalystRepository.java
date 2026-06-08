@@ -2,29 +2,23 @@ package com.example.bloodbankmanagement.repository.report_month_analist;
 
 
 import com.example.bloodbankmanagement.dto.objectRepository.StudentMappingDto;
-import com.example.bloodbankmanagement.dto.service.report_month_analist.MajorAnalystDto;
-import com.example.bloodbankmanagement.entity.AdmissionPeriod;
-import com.example.bloodbankmanagement.repository.AdmissionPeriodRepository;
+import com.example.bloodbankmanagement.dto.service.report_month_analist.StudentAnalystDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class MajorAnalystRepository {
+public class StudentAnalystRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<StudentMappingDto> findCompleteStudentAll(MajorAnalystDto.MajorAnalystSelectListRequest request) {
+    public List<StudentMappingDto> findCompleteStudentAll(StudentAnalystDto.MajorAnalystSelectListRequest request) {
         // Values from request
         Long valueStudentId = null;
         LocalDate valueStartDate = null;
@@ -117,7 +111,7 @@ public class MajorAnalystRepository {
 
     }
 
-    public List<StudentMappingDto> findCompleteStudentNotMapping(MajorAnalystDto.MajorAnalystSelectListRequest request) {
+    public List<StudentMappingDto> findCompleteStudentNotMapping(StudentAnalystDto.MajorAnalystSelectListRequest request) {
         // Values from request
         Long valueStudentId = null;
         LocalDate valueStartDate = null;
@@ -207,7 +201,7 @@ public class MajorAnalystRepository {
         )).collect(Collectors.toList());
     }
 
-    public List<StudentMappingDto> findCompleteStudentMapping(MajorAnalystDto.MajorAnalystSelectListRequest request) {
+    public List<StudentMappingDto> findCompleteStudentMapping(StudentAnalystDto.MajorAnalystSelectListRequest request) {
         // Values from request
         Long valueStudentId = null;
         LocalDate valueStartDate = null;
