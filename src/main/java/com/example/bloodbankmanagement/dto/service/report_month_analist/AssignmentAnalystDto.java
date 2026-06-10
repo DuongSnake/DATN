@@ -14,6 +14,7 @@ public class AssignmentAnalystDto {
         private Long studentId;
         private Long admissionPeriodId;
         private String statusAssignment;
+        private Long majorId;
         private LocalDate fromDate;
         private LocalDate toDate;
         private PageRequestDto pageRequestDto;
@@ -25,6 +26,7 @@ public class AssignmentAnalystDto {
         private Long criticalId;
         private Long instructorId;
         private Long assignmentId;
+        private Long majorId;
         private Long admissionPeriodId;
         private String studentName;
         private String studentEmail;
@@ -33,6 +35,7 @@ public class AssignmentAnalystDto {
         private String instructorName;
         private String instructorEmail;
         private String assignmentName;
+        private String majorName;
         private Date createAt;
         private String admissionPeriodName;
         private Integer statusAssignment;

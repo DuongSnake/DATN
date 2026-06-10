@@ -1,11 +1,14 @@
 package com.example.bloodbankmanagement.repository.report_month_analist;
 
+import ch.qos.logback.classic.Logger;
+import com.example.bloodbankmanagement.common.security.AuthTokenFilter;
 import com.example.bloodbankmanagement.common.untils.CommonUtil;
 import com.example.bloodbankmanagement.dto.objectRepository.AssignmentStudentAnalystDto;
 import com.example.bloodbankmanagement.dto.service.report_month_analist.AssignmentAnalystDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
@@ -16,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class AssignmentAnalystRepository {
+    private static final Logger logger = (Logger) LoggerFactory.getLogger(AssignmentAnalystRepository.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -27,6 +31,8 @@ public class AssignmentAnalystRepository {
         LocalDate valueEndDate = null;
         Long valueAssignmentId = null;
         Long valueAdmissionPeriodId = null;
+        Long valueMajorId = null;
+        String valueStatusAssignment = null;
         int valuePageNum = 0;
         int valuePageSize = 10;
 
@@ -48,9 +54,76 @@ public class AssignmentAnalystRepository {
             if (request.getAdmissionPeriodId() != null) {
                 valueAdmissionPeriodId = request.getAdmissionPeriodId();
             }
+            if (request.getMajorId() != null) {
+                valueMajorId = request.getMajorId();
+            }
+            if (request.getStatusAssignment() != null) {
+                valueStatusAssignment = request.getStatusAssignment();
+            }
+        }
+        StringBuilder baseSql = new StringBuilder(" FROM student_map_instructor smi " +
+                "FULL OUTER JOIN student_map_critical smc ON smi.student_id = smc.student_id " +
+                "LEFT JOIN users u_student    ON u_student.id = COALESCE(smi.student_id, smc.student_id) " +
+                "LEFT JOIN users u_critical   ON u_critical.id = smc.critical_teacher_id " +
+                "LEFT JOIN users u_instructor ON u_instructor.id = smi.instructor_id " +
+                "JOIN assignment_student_register asr ON u_student.id = asr.student_id " +
+                "JOIN period_assignment pa ON  asr.period_assignment_id = pa.id " +
+                "JOIN admission_period ap on pa.admission_period_id = ap.id " +
+                "JOIN major majors on pa.major_id = majors.id ");
+        // Add conditions safely
+        if (valueStudentId != null) {
+            baseSql.append(" AND u_student.id = :studentId");
+        }
+        if (valueAssignmentId != null) {
+            baseSql.append(" AND asr.id = :assignmentId");
+        }
+        if (valueAdmissionPeriodId != null) {
+            baseSql.append(" AND ap.id = :admissionPeriodId");
+        }
+        if (valueMajorId != null) {
+            baseSql.append(" AND pa.major_id = :majorId");
+        }
+        if (valueStatusAssignment != null) {
+            baseSql.append(" AND asr.is_approved = :statusAssignment");
+        }
+        if (valueStartDate != null && valueEndDate != null) {
+            baseSql.append(" AND asr.create_at BETWEEN :startDate AND :endDate");
+        }
+        String countSql = "SELECT count(smi.student_id)" + baseSql.toString();
+        logger.info("Sql count query:"+countSql);
+        Query countQuery = entityManager.createNativeQuery(countSql);
+
+        // Bind parameters
+        if (valueStudentId != null) {
+            countQuery.setParameter("studentId", valueStudentId);
+        }
+        if (valueAssignmentId != null) {
+            countQuery.setParameter("assignmentId", valueAssignmentId);
+        }
+        if (valueAdmissionPeriodId != null) {
+            countQuery.setParameter("admissionPeriodId", valueAdmissionPeriodId);
+        }
+        if (valueMajorId != null) {
+            countQuery.setParameter("majorId", valueMajorId);
+        }
+        if (valueStatusAssignment != null) {
+            countQuery.setParameter("statusAssignment", valueStatusAssignment);
+        }
+        if (valueStartDate != null && valueEndDate != null) {
+            countQuery.setParameter("startDate", valueStartDate);
+            countQuery.setParameter("endDate", valueEndDate);
+        }
+        Number totalRecords = ((Number) countQuery.getSingleResult());
+        logger.info("Sql count query  have full condition:"+countQuery.toString());
+        Number totalPages = 0;
+        //Set value total page
+        if(totalRecords.intValue() <= valuePageSize){
+            totalPages = 1;
+        }else{
+            totalPages = (totalRecords.intValue()) / valuePageSize;
         }
 
-// Base SQL
+        // Base SQL
         StringBuilder sql = new StringBuilder(
                 "SELECT " +
                         "  COALESCE(smi.student_id, smc.student_id) AS studentId, " +
@@ -65,19 +138,13 @@ public class AssignmentAnalystRepository {
                         "  asr.assignment_name as assignmentName, "  +
                         "  asr.create_at as createAt," +
                         "  ap.admission_period_name as admissionPeriodName, " +
-                        "  asr.is_approved as statusAssignment " +
-                        "FROM student_map_instructor smi " +
-                        "FULL OUTER JOIN student_map_critical smc ON smi.student_id = smc.student_id " +
-                        "LEFT JOIN users u_student    ON u_student.id = COALESCE(smi.student_id, smc.student_id) " +
-                        "LEFT JOIN users u_critical   ON u_critical.id = smc.critical_teacher_id " +
-                        "LEFT JOIN users u_instructor ON u_instructor.id = smi.instructor_id " +
-                        "JOIN assignment_student_register asr ON u_student.id = asr.student_id " +
-                        "JOIN period_assignment pa ON  asr.period_assignment_id = pa.id " +
-                        "JOIN admission_period ap on pa.admission_period_id = ap.id " +
-                        "WHERE 1=1 "
+                        "  asr.is_approved as statusAssignment, " +
+                        "  pa.major_id as majorId, " +
+                        "  majors.major_name as majorName " +
+                        baseSql.toString()+
+                        " WHERE 1=1 "
         );
-
-// Add conditions safely
+        // Add conditions safely
         if (valueStudentId != null) {
             sql.append(" AND u_student.id = :studentId");
         }
@@ -87,10 +154,15 @@ public class AssignmentAnalystRepository {
         if (valueAdmissionPeriodId != null) {
             sql.append(" AND ap.id = :admissionPeriodId");
         }
+        if (valueMajorId != null) {
+            sql.append(" AND pa.major_id = :majorId");
+        }
+        if (valueStatusAssignment != null) {
+            sql.append(" AND asr.is_approved = :statusAssignment");
+        }
         if (valueStartDate != null && valueEndDate != null) {
             sql.append(" AND asr.create_at BETWEEN :startDate AND :endDate");
         }
-
 // Pagination
         Integer valueRealPageNum = 0;
         if(valuePageNum == 0){
@@ -102,7 +174,7 @@ public class AssignmentAnalystRepository {
         int offset = valueRealPageNum * valuePageSize;
         sql.append(" ORDER BY u_student.id"); // always order for pagination
         sql.append(" OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY");
-
+        logger.info("Sql query with pagination:"+sql.toString());
 // Create query
         Query query = entityManager.createNativeQuery(sql.toString());
 
@@ -116,6 +188,12 @@ public class AssignmentAnalystRepository {
         if (valueAdmissionPeriodId != null) {
             query.setParameter("admissionPeriodId", valueAdmissionPeriodId);
         }
+        if (valueMajorId != null) {
+            query.setParameter("majorId", valueMajorId);
+        }
+        if (valueStatusAssignment != null) {
+            query.setParameter("statusAssignment", valueStatusAssignment);
+        }
         if (valueStartDate != null && valueEndDate != null) {
             query.setParameter("startDate", valueStartDate);
             query.setParameter("endDate", valueEndDate);
@@ -125,6 +203,7 @@ public class AssignmentAnalystRepository {
 
 // Execute
         List<Object[]> rows = query.getResultList();
+        logger.info("Sql query with pagination have full condition:"+countQuery.toString());
 
 // Map results
         List<AssignmentAnalystDto.AssignmentAnalystSelectListResponse> listResponse = new ArrayList<>();
@@ -146,8 +225,12 @@ public class AssignmentAnalystRepository {
             objectResponse.setAdmissionPeriodName((String) row[13]);
             objectResponse.setStatusAssignment((Integer) row[14]);
             objectResponse.setValueStatusAssignmentDisplayName(CommonUtil.getDisplayNameStatusIsApprove(objectResponse.getStatusAssignment()));
+            objectResponse.setMajorId(null != row[15] ? ((Number) row[15]).longValue() : null);
+            objectResponse.setMajorName((String) row[16]);
             listResponse.add(objectResponse);
         }
+        logger.info("Total record:"+totalRecords);
+        logger.info("Total page:"+totalPages);
         return listResponse;
 
     }
