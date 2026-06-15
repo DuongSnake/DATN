@@ -17,9 +17,9 @@ import java.util.List;
 @Entity
 @Table(name = "score_assignment")
 public class ScoreAssignment extends EntityCommon {
-    private Double scoreInstructor;//Điểm trung bình
+    private Double scoreInstructor;//Điểm giao vien huong dan(diem qua trinh)
     private Double scoreExaminer;//Điểm bảo vệ
-    private Double scoreCritical;//Điểm quá trình
+    private Double scoreCritical;//Điểm giao vien phan bien
     private String note;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignment_register_info_id")
@@ -27,6 +27,9 @@ public class ScoreAssignment extends EntityCommon {
 
     public static ScoreAssignmentDto.ScoreAssignmentSelectInfoResponse convertToDto(ScoreAssignment request){
         ScoreAssignmentDto.ScoreAssignmentSelectInfoResponse objectDtoResponse = new ScoreAssignmentDto.ScoreAssignmentSelectInfoResponse();
+        Double rateExam = 6.0;
+        Double rateInstructor = 4.0;
+        Double totalRate = 10.0;
         if(request != null){
             Long assignmentRegisterId = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getId() : null;
             String assignmentRegisterName = null != request.getAssignmentRegisterInfo() ? request.getAssignmentRegisterInfo().getAssignmentName() : null;
@@ -38,13 +41,14 @@ public class ScoreAssignment extends EntityCommon {
             objectDtoResponse.setScoreExaminer(request.getScoreExaminer());
             objectDtoResponse.setScoreInstructor(request.getScoreInstructor());
             objectDtoResponse.setScoreCritical(request.getScoreCritical());
-            if(!StringUtils.isEmpty(String.valueOf(request.getScoreCritical())) && !StringUtils.isEmpty(String.valueOf(request.getScoreInstructor()))
+            //Check caculate average score
+            if(!StringUtils.isEmpty(String.valueOf(request.getScoreInstructor()))
                     && !StringUtils.isEmpty(String.valueOf(request.getScoreExaminer()))){
                 Double valueAverage = 0.0;
-                valueAverage +=request.getScoreCritical();
-                valueAverage +=request.getScoreInstructor();
-                valueAverage +=request.getScoreExaminer();
-                valueAverage = valueAverage/3;
+                //Please update get value from column in table calculate_average_score instead of set value default rate to 40-60
+                Double valueScoreExam = rateExam * request.getScoreExaminer();
+                Double valueScoreInstructor = rateInstructor * request.getScoreInstructor();
+                valueAverage = (valueScoreExam +valueScoreInstructor)/totalRate;
                 objectDtoResponse.setScoreAverage(valueAverage);
             }else{
                 objectDtoResponse.setScoreAverage(null);
@@ -59,8 +63,11 @@ public class ScoreAssignment extends EntityCommon {
         return objectDtoResponse;
     }
 
-    public static PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListInfo> convertListObjectToDto(List<ScoreAssignment> listRequestUser, Long totalRecord){
+    public static PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListInfo> convertListObjectToDto(List<ScoreAssignment> listRequestUser, Long totalRecord, CalculateAverageScore rateCalculateAverage){
         PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListInfo> objectDtoResponse = new PageAmtListResponseDto<>();
+        Double rateExam = rateCalculateAverage.getRateExam();
+        Double rateInstructor = rateCalculateAverage.getRateInstructor();
+        Double totalRate = rateCalculateAverage.getTotalRate();
         List<ScoreAssignmentDto.ScoreAssignmentListInfo> listScoreAssignmentDto = new ArrayList<ScoreAssignmentDto.ScoreAssignmentListInfo>();
         if(listRequestUser.size() >0 ){
             for (int i=0;i<listRequestUser.size();i++){
@@ -77,13 +84,13 @@ public class ScoreAssignment extends EntityCommon {
                 newObject.setScoreInstructor(listRequestUser.get(i).getScoreInstructor());
                 newObject.setScoreCritical(listRequestUser.get(i).getScoreCritical());
                 //Check caculate average score
-                if(!StringUtils.isEmpty(String.valueOf(listRequestUser.get(i).getScoreCritical())) && !StringUtils.isEmpty(String.valueOf(listRequestUser.get(i).getScoreInstructor()))
+                if(!StringUtils.isEmpty(String.valueOf(listRequestUser.get(i).getScoreInstructor()))
                         && !StringUtils.isEmpty(String.valueOf(listRequestUser.get(i).getScoreExaminer()))){
                     Double valueAverage = 0.0;
-                    valueAverage +=listRequestUser.get(i).getScoreCritical();
-                    valueAverage +=listRequestUser.get(i).getScoreInstructor();
-                    valueAverage +=listRequestUser.get(i).getScoreExaminer();
-                    valueAverage = valueAverage/3;
+                    //Please update get value from column in table calculate_average_score instead of set value default rate to 40-60
+                    Double valueScoreExam = rateExam * listRequestUser.get(i).getScoreExaminer();
+                    Double valueScoreInstructor = rateInstructor * listRequestUser.get(i).getScoreInstructor();
+                    valueAverage = (valueScoreExam +valueScoreInstructor)/totalRate;
                     newObject.setScoreAverage(valueAverage);
                 }else{
                     newObject.setScoreAverage(null);
@@ -118,9 +125,10 @@ public class ScoreAssignment extends EntityCommon {
                 newObject.setScoreInstructor(listRequestUser.get(i).getScoreInstructor());
                 newObject.setScoreCritical(listRequestUser.get(i).getScoreCritical());
                 //Check caculate average score
-                if(!StringUtils.isEmpty(String.valueOf(listRequestUser.get(i).getScoreCritical())) && !StringUtils.isEmpty(String.valueOf(listRequestUser.get(i).getScoreInstructor()))
+                if(!StringUtils.isEmpty(String.valueOf(listRequestUser.get(i).getScoreInstructor()))
                         && !StringUtils.isEmpty(String.valueOf(listRequestUser.get(i).getScoreExaminer()))){
                     Double valueAverage = 0.0;
+                    //Please update get value from column in table calculate_average_score instead of set value default rate to 40-60
                     Double valueScoreExam = rateExam * listRequestUser.get(i).getScoreExaminer();
                     Double valueScoreInstructor = rateInstructor * listRequestUser.get(i).getScoreInstructor();
                     valueAverage = (valueScoreExam +valueScoreInstructor)/totalRate;

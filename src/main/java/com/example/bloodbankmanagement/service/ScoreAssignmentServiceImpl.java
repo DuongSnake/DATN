@@ -80,12 +80,17 @@ public class ScoreAssignmentServiceImpl {
 
     public SingleResponseDto<PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListInfo>> selectListScoreAssignment(ScoreAssignmentDto.ScoreAssignmentSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
+        CalculateAverageScore rateCalculateAverage = new CalculateAverageScore();
+        //Set default rate average score assignment
+        rateCalculateAverage.setRateExam(6.0);
+        rateCalculateAverage.setRateInstructor(4.0);
+        rateCalculateAverage.setTotalRate(10.0);
         PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
         Pageable pageable = new PageRequestDto().getPageable(request.getPageRequestDto());
         //Select list file upload
         Page<ScoreAssignment> listDataFileMetadata = scoreAssignmentRepository.findListScoreAssignment(request, pageable);
-        pageAmtObject = ScoreAssignment.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements());
+        pageAmtObject = ScoreAssignment.convertListObjectToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements(), rateCalculateAverage);
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }

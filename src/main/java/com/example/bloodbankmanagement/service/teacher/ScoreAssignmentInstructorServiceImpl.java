@@ -33,8 +33,9 @@ public class ScoreAssignmentInstructorServiceImpl {
     public SingleResponseDto<PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListInfo>> selectListScoreAssignment(ScoreAssignmentDto.ScoreAssignmentInstructorSelectListInfo request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         CalculateAverageScore rateCalculateAverage = new CalculateAverageScore();
-        rateCalculateAverage.setRateExam(4.0);
-        rateCalculateAverage.setRateInstructor(6.0);
+        //Set default rate average score assignment
+        rateCalculateAverage.setRateExam(6.0);
+        rateCalculateAverage.setRateInstructor(4.0);
         rateCalculateAverage.setTotalRate(10.0);
         PageAmtListResponseDto<ScoreAssignmentDto.ScoreAssignmentListNewInfo> pageAmtObject = new PageAmtListResponseDto<>();
         request.getPageRequestDto().setPageNum(PageRequestDto.reduceValuePage(request.getPageRequestDto().getPageNum()));
