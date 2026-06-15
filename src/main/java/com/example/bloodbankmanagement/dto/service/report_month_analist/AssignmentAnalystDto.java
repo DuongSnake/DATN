@@ -12,8 +12,9 @@ public class AssignmentAnalystDto {
     public static class AssignmentAnalystSelectListRequest {
         private Long assignmentId;
         private Long studentId;
+        private Long instructorId;
         private Long admissionPeriodId;
-        private String statusAssignment;
+        private Integer statusAssignment;
         private Long majorId;
         private LocalDate fromDate;
         private LocalDate toDate;

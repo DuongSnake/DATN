@@ -25,17 +25,7 @@ public class AssignmentAnalystServiceImpl {
     public SingleResponseDto<PageAmtListResponseDto<AssignmentAnalystDto.AssignmentAnalystSelectListResponse>> selectAllTotalData(AssignmentAnalystDto.AssignmentAnalystSelectListRequest request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         PageAmtListResponseDto<AssignmentAnalystDto.AssignmentAnalystSelectListResponse> pageAmtObject = new PageAmtListResponseDto<>();
-        List<AssignmentAnalystDto.AssignmentAnalystSelectListResponse> listDataFileMetadata = new ArrayList<>();
-        //Select list file upload
-        if(!ObjectUtils.isEmpty(request) && "not_map".equals(request.getStatusAssignment())){
-            listDataFileMetadata = assignmentAnalystRepository.findAllAssignment(request);
-        }else if(!ObjectUtils.isEmpty(request) && "map".equals(request.getStatusAssignment())){
-            listDataFileMetadata = assignmentAnalystRepository.findAllAssignment(request);
-        }else{
-            listDataFileMetadata = assignmentAnalystRepository.findAllAssignment(request);
-        }
-        pageAmtObject.setData(listDataFileMetadata);
-        pageAmtObject.setTotalRecord(listDataFileMetadata.size());
+        pageAmtObject = assignmentAnalystRepository.findAllAssignment(request);
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }

@@ -3,6 +3,7 @@ package com.example.bloodbankmanagement.repository.report_month_analist;
 import ch.qos.logback.classic.Logger;
 import com.example.bloodbankmanagement.common.security.AuthTokenFilter;
 import com.example.bloodbankmanagement.common.untils.CommonUtil;
+import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.objectRepository.AssignmentStudentAnalystDto;
 import com.example.bloodbankmanagement.dto.service.report_month_analist.AssignmentAnalystDto;
 import jakarta.persistence.EntityManager;
@@ -24,15 +25,17 @@ public class AssignmentAnalystRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<AssignmentAnalystDto.AssignmentAnalystSelectListResponse> findAllAssignment(AssignmentAnalystDto.AssignmentAnalystSelectListRequest request) {
+    public PageAmtListResponseDto<AssignmentAnalystDto.AssignmentAnalystSelectListResponse> findAllAssignment(AssignmentAnalystDto.AssignmentAnalystSelectListRequest request) {
+        PageAmtListResponseDto<AssignmentAnalystDto.AssignmentAnalystSelectListResponse> pageAmtObject = new PageAmtListResponseDto<>();
         // Values from request
         Long valueStudentId = null;
+        Long valueInstructorId = null;
         LocalDate valueStartDate = null;
         LocalDate valueEndDate = null;
         Long valueAssignmentId = null;
         Long valueAdmissionPeriodId = null;
         Long valueMajorId = null;
-        String valueStatusAssignment = null;
+        Integer valueStatusAssignment = null;
         int valuePageNum = 0;
         int valuePageSize = 10;
 
@@ -60,6 +63,9 @@ public class AssignmentAnalystRepository {
             if (request.getStatusAssignment() != null) {
                 valueStatusAssignment = request.getStatusAssignment();
             }
+            if (request.getInstructorId() != null) {
+                valueInstructorId = request.getInstructorId();
+            }
         }
         StringBuilder baseSql = new StringBuilder(" FROM student_map_instructor smi " +
                 "FULL OUTER JOIN student_map_critical smc ON smi.student_id = smc.student_id " +
@@ -86,6 +92,9 @@ public class AssignmentAnalystRepository {
         if (valueStatusAssignment != null) {
             baseSql.append(" AND asr.is_approved = :statusAssignment");
         }
+        if (valueInstructorId != null) {
+            baseSql.append(" AND smi.instructor_id = :instructorId");
+        }
         if (valueStartDate != null && valueEndDate != null) {
             baseSql.append(" AND asr.create_at BETWEEN :startDate AND :endDate");
         }
@@ -108,6 +117,9 @@ public class AssignmentAnalystRepository {
         }
         if (valueStatusAssignment != null) {
             countQuery.setParameter("statusAssignment", valueStatusAssignment);
+        }
+        if (valueInstructorId != null) {
+            countQuery.setParameter("instructorId", valueInstructorId);
         }
         if (valueStartDate != null && valueEndDate != null) {
             countQuery.setParameter("startDate", valueStartDate);
@@ -160,6 +172,9 @@ public class AssignmentAnalystRepository {
         if (valueStatusAssignment != null) {
             sql.append(" AND asr.is_approved = :statusAssignment");
         }
+        if (valueInstructorId != null) {
+            sql.append(" AND smi.instructor_id = :instructorId");
+        }
         if (valueStartDate != null && valueEndDate != null) {
             sql.append(" AND asr.create_at BETWEEN :startDate AND :endDate");
         }
@@ -193,6 +208,9 @@ public class AssignmentAnalystRepository {
         }
         if (valueStatusAssignment != null) {
             query.setParameter("statusAssignment", valueStatusAssignment);
+        }
+        if (valueInstructorId != null) {
+            query.setParameter("instructorId", valueInstructorId);
         }
         if (valueStartDate != null && valueEndDate != null) {
             query.setParameter("startDate", valueStartDate);
@@ -231,7 +249,9 @@ public class AssignmentAnalystRepository {
         }
         logger.info("Total record:"+totalRecords);
         logger.info("Total page:"+totalPages);
-        return listResponse;
+        pageAmtObject.setData(listResponse);
+        pageAmtObject.setTotalRecord((Integer) totalRecords);
+        return pageAmtObject;
 
     }
 }
