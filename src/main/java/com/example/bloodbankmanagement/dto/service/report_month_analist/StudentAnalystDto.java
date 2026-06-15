@@ -10,6 +10,7 @@ public class StudentAnalystDto {
     @Data
     public static class MajorAnalystSelectListRequest {
         private Long studentId;
+        private Long instructorId;
         private Long admissionPeriod;
         private String statusMapping;
         private LocalDate fromDate;

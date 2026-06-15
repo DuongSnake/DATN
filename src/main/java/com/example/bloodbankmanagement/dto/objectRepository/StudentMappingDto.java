@@ -1,5 +1,6 @@
 package com.example.bloodbankmanagement.dto.objectRepository;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

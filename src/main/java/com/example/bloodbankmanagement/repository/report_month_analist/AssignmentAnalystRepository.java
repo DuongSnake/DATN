@@ -75,7 +75,8 @@ public class AssignmentAnalystRepository {
                 "JOIN assignment_student_register asr ON u_student.id = asr.student_id " +
                 "JOIN period_assignment pa ON  asr.period_assignment_id = pa.id " +
                 "JOIN admission_period ap on pa.admission_period_id = ap.id " +
-                "JOIN major majors on pa.major_id = majors.id ");
+                "JOIN major majors on pa.major_id = majors.id " +
+                " WHERE 1=1 ");
         // Add conditions safely
         if (valueStudentId != null) {
             baseSql.append(" AND u_student.id = :studentId");
@@ -153,8 +154,7 @@ public class AssignmentAnalystRepository {
                         "  asr.is_approved as statusAssignment, " +
                         "  pa.major_id as majorId, " +
                         "  majors.major_name as majorName " +
-                        baseSql.toString()+
-                        " WHERE 1=1 "
+                        baseSql.toString()
         );
         // Add conditions safely
         if (valueStudentId != null) {

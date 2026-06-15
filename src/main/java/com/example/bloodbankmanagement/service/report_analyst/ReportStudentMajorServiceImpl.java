@@ -25,17 +25,8 @@ public class ReportStudentMajorServiceImpl {
     public SingleResponseDto<PageAmtListResponseDto<StudentMappingDto>> selectAllTotalData(StudentAnalystDto.MajorAnalystSelectListRequest request){
         SingleResponseDto objectResponse = new SingleResponseDto();
         PageAmtListResponseDto<StudentMappingDto> pageAmtObject = new PageAmtListResponseDto<>();
-        List<StudentMappingDto> listDataFileMetadata = new ArrayList<>();
         //Select list file upload
-        if(!ObjectUtils.isEmpty(request) && "not_map".equals(request.getStatusMapping())){
-            listDataFileMetadata = studentAnalystRepository.findCompleteStudentNotMapping(request);
-        }else if(!ObjectUtils.isEmpty(request) && "map".equals(request.getStatusMapping())){
-            listDataFileMetadata = studentAnalystRepository.findCompleteStudentMapping(request);
-        }else{
-            listDataFileMetadata = studentAnalystRepository.findCompleteStudentAll(request);
-        }
-        pageAmtObject.setData(listDataFileMetadata);
-        pageAmtObject.setTotalRecord(listDataFileMetadata.size());
+        pageAmtObject = studentAnalystRepository.findCompleteStudentNotMapping(request);
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
     }
