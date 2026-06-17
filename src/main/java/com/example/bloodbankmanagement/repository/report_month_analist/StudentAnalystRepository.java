@@ -4,6 +4,7 @@ package com.example.bloodbankmanagement.repository.report_month_analist;
 import ch.qos.logback.classic.Logger;
 import com.example.bloodbankmanagement.common.untils.CommonUtil;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
+import com.example.bloodbankmanagement.dto.excelObject.StudentListExcel;
 import com.example.bloodbankmanagement.dto.objectRepository.StudentMappingDto;
 import com.example.bloodbankmanagement.dto.service.report_month_analist.AssignmentAnalystDto;
 import com.example.bloodbankmanagement.dto.service.report_month_analist.StudentAnalystDto;
@@ -27,7 +28,7 @@ public class StudentAnalystRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public PageAmtListResponseDto<StudentMappingDto> findCompleteStudentNotMapping(StudentAnalystDto.MajorAnalystSelectListRequest request) {
+    public PageAmtListResponseDto<StudentMappingDto> findCompleteStudentNotMapping(StudentAnalystDto.StudentAnalystSelectListRequest request) {
         PageAmtListResponseDto<StudentMappingDto> pageAmtObject = new PageAmtListResponseDto<>();
         // Values from request
         Long valueStudentId = null;
@@ -177,6 +178,131 @@ public class StudentAnalystRepository {
         pageAmtObject.setData(listResponse);
         pageAmtObject.setTotalRecord((Integer) totalRecords);
         return pageAmtObject;
+    }
+
+
+
+    public List<StudentListExcel> findCompleteStudentNotPagination(StudentAnalystDto.StudentAnalystExportExcelRequest request) {
+
+        // Values from request
+        Long valueStudentId = null;
+        LocalDate valueStartDate = null;
+        Long valueInstructorId = null;
+        LocalDate valueEndDate = null;
+
+        if (request != null) {
+            if (request.getStudentId() != null) {
+                valueStudentId = request.getStudentId();
+            }
+            if(request.getToDate() != null && request.getFromDate() != null){
+                valueStartDate = request.getFromDate();
+                valueEndDate = request.getToDate();
+            }
+            if (request.getInstructorId() != null) {
+                valueInstructorId = request.getInstructorId();
+            }
+        }
+        StringBuilder baseSql = new StringBuilder("FROM student_map_instructor smi " +
+                "FULL OUTER JOIN student_map_critical smc ON smi.student_id = smc.student_id " +
+                "LEFT JOIN users u_student    ON u_student.id = COALESCE(smi.student_id, smc.student_id) " +
+                "LEFT JOIN users u_critical   ON u_critical.id = smc.critical_teacher_id " +
+                "LEFT JOIN users u_instructor ON u_instructor.id = smi.instructor_id " +
+                "WHERE  1=1 "
+        );
+        //Condition map or not map instructor
+        if (!StringUtils.isEmpty(request.getStatusMapping()) && CommonUtil.YES_VALUE.equals(request.getStatusMapping())) {
+            baseSql.append(" AND smi.instructor_id is not null ");
+        }
+        if (!StringUtils.isEmpty(request.getStatusMapping()) && !CommonUtil.YES_VALUE.equals(request.getStatusMapping())) {
+            baseSql.append(" AND smi.instructor_id is null and  smc.critical_teacher_id is null ");
+        }
+
+// Add conditions safely
+        if (valueStudentId != null) {
+            baseSql.append(" AND u_student.id = :studentId");
+        }
+        if (valueStartDate != null && valueEndDate != null) {
+            baseSql.append(" AND u_student.create_at BETWEEN :startDate AND :endDate");
+        }
+        if (valueInstructorId != null) {
+            baseSql.append(" AND smi.instructor_id = :instructorId");
+        }
+
+
+
+// Base SQL
+        StringBuilder sql = new StringBuilder("SELECT " +
+                "  COALESCE(smi.student_id, smc.student_id) AS studentId, " +
+                "  smc.critical_teacher_id AS criticalId, " +
+                "  smi.instructor_id AS instructorId, " +
+                "  u_student.full_name AS studentName, u_student.email AS studentEmail, " +
+                "  u_critical.full_name AS criticalName, u_critical.email AS criticalEmail, " +
+                "  u_instructor.full_name AS instructorName, u_instructor.email AS instructorEmail," +
+                "  u_student.create_at as createAt " +
+                baseSql.toString()
+        );
+
+
+// Add conditions safely
+        if (valueStudentId != null) {
+            sql.append(" AND u_student.id = :studentId");
+        }
+        if (valueStartDate != null && valueEndDate != null) {
+            sql.append(" AND u_student.create_at BETWEEN :startDate AND :endDate");
+        }
+        if (valueInstructorId != null) {
+            sql.append(" AND smi.instructor_id = :instructorId");
+        }
+
+// Create query
+        Query query = entityManager.createNativeQuery(sql.toString());
+
+// Bind parameters
+        if (valueStudentId != null) {
+            query.setParameter("studentId", valueStudentId);
+        }
+        if (valueStartDate != null && valueEndDate != null) {
+            query.setParameter("startDate", valueStartDate);
+            query.setParameter("endDate", valueEndDate);
+        }
+        if (valueInstructorId != null) {
+            query.setParameter("instructorId", valueInstructorId);
+        }
+
+// Execute
+        List<Object[]> rows = query.getResultList();
+
+        // Map results
+        List<StudentListExcel> listResponse = new ArrayList<>();
+        for(Object[] row : rows){
+            StudentListExcel objectResponse = new StudentListExcel();
+            objectResponse.setStudentId(null != row[0] ? ((Number) row[0]).longValue() : null);
+            Long criticalId = (null != row[1]) ? ((Number) row[1]).longValue() : null;
+            Long instructorId = (null != row[2]) ? ((Number) row[2]).longValue() : null;
+            objectResponse.setCriticalId(criticalId);
+            objectResponse.setInstructorId(instructorId);
+            objectResponse.setStudentName((String) row[3]);
+            objectResponse.setStudentEmail((String) row[4]);
+            //Set value critical name and email field critical when value not found
+            if(null != criticalId){
+                objectResponse.setCriticalName((String) row[5]);
+                objectResponse.setCriticalEmail((String) row[6]);
+            }else{
+                objectResponse.setCriticalName(CommonUtil.NOT_ASSIGN);
+                objectResponse.setCriticalEmail(null);
+            }
+            //Set value instructor name and email follow field instructor when value not found
+            if(null != instructorId){
+                objectResponse.setInstructorName((String) row[7]);
+                objectResponse.setInstructorEmail((String) row[8]);
+            }else{
+                objectResponse.setInstructorName(CommonUtil.NOT_ASSIGN);
+                objectResponse.setInstructorEmail(null);
+            }
+            objectResponse.setCreateAt((Date) row[9]);
+            listResponse.add(objectResponse);
+        }
+        return listResponse;
     }
 
 }

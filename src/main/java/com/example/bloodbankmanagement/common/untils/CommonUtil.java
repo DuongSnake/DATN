@@ -65,6 +65,7 @@ public class CommonUtil {
     public static final String STATUS_REJECT_APPROVE_FINAL_ASSIGNMENT_DISPLAY_TEXT = "Từ chối duyệt bảo vệ";
     public static final String STATUS_APPROVE_FINAL_DISPLAY_TEXT = "Duyệt bảo vệ xong";
     public static final String MANUAL_MAP_INSTRUCTOR_DISPLAY_TEXT = "Không sử dụng";
+    public static final String NOT_ASSIGN = "Chưa phân công";
 
     private CommonUtil() {
     }

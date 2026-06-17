@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class StudentAnalystDto {
 
     @Data
-    public static class MajorAnalystSelectListRequest {
+    public static class StudentAnalystSelectListRequest {
         private Long studentId;
         private Long instructorId;
         private Long admissionPeriod;
@@ -16,5 +16,15 @@ public class StudentAnalystDto {
         private LocalDate fromDate;
         private LocalDate toDate;
         private PageRequestDto pageRequestDto;
+    }
+
+    @Data
+    public static class StudentAnalystExportExcelRequest {
+        private Long studentId;
+        private Long instructorId;
+        private Long admissionPeriod;
+        private String statusMapping;
+        private LocalDate fromDate;
+        private LocalDate toDate;
     }
 }
