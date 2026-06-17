@@ -243,16 +243,6 @@ public class StudentAnalystRepository {
         );
 
 
-// Add conditions safely
-        if (valueStudentId != null) {
-            sql.append(" AND u_student.id = :studentId");
-        }
-        if (valueStartDate != null && valueEndDate != null) {
-            sql.append(" AND u_student.create_at BETWEEN :startDate AND :endDate");
-        }
-        if (valueInstructorId != null) {
-            sql.append(" AND smi.instructor_id = :instructorId");
-        }
 
 // Create query
         Query query = entityManager.createNativeQuery(sql.toString());

@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Logger;
 import com.example.bloodbankmanagement.common.security.AuthTokenFilter;
 import com.example.bloodbankmanagement.common.untils.CommonUtil;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
+import com.example.bloodbankmanagement.dto.excelObject.AssignmentListExcel;
 import com.example.bloodbankmanagement.dto.objectRepository.AssignmentStudentAnalystDto;
 import com.example.bloodbankmanagement.dto.service.report_month_analist.AssignmentAnalystDto;
 import jakarta.persistence.EntityManager;
@@ -156,28 +157,6 @@ public class AssignmentAnalystRepository {
                         "  majors.major_name as majorName " +
                         baseSql.toString()
         );
-        // Add conditions safely
-        if (valueStudentId != null) {
-            sql.append(" AND u_student.id = :studentId");
-        }
-        if (valueAssignmentId != null) {
-            sql.append(" AND asr.id = :assignmentId");
-        }
-        if (valueAdmissionPeriodId != null) {
-            sql.append(" AND ap.id = :admissionPeriodId");
-        }
-        if (valueMajorId != null) {
-            sql.append(" AND pa.major_id = :majorId");
-        }
-        if (valueStatusAssignment != null) {
-            sql.append(" AND asr.is_approved = :statusAssignment");
-        }
-        if (valueInstructorId != null) {
-            sql.append(" AND smi.instructor_id = :instructorId");
-        }
-        if (valueStartDate != null && valueEndDate != null) {
-            sql.append(" AND asr.create_at BETWEEN :startDate AND :endDate");
-        }
 // Pagination
         Integer valueRealPageNum = 0;
         if(valuePageNum == 0){
@@ -193,29 +172,6 @@ public class AssignmentAnalystRepository {
 // Create query
         Query query = entityManager.createNativeQuery(sql.toString());
 
-// Bind parameters
-        if (valueStudentId != null) {
-            query.setParameter("studentId", valueStudentId);
-        }
-        if (valueAssignmentId != null) {
-            query.setParameter("assignmentId", valueAssignmentId);
-        }
-        if (valueAdmissionPeriodId != null) {
-            query.setParameter("admissionPeriodId", valueAdmissionPeriodId);
-        }
-        if (valueMajorId != null) {
-            query.setParameter("majorId", valueMajorId);
-        }
-        if (valueStatusAssignment != null) {
-            query.setParameter("statusAssignment", valueStatusAssignment);
-        }
-        if (valueInstructorId != null) {
-            query.setParameter("instructorId", valueInstructorId);
-        }
-        if (valueStartDate != null && valueEndDate != null) {
-            query.setParameter("startDate", valueStartDate);
-            query.setParameter("endDate", valueEndDate);
-        }
         query.setParameter("limit", valuePageSize);
         query.setParameter("offset", offset);
 
@@ -252,6 +208,167 @@ public class AssignmentAnalystRepository {
         pageAmtObject.setData(listResponse);
         pageAmtObject.setTotalRecord((Integer) totalRecords);
         return pageAmtObject;
+
+    }
+
+    public List<AssignmentListExcel> findAllAssignmentExportExcel(AssignmentAnalystDto.AssignmentAnalystExportExcelRequest request) {
+        // Values from request
+        Long valueStudentId = null;
+        Long valueInstructorId = null;
+        LocalDate valueStartDate = null;
+        LocalDate valueEndDate = null;
+        Long valueAssignmentId = null;
+        Long valueAdmissionPeriodId = null;
+        Long valueMajorId = null;
+        Integer valueStatusAssignment = null;
+        int valuePageNum = 0;
+        int valuePageSize = 10;
+
+        if (request != null) {
+            if (request.getStudentId() != null) {
+                valueStudentId = request.getStudentId();
+            }
+            if(request.getToDate() != null && request.getFromDate() != null){
+                valueStartDate = request.getFromDate();
+                valueEndDate = request.getToDate();
+            }
+            if (request.getAssignmentId() != null) {
+                valueAssignmentId = request.getAssignmentId();
+            }
+            if (request.getAdmissionPeriodId() != null) {
+                valueAdmissionPeriodId = request.getAdmissionPeriodId();
+            }
+            if (request.getMajorId() != null) {
+                valueMajorId = request.getMajorId();
+            }
+            if (request.getStatusAssignment() != null) {
+                valueStatusAssignment = request.getStatusAssignment();
+            }
+            if (request.getInstructorId() != null) {
+                valueInstructorId = request.getInstructorId();
+            }
+        }
+        StringBuilder baseSql = new StringBuilder(" FROM student_map_instructor smi " +
+                "FULL OUTER JOIN student_map_critical smc ON smi.student_id = smc.student_id " +
+                "LEFT JOIN users u_student    ON u_student.id = COALESCE(smi.student_id, smc.student_id) " +
+                "LEFT JOIN users u_critical   ON u_critical.id = smc.critical_teacher_id " +
+                "LEFT JOIN users u_instructor ON u_instructor.id = smi.instructor_id " +
+                "JOIN assignment_student_register asr ON u_student.id = asr.student_id " +
+                "JOIN period_assignment pa ON  asr.period_assignment_id = pa.id " +
+                "JOIN admission_period ap on pa.admission_period_id = ap.id " +
+                "JOIN major majors on pa.major_id = majors.id " +
+                " WHERE 1=1 ");
+        // Base SQL
+        StringBuilder sql = new StringBuilder(
+                "SELECT " +
+                        "  COALESCE(smi.student_id, smc.student_id) AS studentId, " +
+                        "  smc.critical_teacher_id AS criticalId, " +
+                        "  smi.instructor_id AS instructorId, " +
+                        "  asr.id as assignmentId, " +
+                        "  ap.id as admissionPeriodId, " +
+                        "  u_student.full_name AS studentName," +
+                        "  u_student.email AS studentEmail, " +
+                        "  u_critical.full_name AS criticalName, u_critical.email AS criticalEmail, " +
+                        "  u_instructor.full_name AS instructorName, u_instructor.email AS instructorEmail, " +
+                        "  asr.assignment_name as assignmentName, "  +
+                        "  asr.create_at as createAt," +
+                        "  ap.admission_period_name as admissionPeriodName, " +
+                        "  asr.is_approved as statusAssignment, " +
+                        "  pa.major_id as majorId, " +
+                        "  majors.major_name as majorName " +
+                        baseSql.toString()
+        );
+        // Add conditions safely
+        if (valueStudentId != null) {
+            sql.append(" AND u_student.id = :studentId");
+        }
+        if (valueAssignmentId != null) {
+            sql.append(" AND asr.id = :assignmentId");
+        }
+        if (valueAdmissionPeriodId != null) {
+            sql.append(" AND ap.id = :admissionPeriodId");
+        }
+        if (valueMajorId != null) {
+            sql.append(" AND pa.major_id = :majorId");
+        }
+        if (valueStatusAssignment != null) {
+            sql.append(" AND asr.is_approved = :statusAssignment");
+        }
+        if (valueInstructorId != null) {
+            sql.append(" AND smi.instructor_id = :instructorId");
+        }
+        if (valueStartDate != null && valueEndDate != null) {
+            sql.append(" AND asr.create_at BETWEEN :startDate AND :endDate");
+        }
+// Create query
+        Query query = entityManager.createNativeQuery(sql.toString());
+
+// Bind parameters
+        if (valueStudentId != null) {
+            query.setParameter("studentId", valueStudentId);
+        }
+        if (valueAssignmentId != null) {
+            query.setParameter("assignmentId", valueAssignmentId);
+        }
+        if (valueAdmissionPeriodId != null) {
+            query.setParameter("admissionPeriodId", valueAdmissionPeriodId);
+        }
+        if (valueMajorId != null) {
+            query.setParameter("majorId", valueMajorId);
+        }
+        if (valueStatusAssignment != null) {
+            query.setParameter("statusAssignment", valueStatusAssignment);
+        }
+        if (valueInstructorId != null) {
+            query.setParameter("instructorId", valueInstructorId);
+        }
+        if (valueStartDate != null && valueEndDate != null) {
+            query.setParameter("startDate", valueStartDate);
+            query.setParameter("endDate", valueEndDate);
+        }
+
+// Execute
+        List<Object[]> rows = query.getResultList();
+
+// Map results
+        List<AssignmentListExcel> listResponse = new ArrayList<>();
+        for(Object[] row : rows){
+            AssignmentListExcel objectResponse = new AssignmentListExcel();
+            objectResponse.setStudentId(null != row[0] ? ((Number) row[0]).longValue() : null);
+            Long criticalId = (null != row[1]) ? ((Number) row[1]).longValue() : null;
+            Long instructorId = (null != row[2]) ? ((Number) row[2]).longValue() : null;
+            Long assignmentId = (null != row[3]) ? ((Number) row[3]).longValue() : null;
+            Long admissionPeriodId = (null != row[4]) ? ((Number) row[4]).longValue() : null;
+            objectResponse.setStudentName((String) row[5]);
+            objectResponse.setAssignmentId(assignmentId);
+            objectResponse.setStudentEmail((String) row[6]);
+            if(null != criticalId){
+                objectResponse.setCriticalName((String) row[7]);
+            }else{
+                objectResponse.setCriticalName(CommonUtil.NOT_ASSIGN);
+            }
+            if(null != instructorId){
+                objectResponse.setInstructorName((String) row[9]);
+            }else{
+                objectResponse.setInstructorName(CommonUtil.NOT_ASSIGN);
+            }
+            if(null != assignmentId){
+                objectResponse.setAssignmentName((String) row[11]);
+            }else{
+                objectResponse.setInstructorName(CommonUtil.NOT_REGISTER);
+            }
+            if(null != admissionPeriodId){
+                objectResponse.setAdmissionPeriodName((String) row[13]);
+            }
+            objectResponse.setCreateAt((Date) row[12]);
+            Integer statusAssignment = (null != row[14]) ? ((Integer) row[14]) : null;
+            if(null != statusAssignment){
+                objectResponse.setValueStatusAssignmentDisplayName(CommonUtil.getDisplayNameStatusIsApprove(statusAssignment));
+            }
+            objectResponse.setMajorName((String) row[16]);
+            listResponse.add(objectResponse);
+        }
+        return listResponse;
 
     }
 }

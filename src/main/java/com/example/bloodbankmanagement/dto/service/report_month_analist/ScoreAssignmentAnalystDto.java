@@ -22,6 +22,18 @@ public class ScoreAssignmentAnalystDto {
     }
 
     @Data
+    public static class ScoreAssignmentAnalystExportExcelRequest {
+        private Long assignmentId;
+        private Long studentId;
+        private Long instructorId;
+        private Long admissionPeriodId;
+        private Integer statusAssignment;
+        private Long majorId;
+        private LocalDate fromDate;
+        private LocalDate toDate;
+    }
+
+    @Data
     public static class ScoreAssignmentAnalystSelectListResponse {
         private Long studentId;
         private Long criticalId;

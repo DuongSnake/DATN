@@ -125,9 +125,9 @@ public class ReportYearServiceImpl {
         String userId = CommonUtil.getUsernameByToken();
         List<User> listAllUser = userRepository.findAll();
         List<StudentDto.StudentForExportExcelResponse> listDataConvert = convertToObjectExportExcel(listAllUser);
-        List<StudentExcel> dtoObject = studentExportMapper.toEntity(listDataConvert);//studentExportMapper.toEntity(listAllUser)
+        List<StudentExcel> dtoObject = studentExportMapper.toEntity(listDataConvert);
         HashMap<String, String> map = new LinkedHashMap<>();
-            map.put("Danh sach thong tin sinh vien dang ky nam nay", "");
+            map.put("Danh sách sinh viên", "");
             map.put(CommonUtil.HeaderExcel.CREATE_USER_VI.toString(), userId);
             map.put(CommonUtil.HeaderExcel.DATE_VI.toString(), DateUtil.nowToTimestampStr());
         logger.info("Z033 Export excel End");

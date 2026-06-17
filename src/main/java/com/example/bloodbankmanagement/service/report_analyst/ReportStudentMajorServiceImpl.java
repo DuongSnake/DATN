@@ -43,9 +43,9 @@ public class ReportStudentMajorServiceImpl {
     public ExcelFile exportExcelDynamicObject(StudentAnalystDto.StudentAnalystExportExcelRequest request) {
         //Write data in sheet(set name and value cell by object)
         String userId = CommonUtil.getUsernameByToken();
-        List<StudentListExcel> dtoObject = studentAnalystRepository.findCompleteStudentNotPagination(request);;//studentExportMapper.toEntity(listAllUser)
+        List<StudentListExcel> dtoObject = studentAnalystRepository.findCompleteStudentNotPagination(request);
         HashMap<String, String> map = new LinkedHashMap<>();
-        map.put("Danh sach thong tin sinh vien dang ky nam nay", "");
+        map.put("Danh sách sinh viên", "");
         map.put(CommonUtil.HeaderExcel.CREATE_USER_VI.toString(), userId);
         map.put(CommonUtil.HeaderExcel.DATE_VI.toString(), DateUtil.nowToTimestampStr());
         logger.info("Z033 Export excel End");
