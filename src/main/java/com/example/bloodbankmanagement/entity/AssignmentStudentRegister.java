@@ -127,5 +127,27 @@ public class AssignmentStudentRegister extends EntityCommon {
                 return CommonUtil.STATUS_NOT_ACCEPT_DISPLAY_TEXT;
         }
     }
+    public static AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse convertToDtoCheckLog(AssignmentStudentRegisterDTO request){
+        AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse objectDtoResponse = new AssignmentStudentRegisterDto.AssignmentStudentRegisterSelectInfoResponse();
+        if(request != null){
+            objectDtoResponse.setAssignmentStudentRegisterId(request.getAssignmentStudentRegisterId());
+            objectDtoResponse.setAssignmentStudentRegisterName(request.getAssignmentStudentRegisterName());
+            objectDtoResponse.setStudentId(request.getStudentId());
+            objectDtoResponse.setStudentName(request.getStudentName());
+            objectDtoResponse.setInstructorName(request.getInstructorName());
+            objectDtoResponse.setFileName(request.getFileName());
+            objectDtoResponse.setFileType(request.getFileType());
+            objectDtoResponse.setIsApproved(request.getIsApproved());
+            objectDtoResponse.setPeriodAssignmentId(request.getPeriodAssignmentId());
+            objectDtoResponse.setPeriodAssignmentName(request.getPeriodAssignmentName());
+            objectDtoResponse.setExpirePeriodDate(request.getExpirePeriodDate());
+            objectDtoResponse.setStatus(request.getStatus());
+            objectDtoResponse.setCreateAt(request.getCreateAt());
+            objectDtoResponse.setStatusAutoMap(request.getStatusAutoMap());
+            objectDtoResponse.setCreateUser(request.getCreateUser());
+            objectDtoResponse.setOldValueId(request.getOldValueId());
+        }
+        return objectDtoResponse;
+    }
 
 }

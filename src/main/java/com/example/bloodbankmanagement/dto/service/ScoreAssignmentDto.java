@@ -2,6 +2,8 @@ package com.example.bloodbankmanagement.dto.service;
 
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -150,5 +152,19 @@ public class ScoreAssignmentDto {
         private Long majorId;
         private Long instructorId;
         private Integer typeApprove;
+    }
+
+    @Data
+    public static class UploadFileScoreAssignmentInfo {
+        private String numberIndex;
+        private Long assignmentId;
+        private String scoreInstructor;
+        private String scoreExaminer;
+        private List<String> errors;
+    }
+
+    @Data
+    public static class UploadBatchFileRegisterScoreAssignmentInfo {
+        private MultipartFile fileUploadContent;
     }
 }

@@ -5,6 +5,8 @@ import com.example.bloodbankmanagement.common.ResponseCommon;
 import com.example.bloodbankmanagement.common.exception.CustomException;
 import com.example.bloodbankmanagement.common.security.AuthTokenFilter;
 import com.example.bloodbankmanagement.common.untils.CommonUtil;
+import com.example.bloodbankmanagement.common.untils.ExcelUtils;
+import com.example.bloodbankmanagement.common.untils.NativeSqlInsertStrategy;
 import com.example.bloodbankmanagement.dto.common.BasicResponseDto;
 import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
@@ -13,8 +15,10 @@ import com.example.bloodbankmanagement.dto.objectRepository.ScoreSelectListAssig
 import com.example.bloodbankmanagement.dto.pagination.PageRequestDto;
 import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.dto.service.ScoreAssignmentDto;
+import com.example.bloodbankmanagement.dto.service.StudentManagementDto;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegister;
 import com.example.bloodbankmanagement.dto.service.student.AssignmentRegisterDto;
+import com.example.bloodbankmanagement.dto.service.student.StudentDto;
 import com.example.bloodbankmanagement.entity.*;
 import com.example.bloodbankmanagement.repository.AssignmentStudentRegisterRepository;
 import com.example.bloodbankmanagement.repository.CalculateAverageScoreRepository;
@@ -22,15 +26,27 @@ import com.example.bloodbankmanagement.repository.ScoreAssignmentRepository;
 import com.example.bloodbankmanagement.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +57,7 @@ public class ScoreAssignmentServiceImpl {
     private final AssignmentStudentRegisterRepository assignmentStudentRegisterRepository;
     private final ResponseCommon responseService;
     private final CalculateAverageScoreRepository calculateAverageScoreRepository;
+    private final NativeSqlInsertStrategy nativeSqlInsertStrategy;
 
     @Transactional
     public BasicResponseDto insertScoreAssignment(ScoreAssignmentDto.ScoreAssignmentInsertInfo request, String lang) {
@@ -212,5 +229,86 @@ public class ScoreAssignmentServiceImpl {
         pageAmtObject = ScoreAssignment.convertListObjectNewToDto(listDataFileMetadata.getContent(), listDataFileMetadata.getTotalElements(), rateCalculateAverage);
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;
+    }
+
+    @Transactional
+    public BasicResponseDto uploadFileRegisterListStudent(ScoreAssignmentDto.UploadBatchFileRegisterScoreAssignmentInfo request, @RequestHeader("lang") String lang){
+        //Check list in file upload
+        BasicResponseDto objectResponse = null;
+        boolean statusInsertAll = true;
+        List<ScoreAssignmentDto.UploadFileScoreAssignmentInfo> listPosPayerFromExcel = buildListUserFromExcel(request.getFileUploadContent(), lang);
+        validateFileExcel(listPosPayerFromExcel, lang);
+        //set default value success
+        objectResponse=responseService.getSingleResponse(listPosPayerFromExcel);
+        //Set value if have any problem when insert
+        for (ScoreAssignmentDto.UploadFileScoreAssignmentInfo objectLoop:listPosPayerFromExcel) {
+            if (null != objectLoop.getErrors() && objectLoop.getErrors().size() > 0) {
+                statusInsertAll = false;
+                objectResponse=responseService.getSingleResponseHandleMessage(listPosPayerFromExcel, CommonUtil.failValue, "Noi dung message fail");
+                break;
+            }
+        }
+        //check status before insert all
+        if(statusInsertAll){
+            //Insert list
+            nativeSqlInsertStrategy.bulkInsertScoreAssignment(listPosPayerFromExcel);
+        }
+        return objectResponse;
+    }
+
+    public List<ScoreAssignmentDto.UploadFileScoreAssignmentInfo> buildListUserFromExcel(MultipartFile file, String language){
+        logger.info("Start build list score assignment from excel");
+        List<ScoreAssignmentDto.UploadFileScoreAssignmentInfo> batchList = new ArrayList<>();
+        try (InputStream inputStream = file.getInputStream();
+             Workbook workbook = new XSSFWorkbook(inputStream)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rowIterator = sheet.iterator();
+            int rowNum = 0;
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                //Not get value in 5 row first
+                if (rowNum++ < 4) {
+                    continue;
+                }
+                //Not get value when data in row is empty
+                if (ExcelUtils.isRowEmpty(row)) continue;
+                ScoreAssignmentDto.UploadFileScoreAssignmentInfo pos = new ScoreAssignmentDto.UploadFileScoreAssignmentInfo();
+                pos.setNumberIndex(ExcelUtils.getCellValue(row.getCell(1)));
+                pos.setAssignmentId(Long.valueOf(ExcelUtils.getCellValue(row.getCell(2))));
+                pos.setScoreExaminer(ExcelUtils.getCellValue(row.getCell(3)));
+                pos.setScoreInstructor(ExcelUtils.getCellValue(row.getCell(4)));
+                logger.info("Object java:"+CommonUtil.getJsonStringFromObject(pos));
+                batchList.add(pos);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        logger.info("End build list user from excel");
+        return batchList;
+    }
+
+    private List<ScoreAssignmentDto.UploadFileScoreAssignmentInfo> validateFileExcel(
+            List<ScoreAssignmentDto.UploadFileScoreAssignmentInfo> excelData, String language) {
+        logger.info("Start validateFileExcel");
+        if (excelData == null || excelData.isEmpty()) {
+            return excelData;
+        }
+        //Check list account have any exist in database or not
+        List<Long> listUserNameRegister = excelData.stream().map(item -> item.getAssignmentId())
+                .collect(Collectors.toList());
+        List<ScoreAssignment> listUserExist = scoreAssignmentRepository.findByListScoreActiveByAssignmentId(listUserNameRegister);
+        if(null != listUserExist && listUserExist.size() > 0){
+            List<String> errorsDuplicate = new ArrayList<>();
+            errorsDuplicate.add("Trùng dữ liệu thông tin tài khoản");
+            //Ficessage error
+            for(int i=0;i< listUserExist.size();i++){
+                int valueIndex = i;
+                excelData.stream().filter(str -> str.getAssignmentId().equals(listUserExist.get(valueIndex).getAssignmentRegisterInfo().getId()))
+                        .forEach(str -> str.setErrors(errorsDuplicate));
+            }
+            return excelData;
+        }
+        return excelData;
     }
 }

@@ -219,6 +219,8 @@ public interface ScoreAssignmentRepository extends JpaRepository<ScoreAssignment
             nativeQuery = true)
     List<AssignmentStudentRegisterDTO> findListAssignmentByPeriodIdHeadRoomSite(ScoreAssignmentDto.ListAssignmentRegisterHeadRoomSiteInfo request);
 
+    @Query(value = "select * from score_assignment WHERE status = '1' and assignment_register_info_id in :ids",nativeQuery = true)
+    List<ScoreAssignment> findByListScoreActiveByAssignmentId(@Param("ids") List<Long> ids);
 
 
 }

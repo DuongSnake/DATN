@@ -6,6 +6,7 @@ import com.example.bloodbankmanagement.dto.service.StudentMapInstructorDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +79,29 @@ public class StudentMapInstructor extends EntityCommon {
         }
         objectDtoResponse.setData(listStudentMapInstructorDto);
         objectDtoResponse.setTotalRecord(Math.toIntExact(totalRecord));
+        return objectDtoResponse;
+    }
+
+    public static StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse convertToDtoCheckRegisterBeforeOrNot(List<StudentMapInstructor> request){
+        StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse objectDtoResponse = new StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse();
+        if(!ObjectUtils.isEmpty(request)){
+            Long instructorId = null != request.get(0).getInstructorInfo() ? request.get(0).getInstructorInfo().getId() : null;
+            Long studentId = null != request.get(0).getStudentInfo() ? request.get(0).getStudentInfo().getId() : null;
+            String instructorName = null != request.get(0).getInstructorInfo() ? request.get(0).getInstructorInfo().getFullName() : null;
+            String studentName = null != request.get(0).getStudentInfo() ? request.get(0).getStudentInfo().getFullName() : null;
+            String criticalName = null != request.get(0).getCriticalTeacherInfo() ? request.get(0).getCriticalTeacherInfo().getFullName() : null;
+            Long criticalId = null != request.get(0).getCriticalTeacherInfo() ? request.get(0).getCriticalTeacherInfo().getId() : null;
+            objectDtoResponse.setStudentMapInstructorId(request.get(0).getId());
+            objectDtoResponse.setInstructorId(instructorId);
+            objectDtoResponse.setInstructorName(instructorName);
+            objectDtoResponse.setStudentId(studentId);
+            objectDtoResponse.setStudentName(studentName);
+            objectDtoResponse.setStatus(request.get(0).getStatus());
+            objectDtoResponse.setCreateAt(request.get(0).getCreateAt());
+            objectDtoResponse.setCriticalId(criticalId);
+            objectDtoResponse.setCriticalName(criticalName);
+            objectDtoResponse.setCreateUser(request.get(0).getCreateUser());
+        }
         return objectDtoResponse;
     }
 }

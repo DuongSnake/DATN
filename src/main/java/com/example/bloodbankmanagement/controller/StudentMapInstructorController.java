@@ -4,6 +4,7 @@ import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.service.StudentMapInstructorDto;
 import com.example.bloodbankmanagement.dto.service.UserDto;
+import com.example.bloodbankmanagement.entity.StudentMapInstructor;
 import com.example.bloodbankmanagement.service.StudentMapInstructorServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -104,6 +105,14 @@ public class StudentMapInstructorController {
     public ResponseEntity<SingleResponseDto<PageAmtListResponseDto<UserDto.UserSelectListInfo>>> selectListStudentHaveStatusAssignmentIsWaitingFinalApprove() {
         return new ResponseEntity<>(
                 studentMapInstructorService.selectListStudentHaveStatusAssignmentIsWaitingFinalApprove(),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/selectInfoMapByStudentId")
+    public ResponseEntity<SingleResponseDto<StudentMapInstructor>> selectInfoMapByStudentId(@RequestBody StudentMapInstructorDto.FindCriticalTeacherByStudentIdInfo request) {
+        return new ResponseEntity<>(
+                studentMapInstructorService.selectInfoMapByStudentId(request),
                 HttpStatus.OK
         );
     }

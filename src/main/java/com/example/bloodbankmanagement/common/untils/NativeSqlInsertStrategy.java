@@ -1,5 +1,6 @@
 package com.example.bloodbankmanagement.common.untils;
 
+import com.example.bloodbankmanagement.dto.service.ScoreAssignmentDto;
 import com.example.bloodbankmanagement.dto.service.UserDto;
 import com.example.bloodbankmanagement.dto.service.student.StudentDto;
 import com.example.bloodbankmanagement.entity.Student;
@@ -77,6 +78,22 @@ public class NativeSqlInsertStrategy  implements UserEntityPermissionBulkInsertS
             ps.setString(10, CommonUtil.NO_VALUE);
             ps.setDate(11, Date.valueOf(nowDate));
             ps.setString(12, registerUser);
+        });
+    }
+
+    @Override
+    public void bulkInsertScoreAssignment(List<ScoreAssignmentDto.UploadFileScoreAssignmentInfo> permissions) {
+        LocalDate nowDate =  LocalDate.now();
+        String registerUser = CommonUtil.getUsernameByToken();
+        //Insert list student with status "have account login" is false
+        String sql = "INSERT INTO score_assignment (assignment_register_info_id, score_instructor, score_examiner, status, create_at, create_user) VALUES (?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.batchUpdate(sql, permissions, permissions.size(), (ps, permission) -> {
+            ps.setLong(1, permission.getAssignmentId());
+            ps.setDouble(2, Double.valueOf(permission.getScoreInstructor()));
+            ps.setDouble(3, Double.valueOf(permission.getScoreExaminer()));
+            ps.setString(4, CommonUtil.STATUS_USE);
+            ps.setDate(5, Date.valueOf(nowDate));
+            ps.setString(6, registerUser);
         });
     }
 }

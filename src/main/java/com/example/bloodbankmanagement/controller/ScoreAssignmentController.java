@@ -5,12 +5,19 @@ import com.example.bloodbankmanagement.dto.common.PageAmtListResponseDto;
 import com.example.bloodbankmanagement.dto.common.SingleResponseDto;
 import com.example.bloodbankmanagement.dto.service.AssignmentStudentRegisterDto;
 import com.example.bloodbankmanagement.dto.service.ScoreAssignmentDto;
+import com.example.bloodbankmanagement.dto.service.StudentManagementDto;
 import com.example.bloodbankmanagement.service.ScoreAssignmentServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/scoreAssignment")
@@ -74,6 +81,24 @@ public class ScoreAssignmentController {
                 scoreAssignmentService.selectListNewScoreAssignment(request),
                 HttpStatus.OK
         );
+    }
+
+    @PostMapping("/insertListScoreAssignment")
+    public ResponseEntity<BasicResponseDto> insertListStudent(@ModelAttribute @Valid ScoreAssignmentDto.UploadBatchFileRegisterScoreAssignmentInfo request, @RequestHeader("lang") String lang) {
+        return new ResponseEntity<>(
+                scoreAssignmentService.uploadFileRegisterListStudent(request, lang),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/downloadTemplate")
+    public ResponseEntity<Resource> downloadTemplate() throws IOException {
+        Resource resource = new ClassPathResource("static/example_insert_list_score_assignment.xlsx");
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=example_insert_list_student.xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 
 }

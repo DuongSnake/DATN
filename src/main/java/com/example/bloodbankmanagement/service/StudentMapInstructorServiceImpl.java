@@ -201,6 +201,16 @@ public class StudentMapInstructorServiceImpl {
         return objectResponse;
     }
 
+    public SingleResponseDto<StudentMapInstructor> selectInfoMapByStudentId(StudentMapInstructorDto.FindCriticalTeacherByStudentIdInfo request) {
+        //For case map student with instructor
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        //Check if mapping auto -> insert to table student map instructor
+        List<StudentMapInstructor> listStudentByStudentId = studentMapInstructorRepository.getStudentMapInstructorIdActiveByStudentId(request.getStudentId());
+        StudentMapInstructorDto.StudentMapInstructorSelectInfoResponse dataResponse = StudentMapInstructor.convertToDtoCheckRegisterBeforeOrNot(listStudentByStudentId);
+        objectResponse = responseService.getSingleResponse(dataResponse, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
     @Transactional
     public BasicResponseDto updateStudentMapCriticalTeacher(StudentMapInstructorDto.StudentMapCriticalTeacherInfo request, String lang){
         //For case map student with instructor
