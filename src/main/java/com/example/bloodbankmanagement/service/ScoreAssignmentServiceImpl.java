@@ -198,7 +198,7 @@ public class ScoreAssignmentServiceImpl {
         request.setTypeApprove(CommonUtil.STATUS_APPROVE_FINAL);
         PageAmtListResponseDto<AssignmentStudentRegisterDto.AssignmentStudentRegisterListInfo> pageAmtObject = new PageAmtListResponseDto<>();
         //Select list file upload
-        List<AssignmentStudentRegisterDTO> listDataFileMetadata = scoreAssignmentRepository.findListAssignmentRegisterIsFinalApproveByPeriodId(request);
+        List<AssignmentStudentRegisterDTO> listDataFileMetadata = scoreAssignmentRepository.findListAssignmentRegisterIsFinalApproveByPeriodIdDontHaveScore(request);
         pageAmtObject = AssignmentRegister.convertListObjectToDto(listDataFileMetadata, Long.valueOf(listDataFileMetadata.size()));
         objectResponse = responseService.getSingleResponse(pageAmtObject, new String[]{responseService.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
         return objectResponse;

@@ -55,6 +55,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "where r.name = ?1 and u.status ='1' ", nativeQuery = true)
     List<User> getListUserByRoleName(String valueRole);
 
+    @Query(value = "select u.*  from users u " +
+            "left join assignment_student_register asr on asr.student_id = u.id " +
+            "join roles r on r.id = u.role_id and asr.id is null " +
+            "where r.name = ?1 and u.status ='1' ", nativeQuery = true)
+    List<User> getListUserByRoleNameAndDontHaveAssignment(String valueRole);
+
     @Query(value = "with StudentCTE AS(" +
             "select u.id, u.full_name  from users u " +
             "join roles r on r.id = u.role_id " +

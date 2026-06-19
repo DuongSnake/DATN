@@ -336,6 +336,16 @@ public class UserServiceImpl {
         return objectResponse;
     }
 
+
+    public SingleResponseDto<List<UserDto.UserSelectListInfo>> selectListStudentNotHaveAssignment() {
+        SingleResponseDto objectResponse = new SingleResponseDto();
+        List<UserDto.UserSelectListInfo> pageAmtObject = new ArrayList<>();
+        List<User> listDataUser = userRepository.getListUserByRoleNameAndDontHaveAssignment(ERole.ROLE_USER.toString());
+        pageAmtObject = User.convertListObjectStudentOrInstructorToDto(listDataUser);
+        objectResponse = responseCommon.getSingleResponse(pageAmtObject, new String[]{responseCommon.getConstI18n(CommonUtil.userValue)}, CommonUtil.querySuccess);
+        return objectResponse;
+    }
+
     public SingleResponseDto<List<UserDto.UserSelectListInfo>> selectListInstructor() {
         SingleResponseDto objectResponse = new SingleResponseDto();
         List<UserDto.UserSelectListInfo> pageAmtObject = new ArrayList<>();

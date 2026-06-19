@@ -93,6 +93,14 @@ public class UserController {
         );
     }
 
+    @PostMapping("/selectStudentNotHaveAssignment")
+    public ResponseEntity<SingleResponseDto<List<UserDto.UserSelectListInfo>>> getListUserByRoleNameAndDontHaveAssignment() {
+        return new ResponseEntity<>(
+                userService.selectListStudentNotHaveAssignment(),
+                HttpStatus.OK
+        );
+    }
+
     @PostMapping("/selectAllInstructor")
     public ResponseEntity<SingleResponseDto<List<UserDto.UserSelectListInfo>>> selectListInstructor() {
         return new ResponseEntity<>(
